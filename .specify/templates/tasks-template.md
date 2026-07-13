@@ -172,11 +172,18 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
+- [ ] TXXX Verify global admins cannot mutate private rounds or read hidden predictions/member e-mail
+- [ ] TXXX Verify any support-metadata access is time-limited, read-only, scoped, and append-only audited
 - [ ] TXXX Verify every exposed table, view, function, and storage path against RLS requirements
 - [ ] TXXX Run automated WCAG checks and manual keyboard/screen-reader verification
 - [ ] TXXX Validate PWA manifest, installability, update, safe-area, and offline-status behavior
 - [ ] TXXX Verify no legacy code, data models, or migrations entered the new repository
 - [ ] TXXX Run quickstart.md validation
+
+Any production identity provisioning, synthetic production data creation, production smoke test,
+synthetic-data/account cleanup, and cleanup verification MUST be separate tasks. Every mutating task
+requires an explicit approval naming identities, data scope, purpose, and required deletion; no
+approval may be inferred from task generation or an earlier gate.
 
 ---
 

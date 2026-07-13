@@ -45,22 +45,26 @@
 - **Design-system coherence**: Name the shared tokens/components and cover interaction, loading,
   error, locked, empty, destructive, and reduced-motion states.
 - **Privacy and round isolation**: Define the private-data boundary, minimal personal data,
-  prediction visibility, deletion/anonymization, and per-round isolation.
+  prediction visibility, deletion/anonymization, per-round isolation, and any time-limited audited
+  read-only support-metadata access. Global admins receive no implicit private-round rights.
 - **Authorization and RLS**: Map each sensitive operation to server authorization and concrete RLS
   ownership/membership/admin predicates; include views, functions, storage, keys, and allow/deny
   tests. The server is authoritative for time and deadlines.
 - **Deterministic domain rules**: Define the pure 4/3/2/0 scoring contract, atomic recalculation,
   audit history, and reproducible ranking behavior.
 - **Roles and central data**: Preserve exactly one round owner, no co-admin path, and exclusive
-  global app-admin control of shared league, fixture, and result data.
+  global app-admin control of shared league, fixture, and result data. App-admin status MUST NOT
+  permit private-round mutation or access to hidden predictions or member e-mail addresses.
 - **Product boundary**: Exclude real-money, betting terminology/patterns, and other explicit PRD
   non-goals.
 - **Clean-room and type safety**: Confirm no legacy code, models, or migrations are reused; require
   fresh migrations and TypeScript strict without unjustified suppressions.
 - **Test evidence**: Plan mandatory unit, integration/contract, RLS, end-to-end, accessibility, and
   PWA coverage with deterministic CI execution.
-- **Operational safety**: Treat Supabase cleanup, schema changes, data deletion, and deployment as
-  separately authorized tasks with backup, rollback, and verification.
+- **Operational safety**: Treat Supabase cleanup, schema changes, production identity provisioning,
+  production test-data creation/deletion, and deployment as separately and explicitly authorized
+  tasks. Each approval names identities, data scope, purpose, cleanup, backup/rollback, and
+  verification.
 
 Any failed gate MUST be recorded in Complexity Tracking with project-owner approval and a removal
 plan. Non-waivable constitutional rules require an amendment instead of an exception.

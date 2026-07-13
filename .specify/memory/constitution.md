@@ -1,19 +1,22 @@
 <!--
 Sync Impact Report
-- Versionsänderung: unratifizierte Vorlage -> 1.0.0
+- Versionsänderung: 1.0.0 -> 2.0.0
 - Geänderte Prinzipien:
-  - Platzhalterprinzipien 1-5 -> neun projektspezifische Grundprinzipien
-- Hinzugefügte Abschnitte:
-  - Produkt- und Architekturleitplanken
-  - Arbeitsablauf und Qualitätsgates
-- Entfernte Abschnitte: keine; die Platzhalter der Vorlage wurden ersetzt
+  - III. Datenschutz als Standard und strikte Trennung der Tipprunden -> App-Admins ohne reguläre
+    Privatrundenrechte; Break-Glass nur zeitlich begrenzt und lesend für Support-Metadaten
+  - VI. Genau ein Besitzer und zentrale Wettbewerbsdaten -> ausdrückliches Verbot privater
+    App-Admin-Mutationen
+  - Arbeitsablauf und Qualitätsgates -> jede Produktionsmutation mit explizitem Scope und eigener
+    Freigabe
+- Hinzugefügte Abschnitte: keine
+- Entfernte Abschnitte: keine
 - Zu synchronisierende Vorlagen:
   - ✅ .specify/templates/plan-template.md
   - ✅ .specify/templates/spec-template.md
   - ✅ .specify/templates/tasks-template.md
   - ✅ .specify/templates/commands/*.md (Verzeichnis nicht vorhanden; keine Vorlagen anzupassen)
 - Geprüfte Laufzeitdokumentation:
-  - ✅ docs/PRD-A-KlassenHoiz-Neubau.md (maßgebliche Quelle; keine Änderung erforderlich)
+  - ✅ docs/PRD.md (einziger kanonischer PRD-Pfad; Produktentscheidungen synchronisiert)
 - Offene TODOs: keine
 -->
 # A-KlassenHoiz Projektverfassung
@@ -42,11 +45,14 @@ Destruktivzustände abdecken. Konsistenz und Klarheit ermöglichen eine schnelle
 Menschen mit unterschiedlicher technischer Erfahrung.
 
 ### III. Datenschutz als Standard und strikte Trennung der Tipprunden
-Alle Tipprunden MÜSSEN privat, nicht durchsuchbar und ausschließlich für berechtigte Mitglieder
-oder einen globalen App-Admin mit dokumentiertem operativem Anlass zugänglich sein. E-Mail-
-Adressen, Zugangsdaten, Einladungs-Tokens und andere private Kontodaten DÜRFEN anderen Mitgliedern,
-Analytics oder Logs nicht offengelegt werden. Fremde Tipps MÜSSEN bis zum Ablauf der serverseitig
-bestimmten Frist des jeweiligen Spiels verborgen bleiben. Erhebung und Aufbewahrung
+Alle Tipprunden MÜSSEN privat, nicht durchsuchbar und im normalen Betrieb ausschließlich für
+berechtigte Mitglieder zugänglich sein. Globale App-Admins DÜRFEN private Tipprunden weder
+bearbeiten noch Mitglieder entfernen, Einladungen erzeugen oder fremde Tipps verändern. Ein
+begründeter Support- oder Missbrauchsfall DARF ausschließlich über einen zeitlich begrenzten,
+vollständig auditierten Break-Glass-Ablauf notwendige Support-Metadaten lesend zugänglich machen.
+Fremde Tipps vor der jeweiligen Tippfrist und E-Mail-Adressen anderer Nutzer MÜSSEN auch dabei
+verborgen bleiben. Zugangsdaten, Einladungs-Tokens und andere private Kontodaten DÜRFEN anderen
+Mitgliedern, App-Admins, Analytics oder Logs nicht offengelegt werden. Erhebung und Aufbewahrung
 personenbezogener Daten MÜSSEN auf den Betriebszweck beschränkt sein; Löschung, Anonymisierung und
 die Behandlung historischer Ranglisten MÜSSEN spezifiziert und getestet werden. Mitgliedschaften,
 Einladungen, Tipps, Wertungen und Ranglisten MÜSSEN auch bei gemeinsam genutzten Ligadaten strikt je
@@ -80,8 +86,9 @@ nicht existieren. Ausschließlich globale App-Admins DÜRFEN Ligen, Saisons, Lig
 Spieltage, Spiele und Ergebnisse anlegen oder ändern. Besitzer DÜRFEN eine veröffentlichte Liga-
 Saison auswählen, aber keine zentralen Wettbewerbsdaten verändern. Alle verbundenen Tipprunden
 MÜSSEN dieselben zentral verwalteten Spiel- und Ergebnisdatensätze referenzieren und zugleich ihre
-Mitglieder- und Wertungsdaten isolieren. Besitzer- und globale Adminwechsel MÜSSEN diese Invarianten
-auf Datenbank- und Serverebene erhalten.
+Mitglieder- und Wertungsdaten isolieren. Die globale Rolle `app_admin` DARF keine Verwaltungsrechte
+innerhalb privater Tipprunden vermitteln. Besitzer- und globale Adminwechsel MÜSSEN diese
+Invarianten auf Datenbank- und Serverebene erhalten.
 
 ### VII. Gemeinschaftliches Tippspiel, niemals Wettprodukt
 Das Produkt MUSS gemeinschaftliche Begriffe wie Tipp, Tipprunde, Punkte und Rangliste verwenden. Es
@@ -114,8 +121,9 @@ fertig, solange erforderliche Nachweise fehlen oder fehlschlagen.
 
 ## Produkt- und Architekturleitplanken
 
-- Das veröffentlichte Produkt MUSS eine deutschsprachige, private Fußball-Tippspiel-App auf Basis
-  des freigegebenen PRD und seiner ausdrücklichen Nicht-Ziele bleiben.
+- Das einzige kanonische PRD MUSS unter `docs/PRD.md` liegen; konkurrierende PRD-Dateien DÜRFEN
+  nicht existieren. Das veröffentlichte Produkt MUSS eine deutschsprachige, private Fußball-
+  Tippspiel-App auf Basis dieses freigegebenen PRD und seiner ausdrücklichen Nicht-Ziele bleiben.
 - Jede Tipprunde MUSS genau eine veröffentlichte Liga-Saison referenzieren. Nach dem ersten
   gespeicherten Tipp MUSS die Liga-Saison der Tipprunde unveränderlich sein.
 - Anstoßzeiten MÜSSEN technisch eindeutig gespeichert, serverseitig ausgewertet und in
@@ -152,10 +160,12 @@ fertig, solange erforderliche Nachweise fehlen oder fehlschlagen.
    Alleinautorisierung, fehlende RLS, duplizierte Wettbewerbsdaten, versteckte Co-Admin-Rechte,
    nicht deterministische Wertung, unzugängliche UI, Wettbegriffe sowie Altcode oder alte
    Migrationen ablehnen.
-6. Jede Supabase-Bereinigung, Schemaänderung, Migration, Produktionsbereitstellung oder
-   Datenlöschung MUSS eine separat autorisierte Implementierungsaufgabe mit Sicherungs-, Rollback-
-   und Verifikationsschritten sein. Dokumentationsarbeit DARF diese Aktionen nicht implizit
-   ausführen.
+6. Jede Supabase-Bereinigung, Schemaänderung, Migration, Produktionsbereitstellung, Erzeugung oder
+   Löschung von Produktionsdaten sowie Provisionierung privilegierter Produktionsidentitäten MUSS
+   eine separat und ausdrücklich autorisierte Implementierungsaufgabe mit Sicherungs-, Rollback-
+   und Verifikationsschritten sein. Die Freigabe MUSS Identitäten, Datenumfang, Zweck und eine
+   erforderliche anschließende Löschung benennen. Dokumentationsarbeit DARF diese Aktionen nicht
+   implizit ausführen.
 
 ## Governance
 
@@ -178,4 +188,4 @@ oder Rückbauplan definieren und ausdrücklich vom Projekteigentümer genehmigt 
 Sicherheit, Wertungsintegrität, das Verbot von Co-Admins und Wettkonzepten sowie die Clean-Room-
 Grenze sind ohne Verfassungsänderung nicht ausnahmefähig.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-13 | **Last Amended**: 2026-07-13
+**Version**: 2.0.0 | **Ratified**: 2026-07-13 | **Last Amended**: 2026-07-13

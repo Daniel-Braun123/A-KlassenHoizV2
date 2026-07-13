@@ -1,7 +1,7 @@
 # Product Requirements Document: A-KlassenHoiz
 
 **Dokumenttyp:** Product Requirements Document (PRD)  
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** Freigegebene Produktgrundlage für den Neubau  
 **Datum:** 13. Juli 2026  
 **Produktsprache:** Deutsch  
@@ -72,8 +72,12 @@ Das Produkt soll technisch und konzeptionell so sauber aufgebaut sein, dass spä
 
 ### 5.2 Messbare Erfolgskriterien
 
-- Mindestens 95 % der Testnutzer schließen Registrierung und Einstieg ohne Hilfe ab.
-- Mindestens 90 % erkennen auf der Tipprunden-Startseite sofort, welche Tipps noch fehlen.
+- Alle fünf repräsentativen Testpersonen schließen Registrierung, Beitritt und vollständige
+  Tippabgabe ohne Hilfe ab.
+- Mindestens vier von fünf Testpersonen erkennen auf der Tipprunden-Startseite selbstständig,
+  welche Tippaktion als Nächstes offen ist.
+- Die Zeitziele für Rundenerstellung und vollständige Tippabgabe werden über den Median der
+  erfolgreichen Durchläufe bewertet.
 - 100 % der Spiele sperren Tipps serverseitig zum jeweiligen Anpfiff.
 - 100 % der geprüften Beispieltips werden nach dem 4/3/2/0-System korrekt gewertet.
 - Fremde Tipps sind vor Ablauf der jeweiligen Tippfrist in allen Berechtigungstests unsichtbar.
@@ -95,6 +99,7 @@ Nicht Bestandteil von Version 1 sind:
 - native iOS- oder Android-Apps,
 - Social Feed, Kommentare oder Direktnachrichten,
 - selbst konfigurierbare Punktesysteme,
+- Real-User-Monitoring und Produktanalytics,
 - automatischer Import alter Nutzer oder alter Anwendungsdaten.
 
 Diese Punkte können später neu priorisiert werden. Das Datenmodell soll sinnvolle Erweiterungen nicht unnötig verhindern, aber V1 darf dafür keine sichtbare Komplexität tragen.
@@ -152,27 +157,39 @@ Die App spricht von Tipp, Tipprunde, Punkten und Rangliste. Begriffe und visuell
 - erstellt und verwaltet Liga-Saisons,
 - verwaltet Vereine, Spieltage, Spiele und Ergebnisse,
 - kann globale Inhalte archivieren,
-- kann für Support und Missbrauchsschutz auf notwendige Verwaltungsdaten zugreifen,
+- erhält aus der globalen Rolle im normalen Betrieb keinerlei Lese- oder Bearbeitungsrecht auf
+  private Tipprunden,
+- kann keine Mitglieder privater Tipprunden entfernen, keine Einladungen erzeugen und keine
+  fremden Tipps verändern,
+- kann in einem begründeten Support- oder Missbrauchsfall über einen zeitlich begrenzten und
+  vollständig auditierten Break-Glass-Ablauf ausschließlich notwendige Support-Metadaten lesen,
+- sieht auch über Break-Glass weder fremde Tipps vor der jeweiligen Tippfrist noch E-Mail-Adressen
+  anderer Nutzer,
 - erhält keine reguläre Möglichkeit, Nutzerpasswörter oder fremde Auth-Geheimnisse einzusehen.
 
 ### 8.2 Berechtigungsmatrix
 
-| Aktion | Gast | Mitglied | Besitzer | App-Admin |
+| Aktion | Gast | Mitglied | Besitzer | zusätzliches App-Adminrecht |
 |---|---:|---:|---:|---:|
 | Registrieren/anmelden | Ja | Ja | Ja | Ja |
-| Eigene Tipprunden sehen | Nein | Ja | Ja | Ja, operativ |
-| Tipprunde erstellen | Nein | Ja | Ja | Ja |
-| Tipprunde bearbeiten | Nein | Nein | Eigene | Operativ |
-| Mitglieder verwalten | Nein | Nein | Eigene | Operativ |
-| Einladung erzeugen | Nein | Nein | Eigene | Operativ |
-| Liga-Saison auswählen | Nein | Nein | Beim Erstellen/eingeschränkt | Ja |
+| Eigene Tipprunden sehen | Nein | Ja | Ja | Nein |
+| Tipprunde erstellen | Nein | Ja | Ja | Nein |
+| Tipprunde bearbeiten | Nein | Nein | Eigene | Nein |
+| Mitglieder verwalten | Nein | Nein | Eigene | Nein |
+| Einladung erzeugen | Nein | Nein | Eigene | Nein |
+| Liga-Saison auswählen | Nein | Nein | Beim Erstellen/eingeschränkt | Nein |
 | Liga und Spielplan pflegen | Nein | Nein | Nein | Ja |
 | Ergebnisse pflegen | Nein | Nein | Nein | Ja |
-| Eigenen Tipp abgeben | Nein | Ja | Ja | Bei Mitgliedschaft |
-| Fremde Tipps vor Frist sehen | Nein | Nein | Nein | Nur begründeter Supportfall |
-| Ranglisten sehen | Nein | Ja | Ja | Bei operativem Bedarf |
+| Eigenen Tipp abgeben | Nein | Ja | Ja | Nein |
+| Fremde Tipps vor Frist sehen | Nein | Nein | Nein | Nein |
+| Support-Metadaten fremder Runde lesen | Nein | Nein | Nein | Nur zeitlich begrenzter, auditierter Break-Glass-Fall |
+| Ranglisten sehen | Nein | Ja | Ja | Nein |
 
 Die Rolle `Co-Admin` existiert weder fachlich noch technisch.
+
+Die letzte Spalte beschreibt ausschließlich zusätzliche Rechte aus der globalen Rolle. Besitzt
+dieselbe Person unabhängig davon eine normale Mitgliedschaft oder Ownerrolle, gelten nur deren
+reguläre, rundenbezogene Rechte; `app_admin` erzeugt dafür niemals einen Bypass.
 
 ## 9. Zentrales Domänenmodell
 
@@ -445,7 +462,17 @@ Der Besitzer kann:
 - Mitglieder ansehen und entfernen,
 - den aktiven Einladungslink ansehen, kopieren, als QR-Code öffnen, widerrufen oder ersetzen,
 - die Tipprunde archivieren,
-- die Tipprunde nach erneuter Sicherheitsbestätigung endgültig löschen.
+- die Tipprunde nach erneuter Sicherheitsbestätigung durch exakte Eingabe des Tipprunden-Namens
+  endgültig löschen.
+
+Archivieren ist die reversible Standardaktion. „Endgültig löschen“ ist ein sofortiger,
+irreversibler Hard Delete ohne Wiederherstellungsfrist. In genau einer Datenbanktransaktion werden
+alle Tipps, Punktewertungen, Mitgliedschaften und Einladungen der Runde sowie die Tipprunde selbst
+gelöscht. Globale Liga-, Saison-, Vereins-, Spielplan- und Ergebnisdaten sowie Nutzerkonten bleiben
+unverändert. Bei einem Fehler wird die gesamte Transaktion zurückgerollt; ein teilweise gelöschter
+Zustand darf nicht entstehen. Nach erfolgreichem Commit darf nur ein minimales Audit-Ereignis mit
+Aktion, ausführendem Nutzer, Zeitpunkt und nicht sprechender Objekt-ID bestehen bleiben. Es darf
+weder Rundennamen noch Tipps oder Mitgliederdaten enthalten.
 
 Der Besitzer kann nicht:
 
@@ -511,7 +538,7 @@ Eine umfangreiche Marketing-Website ist für V1 nicht erforderlich.
 - Vereine
 - Spieltage und Spiele
 - Ergebnisse
-- notwendige operative Nutzer-/Tipprundenansicht
+- zeitlich begrenzte, read-only Support-Metadatenansicht ausschließlich über auditiertes Break-Glass
 
 ### 11.4 Navigation
 
@@ -617,10 +644,16 @@ Die Anwendung erfüllt WCAG 2.2 AA für alle Kernabläufe.
 
 - Nur angemeldete Nutzer sehen private Tipprunden.
 - E-Mail-Adressen sind für andere Mitglieder unsichtbar.
+- App-Admins erhalten keine regulären Rechte auf private Tipprunden. Ein zeitlich begrenzter,
+  begründeter und vollständig auditierter Break-Glass-Zugriff darf ausschließlich notwendige
+  Support-Metadaten lesend liefern; fremde Vorfristtipps und E-Mail-Adressen bleiben verborgen.
 - In Tipprunden wird primär der Tipprunden-Nickname angezeigt.
 - Es werden nur für den Betrieb erforderliche personenbezogene Daten gespeichert.
 - Nutzer können ihr Konto löschen; Abhängigkeiten zu historischen Ranglisten werden datenschutzkonform anonymisiert oder entfernt.
-- Impressum und Datenschutzerklärung sind öffentlich erreichbar.
+- Betreiberangaben, tatsächliche Datenflüsse, Dienstleister, Aufbewahrungsregeln, Impressum und
+  Datenschutzerklärung werden fachlich ermittelt und ausdrücklich freigegeben, bevor die Inhalte
+  technisch eingebunden werden; rechtliche Angaben dürfen nicht erfunden werden.
+- Das freigegebene Impressum und die freigegebene Datenschutzerklärung sind öffentlich erreichbar.
 
 ### 15.2 Supabase-Sicherheit
 
@@ -692,12 +725,27 @@ Die Löschung ist eine separate, ausdrücklich bestätigte Implementierungsaufga
 - Secrets werden nicht aus dem alten Repository kopiert oder ausgegeben, sondern über die Projektkonfiguration referenziert bzw. neu gesetzt.
 - Erst nach erfolgreicher Preview-Abnahme wird die bestehende Produktionsdomain auf den Neubau umgeschaltet.
 
+### 17.5 Produktionsmutationen
+
+Jede Produktionsmutation benötigt eine neue, ausdrückliche Freigabe, die ausführende und betroffene
+Identitäten, Datenumfang, Testzweck und eine erforderliche anschließende Löschung benennt. Die
+Provisionierung des ersten App-Admins, das Anlegen synthetischer Smoke-Testdaten, die Durchführung
+des Produktionstests, das Entfernen sämtlicher synthetischer Daten und Testkonten sowie die
+Bereinigungsverifikation sind getrennte Betriebsschritte. Keine Freigabe darf aus diesem PRD, einer
+Spezifikation, einem Plan oder einer früheren allgemeinen Zustimmung abgeleitet werden.
+
 ## 18. Qualitätsanforderungen
 
 ### 18.1 Performance
 
 - Interaktionsfeedback innerhalb von 100 ms, sofern lokal möglich.
-- Keine vermeidbaren Layoutverschiebungen; Zielwert CLS kleiner als 0,1.
+- V1 verwendet keine p75-Feldwert-Grenze und erhebt keine Real-User-Monitoring-Daten.
+- Der Release wird mit einem reproduzierbaren Lighthouse-Mobile-Lab-Budget geprüft: Performance-
+  Score mindestens 90, LCP höchstens 2,5 Sekunden, CLS höchstens 0,1 und TBT höchstens
+  200 Millisekunden, jeweils als Median aus drei isolierten Läufen.
+- Testgerät beziehungsweise Emulation, Netzwerkprofil, CPU-Drosselung, Browser-/Lighthouse-Version,
+  Produktions-Buildmodus, kalter Cache, geprüfte Routen und Messablauf werden festgelegt und mit
+  dem Ergebnis dokumentiert.
 - Routen und schwere Adminbestandteile werden sinnvoll getrennt geladen.
 - Vereinslogos besitzen feste Abmessungen, optimierte Formate und Fallbacks.
 - Listen bleiben auch bei einer vollständigen Saison flüssig bedienbar.
@@ -740,19 +788,30 @@ Die Löschung ist eine separate, ausdrücklich bestätigte Implementierungsaufga
 9. Punkte und Gesamt-/Spieltagsrangliste aktualisieren sich korrekt.
 10. Die Abläufe funktionieren auf Smartphone und Desktop sowie im installierten PWA-Modus.
 
+### 19.3 Moderiertes Usability-Testprotokoll
+
+- Mindestens fünf repräsentative Testpersonen nehmen ohne vorherige Produktschulung teil.
+- Die Stichprobe enthält eine Mischung aus iOS Safari und Android Chrome sowie mindestens einen
+  ergänzenden Desktop-Test.
+- Der Moderator darf weder bei Navigation noch bei Bedienung helfen.
+- Startpunkt, Endpunkt, Messbeginn, Messende, Ergebnis und technische Störungen werden für jede
+  Testaufgabe dokumentiert.
+- Registrierung, Beitritt und vollständige Tippabgabe müssen von fünf von fünf Personen ohne Hilfe
+  abgeschlossen werden.
+- Mindestens vier von fünf Personen müssen die nächste offene Tippaktion selbstständig erkennen.
+- Zeitziele werden über den Median der erfolgreichen Durchläufe bewertet.
+- Technische Ausfälle werden separat ausgewiesen und niemals stillschweigend aus der Stichprobe
+  entfernt.
+
 ## 20. Analytics und Produktbeobachtung
 
-Für V1 genügen datensparsame, aggregierte Produktkennzahlen:
+V1 erhebt weder Produktanalytics noch Real-User-Monitoring-Daten. Die zuvor erwogenen Kennzahlen zu
+Registrierung, Rundenerstellung, Einladungen, Tippfortschritt, Speicherfehlern, Geräteklassen und
+PWA-Installationskontext sind ein späteres Nicht-Ziel und kein Releasekriterium für V1.
 
-- Registrierung abgeschlossen,
-- Tipprunde erstellt,
-- Einladung erzeugt,
-- Einladung erfolgreich angenommen,
-- Spieltag begonnen und vollständig getippt,
-- Fehlerquote bei Tipp-Speicherung,
-- verwendete Geräteklasse und PWA-Installationskontext, soweit datenschutzkonform messbar.
-
-Keine Tippinhalte, Passwörter, E-Mail-Adressen oder Einladungs-Tokens dürfen in Analytics-Events oder Logs erscheinen.
+Eine spätere PII-freie und aggregierte Produkt- oder Performancebeobachtung benötigt eine eigene
+Spezifikation und Datenschutzentscheidung. Unabhängig davon dürfen technische Logs niemals
+Tippinhalte, Passwörter, E-Mail-Adressen, Einladungs-Tokens oder private Rundennamen enthalten.
 
 ## 21. Release-Strategie
 
@@ -820,6 +879,8 @@ Diese Entscheidungen gelten als gesetzt:
 - manuelle Spielplan- und Ergebnisverwaltung,
 - Punktesystem 4/3/2/0,
 - private Einladungslinks mit QR-Code,
+- keine Produktanalytics und kein Real-User-Monitoring in V1,
+- reproduzierbare Lighthouse-Mobile-Lab-Budgets statt p75-Feldwert-Grenzen,
 - keine zusätzlichen Gamification-Funktionen in V1.
 
 ## 24. Empfohlener Spec-Kit-Ablauf
@@ -832,7 +893,7 @@ Dieses PRD ist die Produktquelle, nicht der Ersatz für die technischen Spec-Kit
 4. `clarify` nur für verbleibende fachliche Mehrdeutigkeiten verwenden.
 5. `plan` für Architektur, Datenmodell, APIs, Designsystem und Reset-/Rolloutstrategie ausführen.
 6. Im `plan.md` die tatsächlich ausgewählten Skills und Tools dokumentieren.
-7. `tasks` erst nach bestandener Spec-/Plan-Analyse erzeugen.
+7. `tasks` und jede spätere Regenerierung erst nach bestandener Spec-/Plan-Analyse ausführen.
 8. Supabase erst in der Implementierungsphase und nach expliziter Reset-Bestätigung löschen.
 
 Das vorhandene Feature `specs/001-local-football-tips` wird nicht als Ausgangsspezifikation weitergeführt, weil es das alte dezentrale Liga-Modell und die entfernte Co-Admin-Rolle enthält.

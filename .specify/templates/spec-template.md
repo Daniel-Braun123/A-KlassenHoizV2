@@ -108,8 +108,10 @@
 - **Mobile/PWA**: [Smallest viewport, responsive behavior, install/offline implications]
 - **UX/design system**: [Primary action, reusable components, states, touch targets]
 - **Accessibility**: [WCAG 2.2 AA keyboard, focus, semantics, contrast, status, motion requirements]
-- **Privacy**: [Private data, round isolation, visibility, retention/deletion, analytics/logging]
-- **Authorization/RLS**: [Server checks, RLS ownership predicates, time authority, allow/deny cases]
+- **Privacy**: [Private data, round isolation, visibility, retention/deletion, analytics/logging,
+  and whether audited support access is limited to non-PII metadata]
+- **Authorization/RLS**: [Server checks, RLS ownership predicates, time authority, allow/deny cases;
+  global admin status must not imply private-round mutation or hidden-prediction access]
 - **Domain invariants**: [Scoring/ranking determinism, singular owner, central competition data]
 - **Product boundaries**: [No co-admin, betting concepts, or other applicable non-goals]
 - **Clean-room/type safety**: [No legacy code/migrations; TypeScript strict implications]
