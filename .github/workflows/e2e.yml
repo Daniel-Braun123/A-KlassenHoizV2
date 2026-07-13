@@ -23,6 +23,7 @@ jobs:
       - run: npm install --global npm@11.18.0
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run db:start
       - run: npm run build
       - run: npm run test:e2e
       - run: npm run test:accessibility
@@ -33,3 +34,6 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+      - name: Stop local Supabase
+        if: always()
+        run: npx supabase stop --no-backup

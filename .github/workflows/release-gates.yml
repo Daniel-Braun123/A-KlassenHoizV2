@@ -23,11 +23,15 @@ jobs:
       - run: npm install --global npm@11.18.0
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: npm run db:start
       - run: npm run build
-      - run: npm run test:e2e -- --project=chromium
-      - run: npm run test:accessibility -- --project=chromium
-      - run: npm run test:pwa -- --project=chromium
+      - run: npm run test:e2e -- -Project chromium
+      - run: npm run test:accessibility -- -Project chromium
+      - run: npm run test:pwa -- -Project chromium
       - run: npm run test:performance:lab
+      - name: Stop local Supabase
+        if: always()
+        run: npx supabase stop --no-backup
 
   remote-mutation-sentinel:
     if: ${{ false }}

@@ -8,7 +8,8 @@ param(
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $nodeRoot = Join-Path $repositoryRoot '.tools\node-v24.18.0-win-x64'
-$supabaseCli = Join-Path $repositoryRoot 'node_modules\.bin\supabase.cmd'
+$isWindowsPlatform = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
+$supabaseCli = Join-Path $repositoryRoot $(if ($isWindowsPlatform) { 'node_modules\.bin\supabase.cmd' } else { 'node_modules/.bin/supabase' })
 $targetGuard = Join-Path $PSScriptRoot 'verify-local-target.ps1'
 
 # Long-running terminals do not automatically receive PATH/environment updates made by a
@@ -41,7 +42,7 @@ $arguments = [string[]]@(switch ($Action) {
 })
 
 & $targetGuard @arguments | Out-Host
-$env:Path = "$nodeRoot;$env:Path"
+if (Test-Path -LiteralPath $nodeRoot -PathType Container) { $env:Path = "$nodeRoot;$env:Path" }
 
 if ($Action -eq 'types') {
     $generatedPath = Join-Path $repositoryRoot 'lib\supabase\database.types.ts'

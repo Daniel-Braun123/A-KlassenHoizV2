@@ -4,12 +4,14 @@ param()
 $ErrorActionPreference = 'Stop'
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $nodeRoot = Join-Path $repositoryRoot '.tools\node-v24.18.0-win-x64'
-$supabaseCli = Join-Path $repositoryRoot 'node_modules\.bin\supabase.cmd'
+$isWindowsPlatform = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
+$supabaseCli = Join-Path $repositoryRoot $(if ($isWindowsPlatform) { 'node_modules\.bin\supabase.cmd' } else { 'node_modules/.bin/supabase' })
 $vitest = Join-Path $repositoryRoot 'node_modules\vitest\vitest.mjs'
+$nodeExecutable = if (Test-Path -LiteralPath (Join-Path $nodeRoot 'node.exe')) { Join-Path $nodeRoot 'node.exe' } else { (Get-Command node -ErrorAction Stop).Source }
 
 $machinePath = [Environment]::GetEnvironmentVariable('Path', 'Machine')
 $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-$env:Path = "$nodeRoot;$machinePath;$userPath;$env:Path"
+$env:Path = "$(if (Test-Path -LiteralPath $nodeRoot) { "$nodeRoot;" })$machinePath;$userPath;$env:Path"
 if ($env:DOCKER_CERT_PATH -and -not (Test-Path -LiteralPath $env:DOCKER_CERT_PATH)) {
     Remove-Item Env:DOCKER_CERT_PATH, Env:DOCKER_HOST, Env:DOCKER_TLS_VERIFY -ErrorAction SilentlyContinue
 }
@@ -37,5 +39,5 @@ $env:SUPABASE_TEST_PUBLISHABLE_KEY = $values.PUBLISHABLE_KEY
 $env:SUPABASE_TEST_SECRET_KEY = $values.SECRET_KEY
 $env:SUPABASE_TEST_JWT_SECRET = $values.JWT_SECRET
 
-& (Join-Path $nodeRoot 'node.exe') $vitest run tests/integration
+& $nodeExecutable $vitest run tests/integration
 exit $LASTEXITCODE

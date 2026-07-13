@@ -29,6 +29,8 @@ jobs:
       - name: Rebuild and test V2 schema
         shell: pwsh
         run: ./scripts/database.ps1 test
+      - run: npm run test:integration
+      - run: npm run db:lint
       - name: Stop local Supabase
         if: always()
         run: npx supabase stop --no-backup
