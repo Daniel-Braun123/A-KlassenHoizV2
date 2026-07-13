@@ -29,6 +29,21 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run db:start
+      - name: Export local browser-test environment
+        shell: pwsh
+        run: |
+          $status = npx supabase status -o env
+          $values = @{}
+          foreach ($line in $status) {
+            if ($line -match '^(API_URL|PUBLISHABLE_KEY|JWT_SECRET)="([^"]+)"$') {
+              $values[$matches[1]] = $matches[2]
+            }
+          }
+          "NEXT_PUBLIC_SUPABASE_URL=$($values.API_URL)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$($values.PUBLISHABLE_KEY)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "SUPABASE_TEST_JWT_SECRET=$($values.JWT_SECRET)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3000" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "NEXT_TELEMETRY_DISABLED=1" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
       - run: npm run build
       - run: npm run test:e2e -- -Project ${{ matrix.project }}
       - run: npm run test:accessibility -- -Project ${{ matrix.project }}
