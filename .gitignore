@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.tools/
+.lighthouse-profiles/
+docs/quality/artifacts/lighthouse-mobile-debug.json
+
+# Next.js and build output
+.next/
+.vercel/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Tests and reports
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright-cli/
+
+# Supabase local state
+supabase/.branches/
+supabase/.temp/
+
+# Environment and secrets
+.env*
+!.env.example
+*.pem
+*.key
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Impeccable local live state
+.impeccable/live/runtime/

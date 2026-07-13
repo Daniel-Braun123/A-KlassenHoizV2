@@ -482,10 +482,13 @@ Speicherbestätigung.
   Listen- oder Tabellenstruktur besitzen und normaler Text mindestens 4,5:1 Kontrast erreichen.
 - **FR-063**: Nur angemeldete, berechtigte Nutzer DÜRFEN private Tipprunden sehen; E-Mail-Adressen
   DÜRFEN anderen Mitgliedern nicht angezeigt werden.
-- **FR-064**: Das System DARF nur betriebsnotwendige personenbezogene Daten speichern. Betreiber-
-  angaben, Datenflüsse, Dienstleister, Aufbewahrungsregeln, Impressum und Datenschutzerklärung
-  MÜSSEN fachlich ermittelt und ausdrücklich freigegeben werden, bevor die rechtlichen Inhalte
-  technisch eingebunden werden. Nicht bestätigte rechtliche Angaben DÜRFEN nicht erfunden werden.
+- **FR-064**: Das System DARF nur betriebsnotwendige personenbezogene Daten speichern. V1 MUSS als
+  nicht-kommerzielle, einladungsbasierte Website für einen privaten Freundeskreis betrieben werden
+  und DARF kein Impressum sowie keine private Anschrift, Steuer-, Register- oder Unternehmensangaben
+  veröffentlichen. Ein knapper Nutzungs- und Datenschutzhinweis MUSS den privaten Zweck, tatsächlich
+  eingebundene technische Dienstleister, verarbeitete Datenkategorien sowie Konto- und
+  Löschmöglichkeiten wahrheitsgemäß beschreiben. Öffnung, Monetarisierung oder geschäftliche Nutzung
+  erfordern vorab eine neue rechtliche Prüfung; nicht bestätigte Angaben DÜRFEN nicht erfunden werden.
 - **FR-065**: V1 DARF weder Produktanalytics noch Real-User-Monitoring-Daten erheben. Eine spätere
   PII-freie, aggregierte Beobachtung benötigt eine eigene Spezifikation und Datenschutzentscheidung.
   Technische Logs DÜRFEN keine Tippinhalte, Passwörter, E-Mail-Adressen, Einladungs-Tokens oder
@@ -501,12 +504,15 @@ Speicherbestätigung.
 - **FR-068**: Alter Anwendungscode, alte Datenmodelle, alte lokale Migrationen und automatische
   Übernahme alter Nutzer- oder Anwendungsdaten DÜRFEN nicht in den Neubau übernommen werden.
 - **FR-069**: Das bestehende Supabase-Projekt `A-KlassenHoiz` mit der Projekt-Referenz
-  `ewqzhdnfoozjzenzmtlm` in `eu-central-1` ist das eindeutig identifizierte Ziel für die spätere,
-  kontrollierte Bereinigung und anschließende Wiederverwendung.
+  `ewqzhdnfoozjzenzmtlm` in `eu-central-1` ist die eindeutig identifizierte und seit T274 bestätigt
+  leere Infrastruktur für die spätere, separat freizugebende V2-Wiederverwendung.
 - **FR-070**: Die Identifikation in FR-069 DARF nicht als Reset-Freigabe gelten. Ein Reset MUSS als
-  separate, ausdrücklich bestätigte Implementierungsaufgabe mit vorherigem Export, genauer
-  Löschliste, Schutz der Plattform-Schemas, Rollback-/Wiederherstellungsplan und Abschlussprüfung
-  behandelt werden.
+  separate, ausdrücklich bestätigte Implementierungsaufgabe mit genauer Löschliste, Schutz der
+  Plattform-Schemas, dokumentierter Sicherungs-/Restoreentscheidung und Abschlussprüfung behandelt
+  werden. Für die am 13. Juli 2026 freigegebene einmalige Altbestandslöschung hat der
+  Projekteigentümer Export und Restore ausdrücklich abgewählt, den unwiederbringlichen Verlust
+  akzeptiert und Zielprüfung, Vollinventar, Allowlist, Abbruchkriterien sowie Nachkontrolle als
+  Ersatzkontrollen festgelegt.
 - **FR-071**: Vor dem späteren Neubau-Setup MÜSSEN alte Anwendungstabellen, Daten, anwendungsbezogene
   Funktionen, Trigger, Policies, Typen, Auth-Nutzer, aktive Sitzungen, Storage-Inhalte und nicht
   mehr benötigte Konfigurationen im bestätigten Reset-Umfang kontrolliert entfernt werden; das
@@ -683,12 +689,15 @@ Speicherbestätigung.
   Austrittshinweis sichtbar. Bei Kontolöschung bleiben Tipps und Wertungen unverändert, während
   Identität und Nickname je Tipprunde durch einen stabilen anonymen Platzhalter ersetzt werden.
 - Das neue GitHub-Repository ist die alleinige Quellcodebasis des Neubaus.
-- Das read-only identifizierte Supabase-Projekt `A-KlassenHoiz` (`ewqzhdnfoozjzenzmtlm`,
-  `eu-central-1`, Status bei Identifikation: `ACTIVE_HEALTHY`) ist die vorgesehene wiederverwendete
-  Infrastruktur. Diese Annahme erteilt ausdrücklich keine Reset- oder Änderungsfreigabe.
-- Vor einem späteren Reset wird ein einmaliger Export außerhalb des neuen Repositories abgelegt und
-  die exakte Löschliste separat bestätigt.
-- V1 erhebt keine Produktanalytics oder Real-User-Monitoring-Daten. Rechtliche Inhalte werden erst
-  nach fachlicher Ermittlung und Freigabe der tatsächlichen Angaben technisch eingebunden.
+- Das Supabase-Projekt `A-KlassenHoiz` (`ewqzhdnfoozjzenzmtlm`, `eu-central-1`) ist nach der
+  allowlistbasierten Altbestandslöschung und unabhängigen T274-Nachkontrolle leer und
+  `ACTIVE_HEALTHY`. Das erteilt ausdrücklich keine Freigabe für V2-Migrationen oder Konfiguration.
+- Für die ausdrücklich freigegebene Altbestandslöschung wird auf Wunsch des Projekteigentümers kein
+  Export oder Backup erstellt. Die exakte Löschliste, Schutzliste und Unwiederbringlichkeit werden
+  vor Ausführung separat dokumentiert und danach read-only verifiziert.
+- V1 erhebt keine Produktanalytics oder Real-User-Monitoring-Daten. V1 bleibt privat,
+  nicht-kommerziell und einladungsbasiert; der Nutzungs-/Datenschutzhinweis wird erst nach Prüfung
+  seiner tatsächlichen technischen Angaben eingebunden, ein Impressum und private
+  Anschrift-/Steuerangaben nicht.
 - Exakte Technologien, Versionen, Datenbankstruktur, Schnittstellen und Bereinigungsbefehle werden
   erst in Planung und separat autorisierter Implementierung festgelegt.

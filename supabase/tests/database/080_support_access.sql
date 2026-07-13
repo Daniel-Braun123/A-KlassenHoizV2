@@ -1,0 +1,11 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(9);
+select has_table('private','support_access_grants','support grants are private');
+select has_table('app','admin_access_events','support audit exists');
+select has_function('api','create_support_access',array['uuid','text','text','smallint'],'grant RPC exists');
+select has_function('api','get_support_metadata',array['uuid'],'single read RPC exists');
+select has_function('api','revoke_support_access',array['uuid'],'revoke RPC exists');
+select ok(not has_table_privilege('authenticated','private.support_access_grants','SELECT'),'clients cannot browse grants');
+select ok(not has_table_privilege('authenticated','app.admin_access_events','INSERT'),'clients cannot forge audit');
+select matches((select pg_get_constraintdef(oid) from pg_constraint where conname='support_grant_duration'),'00:15:00','grant is capped at 15 minutes');
+select policies_are('app','admin_access_events',array['admin_access_events_own_read'],'audit has only own-admin read policy');
+select * from finish();rollback;

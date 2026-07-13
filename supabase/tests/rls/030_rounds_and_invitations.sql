@@ -1,0 +1,15 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = extensions, public, pg_catalog;
+select plan(8);
+select policies_are('app','prediction_rounds',array['prediction_rounds_member_read'],'rounds have only the member read policy');
+select policies_are('app','round_memberships',array['round_memberships_member_read'],'memberships have only the same-round read policy');
+select ok(not has_table_privilege('authenticated','app.prediction_rounds','INSERT'),'no direct round insert');
+select ok(not has_table_privilege('authenticated','app.round_memberships','INSERT'),'no direct membership insert');
+select function_privs_are('api','create_round',array['text','uuid','text','uuid'],'authenticated',array['EXECUTE'],'authenticated users reach the guarded create RPC');
+select function_privs_are('api','join_round',array['bytea','text','uuid'],'authenticated',array['EXECUTE'],'authenticated users reach the guarded join RPC');
+select tests.authenticate_as('app_admin'); set local role authenticated;
+select is((select count(*) from app.prediction_rounds),0::bigint,'app admin has no normal private round read');
+select is((select count(*) from app.round_memberships),0::bigint,'app admin has no normal private membership read');
+reset role;
+select * from finish(); rollback;

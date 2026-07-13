@@ -1,0 +1,936 @@
+{
+  "generatedAt": "2026-07-13T19:34:50.779Z",
+  "lighthouse": "13.4.0",
+  "chromium": "C:\\Users\\braund\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
+  "lab": {
+    "viewport": {
+      "width": 360,
+      "height": 640,
+      "deviceScaleFactor": 2.625,
+      "mobile": true,
+      "disabled": false
+    },
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 150,
+      "downloadThroughputKbps": 1638.4,
+      "uploadThroughputKbps": 750,
+      "cpuSlowdownMultiplier": 4
+    },
+    "runs": 3,
+    "budgets": {
+      "performance": 0.9,
+      "lcpMs": 2500,
+      "cls": 0.1,
+      "tbtMs": 200
+    }
+  },
+  "routes": [
+    {
+      "name": "start-login",
+      "path": "/login",
+      "runs": [
+        {
+          "performance": 0.96,
+          "fcpMs": 1066.248,
+          "lcpMs": 2721.664,
+          "cls": 0,
+          "tbtMs": 85,
+          "serverResponseMs": 11,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 14.596
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 303.402
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
+                "boundingRect": {
+                  "top": 190,
+                  "bottom": 245,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 56
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.96,
+          "fcpMs": 1062.774,
+          "lcpMs": 2717.032,
+          "cls": 0,
+          "tbtMs": 57.5,
+          "serverResponseMs": 8,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 11.117
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 193.242
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
+                "boundingRect": {
+                  "top": 190,
+                  "bottom": 245,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 56
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.96,
+          "fcpMs": 1063.1025,
+          "lcpMs": 2717.47,
+          "cls": 0,
+          "tbtMs": 94.5,
+          "serverResponseMs": 7,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 10.881000007629394
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 240.2859999923706
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
+                "boundingRect": {
+                  "top": 190,
+                  "bottom": 245,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 56
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.96,
+        "lcpMs": 2717.47,
+        "cls": 0,
+        "tbtMs": 85
+      },
+      "passed": false
+    },
+    {
+      "name": "round-overview",
+      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31",
+      "runs": [
+        {
+          "performance": 0.94,
+          "fcpMs": 1078.3215,
+          "lcpMs": 3029.3215000000005,
+          "cls": 0,
+          "tbtMs": 101,
+          "serverResponseMs": 64,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 67.468
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 374.895
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-H1",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,1,H1",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > h1",
+                "boundingRect": {
+                  "top": 135,
+                  "bottom": 165,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 30
+                },
+                "snippet": "<h1>",
+                "nodeLabel": "Lab Runde 23bf8f3b"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.97,
+          "fcpMs": 1079.4434999999999,
+          "lcpMs": 2574.4435,
+          "cls": 0,
+          "tbtMs": 47.5,
+          "serverResponseMs": 26,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 29.382
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 193.559
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-H1",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,1,H1",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > h1",
+                "boundingRect": {
+                  "top": 135,
+                  "bottom": 165,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 30
+                },
+                "snippet": "<h1>",
+                "nodeLabel": "Lab Runde 23bf8f3b"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.97,
+          "fcpMs": 1075.629,
+          "lcpMs": 2567.629,
+          "cls": 0,
+          "tbtMs": 46,
+          "serverResponseMs": 26,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 30.144
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 212.613
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-H1",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,1,H1",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > h1",
+                "boundingRect": {
+                  "top": 135,
+                  "bottom": 165,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 30
+                },
+                "snippet": "<h1>",
+                "nodeLabel": "Lab Runde 23bf8f3b"
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.97,
+        "lcpMs": 2574.4435,
+        "cls": 0,
+        "tbtMs": 47.5
+      },
+      "passed": false
+    },
+    {
+      "name": "predictions-eight",
+      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31/predictions",
+      "runs": [
+        {
+          "performance": 0.97,
+          "fcpMs": 1062.3390000000002,
+          "lcpMs": 2561.3390000000004,
+          "cls": 0,
+          "tbtMs": 49.5,
+          "serverResponseMs": 51,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 53.831999992370605
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 199.94100000762938
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Sp…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.97,
+          "fcpMs": 1071.753,
+          "lcpMs": 2586.7529999999997,
+          "cls": 0,
+          "tbtMs": 87.5,
+          "serverResponseMs": 28,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 32.162
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 297.387
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Sp…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.95,
+          "fcpMs": 1059.882,
+          "lcpMs": 2972.8819999999996,
+          "cls": 0,
+          "tbtMs": 63,
+          "serverResponseMs": 26,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 29.533
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 263.44
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Sp…"
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.97,
+        "lcpMs": 2586.7529999999997,
+        "cls": 0,
+        "tbtMs": 63
+      },
+      "passed": false
+    },
+    {
+      "name": "overall-ranking",
+      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31/rankings",
+      "runs": [
+        {
+          "performance": 0.97,
+          "fcpMs": 1071.7005000000001,
+          "lcpMs": 2549.7005,
+          "cls": 0,
+          "tbtMs": 39,
+          "serverResponseMs": 22,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 25.283
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 261.676
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nich…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.98,
+          "fcpMs": 1066.764,
+          "lcpMs": 2415.764,
+          "cls": 0,
+          "tbtMs": 49.5,
+          "serverResponseMs": 24,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 27.02
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 211.656
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nich…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.95,
+          "fcpMs": 1063.752,
+          "lcpMs": 2833.7519999999995,
+          "cls": 0,
+          "tbtMs": 70,
+          "serverResponseMs": 21,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 23.894
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 259.391
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nich…"
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.97,
+        "lcpMs": 2549.7005,
+        "cls": 0,
+        "tbtMs": 49.5
+      },
+      "passed": false
+    },
+    {
+      "name": "global-results-admin",
+      "path": "/admin/results",
+      "runs": [
+        {
+          "performance": 0.97,
+          "fcpMs": 1065.927,
+          "lcpMs": 2582.9269999999997,
+          "cls": 0,
+          "tbtMs": 58.5,
+          "serverResponseMs": 36,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 39.964
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 242.606
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,2,SECTION,1,FORM,5,P",
+                "selector": "section.admin-shell > section.admin-section > form.admin-form > p.admin-form__warning",
+                "boundingRect": {
+                  "top": 514,
+                  "bottom": 687,
+                  "left": 37,
+                  "right": 323,
+                  "width": 286,
+                  "height": 173
+                },
+                "snippet": "<p class=\"admin-form__warning\">",
+                "nodeLabel": "Eine Korrektur wirkt global. Jede Änderung wird als unveränderliche Revision ge…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.94,
+          "fcpMs": 1072.098,
+          "lcpMs": 2862.098,
+          "cls": 0,
+          "tbtMs": 126,
+          "serverResponseMs": 27,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 30.603
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 272.506
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,2,SECTION,1,FORM,5,P",
+                "selector": "section.admin-shell > section.admin-section > form.admin-form > p.admin-form__warning",
+                "boundingRect": {
+                  "top": 514,
+                  "bottom": 687,
+                  "left": 37,
+                  "right": 323,
+                  "width": 286,
+                  "height": 173
+                },
+                "snippet": "<p class=\"admin-form__warning\">",
+                "nodeLabel": "Eine Korrektur wirkt global. Jede Änderung wird als unveränderliche Revision ge…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.97,
+          "fcpMs": 1067.094,
+          "lcpMs": 2565.094,
+          "cls": 0,
+          "tbtMs": 49,
+          "serverResponseMs": 38,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 44.025
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 210.649
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,2,SECTION,1,FORM,5,P",
+                "selector": "section.admin-shell > section.admin-section > form.admin-form > p.admin-form__warning",
+                "boundingRect": {
+                  "top": 514,
+                  "bottom": 687,
+                  "left": 37,
+                  "right": 323,
+                  "width": 286,
+                  "height": 173
+                },
+                "snippet": "<p class=\"admin-form__warning\">",
+                "nodeLabel": "Eine Korrektur wirkt global. Jede Änderung wird als unveränderliche Revision ge…"
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.97,
+        "lcpMs": 2582.9269999999997,
+        "cls": 0,
+        "tbtMs": 58.5
+      },
+      "passed": false
+    }
+  ]
+}

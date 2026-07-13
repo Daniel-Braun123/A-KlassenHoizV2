@@ -1,6 +1,9 @@
 # Phase 1 Quickstart: Geplanter Entwicklungs- und Verifikationsablauf
 
-> Dieses Dokument ist ein Ausführungsplan für die spätere Implementierung. Die Befehle wurden im Rahmen von `/speckit-plan` nicht ausgeführt. Insbesondere ist jeder Remote-Supabase-Befehl verboten, bis die separate Reset-/Deploy-Freigabe vorliegt.
+> Dieses Dokument begann als Ausführungsplan aus `/speckit-plan`. Freigabe A wurde am 13. Juli 2026
+> ausschließlich für die allowlistbasierte Altbestandslöschung ohne Backup ausgeführt und mit T274
+> abgeschlossen. Alle übrigen Remote-Mutationen bleiben bis zu ihrer jeweiligen separaten Freigabe
+> verboten.
 
 ## 1. Voraussetzungen
 
@@ -113,8 +116,9 @@ Vor Merge/Release werden zusätzlich geprüft:
 8. kritische Journey aus `contracts/quality-contract.md`;
 9. moderiertes Usability-Protokoll mit mindestens fünf ungeschulten repräsentativen Personen,
    iOS-/Android-Mix und mindestens einem Desktop-Test;
-10. fachlich freigegebene Betreiberangaben, Datenflüsse, Dienstleister, Aufbewahrungsregeln,
-    Impressum und Datenschutzerklärung; keine erfundenen Angaben.
+10. freigegebene private, nicht-kommerzielle Nutzungsgrenze und ein wahrheitsgemäßer Nutzungs- und
+    Datenschutzhinweis zu den tatsächlich eingebundenen Dienstleistern, Datenkategorien sowie
+    Konto- und Löschwegen; kein Impressum und keine privaten Anschrift-/Steuerangaben.
 
 Erwartetes Ergebnis: Alle Schritte sind auf der vereinbarten Gerätematrix nachvollziehbar bestanden und in der Release-Checkliste mit Gerät/Browser, Datum und Prüfer dokumentiert; ein automatischer Axe-Lauf allein gilt nicht als WCAG-Abnahme.
 
@@ -129,9 +133,10 @@ Erwartetes Ergebnis: Alle Schritte sind auf der vereinbarten Gerätematrix nachv
 
 Im aktuellen Planungsumfeld war weder Vercel CLI noch Vercel Connector verfügbar; Schritt 1 ist deshalb zwingend und darf nicht geraten werden.
 
-## 9. Remote-Supabase-Reset — harte Sperre
+## 9. Remote-Supabase-Rollout — Freigabe A abgeschlossen, Freigabe B gesperrt
 
-Zielprojekt für eine spätere Freigabe: `A-KlassenHoiz`, Ref `ewqzhdnfoozjzenzmtlm`, `eu-central-1`.
+Zielprojekt: `A-KlassenHoiz`, Ref `ewqzhdnfoozjzenzmtlm`, `eu-central-1`. Der alte App-/Auth-Bestand
+wurde am 13. Juli 2026 transaktional gelöscht und die Leere unabhängig verifiziert.
 
 Ohne eine neue, ausdrückliche Freigabe dürfen insbesondere nicht ausgeführt werden:
 
@@ -145,9 +150,12 @@ Storage-Löschungen
 Projekt-/Auth-/API-Konfigurationsänderungen
 ```
 
-Die spätere Aufgabe muss mindestens zwei getrennte Reset-/Rollout-Bestätigungen enthalten:
+Reset und Rollout besitzen zwei getrennte Bestätigungen:
 
-- **Freigabe A – Altbestand löschen**: verifizierte Backups/Exporte, exakte Allowlist, zwei Auth-Nutzer und Sitzungen ausdrücklich im Scope, Plattformschemas geschützt, Restore getestet.
+- **Freigabe A – Altbestand löschen (abgeschlossen)**: exakte Allowlist, zwei Auth-Nutzer und
+  Sitzungen ausdrücklich im Scope, Plattformschemas geschützt. Der Projekteigentümer hat Backup und
+  Restore ausdrücklich abgewählt und den unwiederbringlichen Verlust akzeptiert; Ziel-, Inventar-
+  und Nachkontrollen wurden bestanden.
 - **Freigabe B – V2 ausrollen**: Leere/Projektgesundheit bestätigt, ausschließlich neue Migrationen geprüft, neuer Storage-/Auth-/API-Setup planbar, Rollbackpunkt benannt.
 
 Nach Freigabe B bleiben folgende Produktionsschritte getrennt und jeweils neu freizugeben:
@@ -162,7 +170,8 @@ Jede mutierende Freigabe nennt Operator und betroffene Identitäten, exakten Dat
 Testzweck, erforderliche anschließende Löschung und Verifikationsweg. Keine dieser Freigaben liegt
 durch dieses Dokument vor.
 
-Der aktuelle Plan erteilt weder A noch B.
+Freigabe A ist abgeschlossen und kann nicht für weitere Mutationen wiederverwendet werden. Freigabe
+B und alle nachfolgenden Produktionsfreigaben sind nicht erteilt.
 
 ## 10. Definition of Ready für `/speckit-tasks`
 

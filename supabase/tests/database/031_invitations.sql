@@ -1,0 +1,13 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = extensions, public, pg_catalog;
+select plan(8);
+select has_table('private','invitations','hashed invitations exist privately');
+select has_column('private','invitations','token_hash','only the token hash is persisted');
+select col_type_is('private','invitations','token_hash','bytea','token hash uses bytes');
+select has_index('private','invitations','invitations_token_hash_unique','token hashes are unique');
+select has_index('private','invitations','invitations_one_active_per_round_idx','only one active invitation per round');
+select ok(not has_table_privilege('authenticated','private.invitations','SELECT'),'clients cannot select invitation hashes');
+select has_function('api','rotate_round_invitation',array['uuid','bytea'],'rotation RPC exists');
+select has_function('api','get_invitation_preview',array['bytea'],'neutral preview RPC exists');
+select * from finish(); rollback;

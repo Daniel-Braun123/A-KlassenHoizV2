@@ -1,0 +1,16 @@
+node_modules/
+.tools/
+.agents/
+.specify/
+specs/
+docs/PRD.md
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+public/sw.js
+lib/supabase/database.types.ts

@@ -1,0 +1,37 @@
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+@media (forced-colors: active) {
+  .ui-button,
+  .field__control,
+  .prediction-card,
+  .ranking-table-wrap {
+    border: 2px solid ButtonText;
+  }
+  .ranking-row--current {
+    outline: 3px solid Highlight;
+  }
+  .match-status,
+  .prediction-save {
+    border: 1px solid currentColor;
+  }
+}
+@media (prefers-contrast: more) {
+  .ui-link {
+    text-decoration-thickness: 0.16em;
+  }
+  .ranking-row--current {
+    outline: 3px solid var(--color-text);
+    outline-offset: -3px;
+  }
+}

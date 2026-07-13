@@ -1,0 +1,15 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = extensions, public, pg_catalog;
+select plan(10);
+select has_table('app','prediction_rounds','private rounds exist');
+select has_table('app','round_memberships','round memberships exist');
+select col_is_pk('app','prediction_rounds','id','round UUID is primary key');
+select col_is_pk('app','round_memberships','id','membership UUID is primary key');
+select col_not_null('app','prediction_rounds','owner_membership_id','every round references an owner membership');
+select col_not_null('app','prediction_rounds','league_season_id','every round selects one league season');
+select col_default_is('app','prediction_rounds','has_predictions','false','prediction latch starts false');
+select is((select count(*) from pg_indexes where schemaname='app' and indexname='round_memberships_one_active_owner_idx'),1::bigint,'one active owner index exists');
+select is((select relrowsecurity from pg_class where oid='app.prediction_rounds'::regclass),true,'round RLS enabled');
+select is((select relforcerowsecurity from pg_class where oid='app.prediction_rounds'::regclass),true,'round RLS forced');
+select * from finish(); rollback;

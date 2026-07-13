@@ -228,14 +228,23 @@ Quellen: [Vercel for GitHub](https://vercel.com/docs/git/vercel-for-github), [Ve
 
 ### Entscheidung
 
-Der Remote-Reset ist eine separate, manuell freizugebende Betriebsaufgabe mit zwei getrennten Freigaben: (A) Altbestand löschen, (B) neue Migrationen ausrollen. Vor A sind Projektref, vollständiges Objektinventar, verifizierter logischer DB-Export, Auth-Export, Storage-Inventar/-Export, Secret-/Hook-Inventar, Downtime, Lösch-Allowlist, Verantwortliche und Rollback dokumentiert. Storage-Objekte werden über die Storage API entfernt; `auth`- und `storage`-Plattformschemas werden nicht gedroppt. Auth-Benutzer und Sitzungen werden nur im bestätigten Scope über unterstützte Adminwege gelöscht/widerrufen. Ein pauschales `supabase db reset --linked` ist kein freigegebener Ein-Klick-Ersatz.
+Der Remote-Reset ist eine separate, manuell freizugebende Betriebsaufgabe mit zwei getrennten
+Freigaben: (A) Altbestand löschen, (B) neue Migrationen ausrollen. Vor A sind Projektref,
+vollständiges Objektinventar, Storage-/Secret-/Hook-Inventar, Downtime, Lösch-Allowlist,
+Verantwortliche und Sicherungs-/Restoreentscheidung dokumentiert. Für die am 13. Juli 2026
+freigegebene einmalige Altbestandslöschung hat der Projekteigentümer Backup, Export und Restore
+ausdrücklich abgewählt und den unwiederbringlichen Verlust akzeptiert. `auth`- und
+`storage`-Plattformschemas werden nicht gedroppt. Auth-Benutzer, Sitzungen und App-Objekte werden in
+einer allowlistbasierten Transaktion gelöscht; der bestätigte Altbestand enthält keine
+Storage-Objekte. Ein pauschales `supabase db reset --linked` ist kein freigegebener Ein-Klick-Ersatz.
 
 Nach A wird die Leere/Plattformgesundheit geprüft. Erst nach B werden ausschließlich die neuen
 Migrationen angewendet und RLS/Grants geprüft. Danach folgen fünf getrennte Betriebsschritte:
 ersten App-Admin provisionieren, synthetische Smoke-Identitäten/-daten anlegen, Produktionstest
 ausführen, sämtliche synthetischen Daten und Testkonten entfernen und die Bereinigung read-only
 verifizieren. Jeder mutierende Schritt benötigt eine eigene ausdrückliche Freigabe mit Identitäten,
-Datenumfang, Testzweck und Löschpflicht. Jeder Fehler stoppt vor dem nächsten Gate und aktiviert
-den dokumentierten Restore-Pfad.
+Datenumfang, Testzweck und Löschpflicht. Jeder Fehler stoppt vor dem nächsten Gate. Beim einmaligen
+No-Backup-Reset ist nur eine dokumentierte Vorwärtsinitialisierung möglich; spätere Mutationen
+benötigen wieder reguläre Rollback-/Restorepfade.
 
 Quellen: [Supabase DB Reset](https://supabase.com/docs/reference/cli/supabase-db-reset), [Backups](https://supabase.com/docs/guides/platform/backups), [Delete Storage Objects](https://supabase.com/docs/guides/storage/management/delete-objects), [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data).
