@@ -8,9 +8,14 @@ permissions:
   contents: read
 
 jobs:
-  browser:
+  browser-matrix:
+    name: browser (${{ matrix.project }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
     env:
       PLAYWRIGHT_HTML_OPEN: never
       PLAYWRIGHT_WEB_SERVER_COMMAND: npm run start
@@ -25,15 +30,26 @@ jobs:
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run db:start
       - run: npm run build
-      - run: npm run test:e2e
-      - run: npm run test:accessibility
-      - run: npm run test:pwa
+      - run: npm run test:e2e -- -Project ${{ matrix.project }}
+      - run: npm run test:accessibility -- -Project ${{ matrix.project }}
+      - run: npm run test:pwa -- -Project ${{ matrix.project }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: playwright-report/
           retention-days: 7
       - name: Stop local Supabase
         if: always()
         run: npx supabase stop --no-backup
+
+  browser:
+    name: browser
+    needs: browser-matrix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every browser profile
+        env:
+          MATRIX_RESULT: ${{ needs.browser-matrix.result }}
+        run: test "$MATRIX_RESULT" = "success"
