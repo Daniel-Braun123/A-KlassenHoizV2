@@ -2,7 +2,8 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { deleteAccountAction, initialDeleteAccountState } from "@/features/privacy/actions";
+import { deleteAccountAction } from "@/features/privacy/actions";
+import { initialDeleteAccountState } from "@/features/privacy/state";
 export default function DeleteAccountPage() {
   const [state, action, pending] = useActionState(deleteAccountAction, initialDeleteAccountState);
   return (

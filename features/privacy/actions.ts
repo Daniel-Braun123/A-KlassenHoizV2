@@ -5,12 +5,7 @@ import { ZodError } from "zod";
 import { ApplicationError } from "@/lib/actions/errors";
 import { actionFailure } from "@/lib/actions/result";
 import { deleteCurrentAccount } from "./service";
-export type DeleteAccountState = Readonly<{
-  status: "idle" | "error";
-  message?: string;
-  code?: string;
-}>;
-export const initialDeleteAccountState: DeleteAccountState = { status: "idle" };
+import type { DeleteAccountState } from "./state";
 export async function deleteAccountAction(
   _: DeleteAccountState,
   data: FormData,
