@@ -24,7 +24,8 @@ test("support access is scoped, short-lived, private and revocable", async ({ pa
   await page.getByLabel("Dauer in Minuten").fill("1");
   await page.getByRole("button", { name: "Zugriff starten und einmal lesen" }).click();
 
-  await expect(page.getByRole("heading", { name: "Support-Metadaten" })).toBeVisible();
+  const supportResult = page.locator('section[aria-labelledby="support-result"]');
+  await expect(supportResult.getByRole("heading", { name: "Support-Metadaten" })).toBeVisible();
   await expect(page.getByText(fixture.roundId, { exact: true })).toBeVisible();
   await expect(page.getByText("Tippaktivität vorhanden")).toBeVisible();
   await expect(page.getByText(fixture.roundName, { exact: true })).toHaveCount(0);

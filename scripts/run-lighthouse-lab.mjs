@@ -142,6 +142,23 @@ async function loginCookies(email) {
 }
 const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
 
+async function withTimeout(promise, timeoutMs, label) {
+  let timeout;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timeout = setTimeout(
+          () => reject(new Error(`${label} timed out after ${timeoutMs} ms`)),
+          timeoutMs,
+        );
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 const fixture = await createFixture();
 run(process.execPath, [join(root, "node_modules", "next", "dist", "bin", "next"), "build"]);
 const server = spawn(
@@ -172,6 +189,7 @@ try {
     { name: "global-results-admin", path: "/admin/results", cookie: adminCookie },
   ].filter((route) => !process.env.LH_ROUTE || route.name === process.env.LH_ROUTE);
   const runCount = Number(process.env.LH_RUNS ?? lighthouseLab.runs);
+  const runTimeoutMs = Number(process.env.LH_TIMEOUT_MS ?? 90_000);
   const evidence = {
     generatedAt: new Date().toISOString(),
     lighthouse: "13.4.0",
@@ -182,40 +200,52 @@ try {
   for (const route of routes) {
     const runs = [];
     for (let index = 0; index < runCount; index += 1) {
-      const profile = join(
-        root,
-        ".lighthouse-profiles",
-        `${route.name}-${index}-${crypto.randomUUID()}`,
-      );
-      await mkdir(profile, { recursive: true });
-      const chrome = await chromeLauncher.launch({
-        chromePath: chromium.executablePath(),
-        userDataDir: profile,
-        chromeFlags: ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage"],
-      });
-      try {
-        const result = await lighthouse(
-          `http://127.0.0.1:3000${route.path}`,
-          { port: chrome.port, output: "json", logLevel: "error" },
-          createLighthouseConfig(route.cookie ? { Cookie: route.cookie } : {}),
+      let completedRun;
+      let lastError;
+      for (let attempt = 1; attempt <= 2 && !completedRun; attempt += 1) {
+        const profile = join(
+          root,
+          ".lighthouse-profiles",
+          `${route.name}-${index}-${attempt}-${crypto.randomUUID()}`,
         );
-        const audits = result.lhr.audits;
-        runs.push({
-          performance: result.lhr.categories.performance.score,
-          fcpMs: audits["first-contentful-paint"].numericValue,
-          lcpMs: audits["largest-contentful-paint"].numericValue,
-          cls: audits["cumulative-layout-shift"].numericValue,
-          tbtMs: audits["total-blocking-time"].numericValue,
-          serverResponseMs: audits["server-response-time"]?.numericValue,
-          lcpBreakdown: audits["lcp-breakdown-insight"]?.details,
+        await mkdir(profile, { recursive: true });
+        const chrome = await chromeLauncher.launch({
+          chromePath: chromium.executablePath(),
+          userDataDir: profile,
+          chromeFlags: ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage"],
         });
-      } finally {
         try {
-          await chrome.kill();
+          const result = await withTimeout(
+            lighthouse(
+              `http://127.0.0.1:3000${route.path}`,
+              { port: chrome.port, output: "json", logLevel: "error" },
+              createLighthouseConfig(route.cookie ? { Cookie: route.cookie } : {}),
+            ),
+            runTimeoutMs,
+            `${route.name} run ${index + 1} attempt ${attempt}`,
+          );
+          const audits = result.lhr.audits;
+          completedRun = {
+            performance: result.lhr.categories.performance.score,
+            fcpMs: audits["first-contentful-paint"].numericValue,
+            lcpMs: audits["largest-contentful-paint"].numericValue,
+            cls: audits["cumulative-layout-shift"].numericValue,
+            tbtMs: audits["total-blocking-time"].numericValue,
+            serverResponseMs: audits["server-response-time"]?.numericValue,
+            lcpBreakdown: audits["lcp-breakdown-insight"]?.details,
+          };
         } catch (error) {
-          if (error?.code !== "EPERM") throw error;
+          lastError = error;
+        } finally {
+          try {
+            await chrome.kill();
+          } catch (error) {
+            if (error?.code !== "EPERM") throw error;
+          }
         }
       }
+      if (!completedRun) throw lastError;
+      runs.push(completedRun);
     }
     const medians = {
       performance: median(runs.map((x) => x.performance)),

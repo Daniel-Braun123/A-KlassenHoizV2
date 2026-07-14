@@ -269,7 +269,7 @@ h3 {
 }
 
 .product-mark {
-  font-family: var(--font-barlow), var(--font-sans);
+  font-family: var(--font-sans);
   margin-bottom: var(--space-4);
   color: var(--color-brand);
   font-size: var(--font-size-sm);

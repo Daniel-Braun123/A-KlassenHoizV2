@@ -1,4 +1,4 @@
-import { normalizeAuthRedirect } from "@/features/auth/schemas";
+import { normalizeAuthRedirect } from "@/features/auth/redirects";
 
 export type RoundDestination = Readonly<{ id: string; wasLastActive: boolean }>;
 

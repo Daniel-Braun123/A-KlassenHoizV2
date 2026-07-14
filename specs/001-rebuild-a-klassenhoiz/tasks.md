@@ -456,7 +456,7 @@ beginnt.
 - [X] T260 Bestehendes Vercel-Projekt read-only nach ID, Team, Domain, Git-Link und Scopes identifizieren in `docs/operations/vercel-project-inventory.md`
 - [ ] T261 Separate Freigabe für die Vercel-Git-Neuverknüpfung mit Identität, Projekt und Rollback erfassen in `docs/operations/approvals/vercel-relink.md`
 - [ ] T262 Erst nach T261 das bestehende Vercel-Projekt mit `Daniel-Braun123/A-KlassenHoizV2` verbinden und protokollieren in `docs/operations/vercel-relink-execution.md`
-- [ ] T263 Isoliertes Nicht-Produktiv-Backend für Preview separat freigeben und bereitstellen in `docs/operations/preview-backend.md`
+- [X] T263 Isoliertes Nicht-Produktiv-Backend für Preview separat freigeben und bereitstellen in `docs/operations/preview-backend.md`
 - [ ] T264 Geschützten Vercel-Preview-Deploy ohne Produktionsdaten erzeugen in `docs/quality/vercel-preview-deploy.md`
 - [ ] T265 Kritische Gesamtjourney und Security-Sentinels gegen Preview ausführen in `docs/quality/preview-acceptance.md`
 - [ ] T266 Alle SC-Nachweise und offenen Befunde in einer Release-Scorecard zusammenführen in `docs/quality/release-scorecard.md`

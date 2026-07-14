@@ -1,4 +1,4 @@
-import { normalizeAuthRedirect } from "@/features/auth/schemas";
+import { normalizeAuthRedirect } from "@/features/auth/redirects";
 
 export function invitationContextFromNext(next: string | null | undefined): string | null {
   const normalized = normalizeAuthRedirect(next);

@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  completePasswordResetSchema,
-  normalizeAuthRedirect,
-  registerSchema,
-  signInSchema,
-} from "@/features/auth/schemas";
+import { completePasswordResetSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
+import { normalizeAuthRedirect } from "@/features/auth/redirects";
 
 describe("auth validation", () => {
   it("normalizes registration data without weakening passwords", () => {

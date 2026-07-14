@@ -99,8 +99,8 @@ verbindlich.
 |---|---|---|
 | Lokales Git/Dateisystem | Repository/Branch/Dateien prüfen, kanonischen PRD-Pfad herstellen; später lokale Qualitätskommandos | Available |
 | `apply_patch` | PRD, Verfassung, Spezifikation, Plan und abhängige Designartefakte konsistent aktualisieren | Available |
-| Supabase Connector/MCP | Zielprojekt, Tabellen, Funktionen, Policies, Trigger, Migrationen, Auth-/Storage-Zähler und Plattformgrenzen read-only inventarisieren | Used read-only |
-| Supabase CLI 2.109.1 | Verknüpfung und Live-Ziel read-only bestätigen; die ausdrücklich freigegebene Altbestandslöschung über eine transaktionale, allowlistbasierte SQL-Datei ausführen und verifizieren | Used / Freigabe A complete; Freigabe B blocked |
+| Supabase Connector/MCP | Organisation, Kosten und Ziele prüfen; das isolierte Free-Preview-Projekt anlegen und Schema/RLS/Advisors verifizieren; Production ausschließlich read-only nachkontrollieren | Used / T263 complete; Production unchanged |
+| Supabase CLI 2.109.1 | Preview-Projekt im isolierten Arbeitsverzeichnis verknüpfen, exakt 51 V2-Migrationen migrations-only anwenden, API/Auth-Basiskonfiguration setzen und Migrationsgleichstand prüfen | Used / T263 Preview only; no Production mutation |
 | Offizielle Web-/Dokumentationssuche | Node-Archiv/Prüfsumme sowie aktuelle Supabase-Changelog-, Auth- und Autoconfirm-Semantik verifizieren | Used |
 | In-app Browser | Foundation-Shell bei 320×800, 390×844 und 1440×900 auf Reflow, Touchziele, Typografie und Browserfehler prüfen | Used locally; no remote mutation |
 | GitHub Repository über `origin` | neues Repo `Daniel-Braun123/A-KlassenHoizV2` als Quellbasis bestätigen | Available |
@@ -399,7 +399,9 @@ geprüft; ohne Freigabe keine Veröffentlichung des Nutzungs-/Datenschutzhinweis
   Administration mit deterministischen lokalen Testdaten. Drei isolierte Läufe je Oberfläche;
   jeder Median muss Performance ≥ 90, LCP ≤ 2,5 s, CLS ≤ 0,1 und TBT ≤ 200 ms erfüllen.
 - Bestehendes Vercel-Projekt read-only identifizieren/inventarisieren und anschließend in separat autorisierter Aufgabe mit neuem Repo verbinden.
-- Geschützte Preview gegen isoliertes Nicht-Produktiv-Backend; keine Production-Daten.
+- Geschützte Preview gegen das nach eigener T263-Freigabe anzulegende zweite Free-Supabase-Projekt
+  `A-KlassenHoizV2-Preview` in `eu-central-1`; ausschließlich separat erzeugte synthetische
+  Preview-Fixtures, keine Production-Daten und kein local-only Seed mit festen Zugangsdaten.
 
 **Gate**: alle SC-001–SC-016 belegt, Preview freigegeben, Production weiterhin unverändert.
 
@@ -503,7 +505,7 @@ Workflowjobs.
 |---|---|---|---|---|
 | Local | Featurebranch | lokaler Supabase-Stack | synthetischer Seed | lokale Dev Keys |
 | CI | Commit/PR | flüchtiger lokaler Supabase-Stack | pro Suite isoliert | keine Production Cloud Keys |
-| Vercel Preview | PR | isolierter Supabase-Branch/Staging nach Freigabe | synthetisch | Preview Scope, OIDC bevorzugt |
+| Vercel Preview | dedizierte vertrauenswürdige Preview-Branch | separates Free-Projekt `A-KlassenHoizV2-Preview` in `eu-central-1` nach T263-Freigabe | ausschließlich separat erzeugte synthetische Fixtures | branchgebundener Preview Scope; server-only Secret nie für untrusted PRs |
 | Production | `main` Release | bestehendes Projekt erst nach Reset+V2-Migration | V2-Neustart ohne Altimport | Production Scope, server-only Secrets |
 
 Das bestehende Vercel-Projekt ist fachlich gesetzt, seine ID konnte mangels Connector/CLI noch nicht verifiziert werden. Die Deployment-Aufgabe beginnt deshalb mit einer read-only Dashboard-/CLI-Identifikation und darf erst danach den Git-Link ändern.

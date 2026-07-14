@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 
 import { AppShell } from "@/components/patterns/app-shell";
 import { FocusBoundary } from "@/components/patterns/focus-boundary";
-import { barlow } from "@/app/fonts";
 
 import "@/styles/globals.css";
 
@@ -31,7 +30,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html data-scroll-behavior="smooth" lang="de">
-      <body className={barlow.variable}>
+      <body>
         <AppShell>
           <FocusBoundary>{children}</FocusBoundary>
         </AppShell>

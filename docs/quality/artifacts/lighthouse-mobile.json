@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T19:34:50.779Z",
+  "generatedAt": "2026-07-14T09:04:12.002Z",
   "lighthouse": "13.4.0",
   "chromium": "C:\\Users\\braund\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
   "lab": {
@@ -32,123 +32,11 @@
       "path": "/login",
       "runs": [
         {
-          "performance": 0.96,
-          "fcpMs": 1066.248,
-          "lcpMs": 2721.664,
+          "performance": 0.98,
+          "fcpMs": 951.511,
+          "lcpMs": 2362.2664999999997,
           "cls": 0,
-          "tbtMs": 85,
-          "serverResponseMs": 11,
-          "lcpBreakdown": {
-            "type": "list",
-            "items": [
-              {
-                "type": "table",
-                "headings": [
-                  {
-                    "key": "label",
-                    "valueType": "text",
-                    "label": "Subpart"
-                  },
-                  {
-                    "key": "duration",
-                    "valueType": "ms",
-                    "label": "Duration"
-                  }
-                ],
-                "items": [
-                  {
-                    "subpart": "timeToFirstByte",
-                    "label": "Time to first byte",
-                    "duration": 14.596
-                  },
-                  {
-                    "subpart": "elementRenderDelay",
-                    "label": "Element render delay",
-                    "duration": 303.402
-                  }
-                ]
-              },
-              {
-                "type": "node",
-                "lhId": "page-0-P",
-                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
-                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
-                "boundingRect": {
-                  "top": 190,
-                  "bottom": 245,
-                  "left": 16,
-                  "right": 344,
-                  "width": 328,
-                  "height": 56
-                },
-                "snippet": "<p>",
-                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
-              }
-            ]
-          }
-        },
-        {
-          "performance": 0.96,
-          "fcpMs": 1062.774,
-          "lcpMs": 2717.032,
-          "cls": 0,
-          "tbtMs": 57.5,
-          "serverResponseMs": 8,
-          "lcpBreakdown": {
-            "type": "list",
-            "items": [
-              {
-                "type": "table",
-                "headings": [
-                  {
-                    "key": "label",
-                    "valueType": "text",
-                    "label": "Subpart"
-                  },
-                  {
-                    "key": "duration",
-                    "valueType": "ms",
-                    "label": "Duration"
-                  }
-                ],
-                "items": [
-                  {
-                    "subpart": "timeToFirstByte",
-                    "label": "Time to first byte",
-                    "duration": 11.117
-                  },
-                  {
-                    "subpart": "elementRenderDelay",
-                    "label": "Element render delay",
-                    "duration": 193.242
-                  }
-                ]
-              },
-              {
-                "type": "node",
-                "lhId": "page-0-P",
-                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
-                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
-                "boundingRect": {
-                  "top": 190,
-                  "bottom": 245,
-                  "left": 16,
-                  "right": 344,
-                  "width": 328,
-                  "height": 56
-                },
-                "snippet": "<p>",
-                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
-              }
-            ]
-          }
-        },
-        {
-          "performance": 0.96,
-          "fcpMs": 1063.1025,
-          "lcpMs": 2717.47,
-          "cls": 0,
-          "tbtMs": 94.5,
+          "tbtMs": 27,
           "serverResponseMs": 7,
           "lcpBreakdown": {
             "type": "list",
@@ -171,12 +59,124 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 10.881000007629394
+                    "duration": 14.330999984741212
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 240.2859999923706
+                    "duration": 185.0840000152588
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
+                "boundingRect": {
+                  "top": 190,
+                  "bottom": 245,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 56
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.95,
+          "fcpMs": 810,
+          "lcpMs": 2900,
+          "cls": 0,
+          "tbtMs": 60,
+          "serverResponseMs": 6,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 15.603
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 244.48
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.focus-boundary > section.auth-shell > div.auth-shell__copy > p",
+                "boundingRect": {
+                  "top": 190,
+                  "bottom": 245,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 56
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Melde dich an und mach dort weiter, wo deine Freunde schon tippen."
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.95,
+          "fcpMs": 810,
+          "lcpMs": 2893,
+          "cls": 0,
+          "tbtMs": 53,
+          "serverResponseMs": 9,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 16.479
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 223.467
                   }
                 ]
               },
@@ -201,24 +201,24 @@
         }
       ],
       "medians": {
-        "performance": 0.96,
-        "lcpMs": 2717.47,
+        "performance": 0.95,
+        "lcpMs": 2893,
         "cls": 0,
-        "tbtMs": 85
+        "tbtMs": 53
       },
       "passed": false
     },
     {
       "name": "round-overview",
-      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31",
+      "path": "/rounds/02b6cc03-36d0-4adf-8e81-62fa6bad4387",
       "runs": [
         {
-          "performance": 0.94,
-          "fcpMs": 1078.3215,
-          "lcpMs": 3029.3215000000005,
+          "performance": 0.99,
+          "fcpMs": 767.278,
+          "lcpMs": 2240.917,
           "cls": 0,
-          "tbtMs": 101,
-          "serverResponseMs": 64,
+          "tbtMs": 32.5,
+          "serverResponseMs": 58,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -240,12 +240,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 67.468
+                    "duration": 71.16800001525878
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 374.895
+                    "duration": 243.3629999847412
                   }
                 ]
               },
@@ -263,18 +263,18 @@
                   "height": 30
                 },
                 "snippet": "<h1>",
-                "nodeLabel": "Lab Runde 23bf8f3b"
+                "nodeLabel": "Lab Runde 4bed858a"
               }
             ]
           }
         },
         {
-          "performance": 0.97,
-          "fcpMs": 1079.4434999999999,
-          "lcpMs": 2574.4435,
+          "performance": 0.95,
+          "fcpMs": 766.818,
+          "lcpMs": 2854.2270000000003,
           "cls": 0,
-          "tbtMs": 47.5,
-          "serverResponseMs": 26,
+          "tbtMs": 79,
+          "serverResponseMs": 33,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -296,12 +296,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 29.382
+                    "duration": 43.293
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 193.559
+                    "duration": 464.113
                   }
                 ]
               },
@@ -319,18 +319,18 @@
                   "height": 30
                 },
                 "snippet": "<h1>",
-                "nodeLabel": "Lab Runde 23bf8f3b"
+                "nodeLabel": "Lab Runde 4bed858a"
               }
             ]
           }
         },
         {
-          "performance": 0.97,
-          "fcpMs": 1075.629,
-          "lcpMs": 2567.629,
+          "performance": 0.98,
+          "fcpMs": 766.6500000000001,
+          "lcpMs": 2295.9750000000004,
           "cls": 0,
-          "tbtMs": 46,
-          "serverResponseMs": 26,
+          "tbtMs": 60.5,
+          "serverResponseMs": 32,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -352,12 +352,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 30.144
+                    "duration": 40.897
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 212.613
+                    "duration": 242.843
                   }
                 ]
               },
@@ -375,31 +375,31 @@
                   "height": 30
                 },
                 "snippet": "<h1>",
-                "nodeLabel": "Lab Runde 23bf8f3b"
+                "nodeLabel": "Lab Runde 4bed858a"
               }
             ]
           }
         }
       ],
       "medians": {
-        "performance": 0.97,
-        "lcpMs": 2574.4435,
+        "performance": 0.98,
+        "lcpMs": 2295.9750000000004,
         "cls": 0,
-        "tbtMs": 47.5
+        "tbtMs": 60.5
       },
-      "passed": false
+      "passed": true
     },
     {
       "name": "predictions-eight",
-      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31/predictions",
+      "path": "/rounds/02b6cc03-36d0-4adf-8e81-62fa6bad4387/predictions",
       "runs": [
         {
-          "performance": 0.97,
-          "fcpMs": 1062.3390000000002,
-          "lcpMs": 2561.3390000000004,
+          "performance": 0.98,
+          "fcpMs": 765.8910000000001,
+          "lcpMs": 2320.8365000000003,
           "cls": 0,
-          "tbtMs": 49.5,
-          "serverResponseMs": 51,
+          "tbtMs": 73.5,
+          "serverResponseMs": 58,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -421,12 +421,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 53.831999992370605
+                    "duration": 67.69099998474121
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 199.94100000762938
+                    "duration": 253.96300001525879
                   }
                 ]
               },
@@ -450,12 +450,12 @@
           }
         },
         {
-          "performance": 0.97,
-          "fcpMs": 1071.753,
-          "lcpMs": 2586.7529999999997,
+          "performance": 0.98,
+          "fcpMs": 763.829,
+          "lcpMs": 2444.7435,
           "cls": 0,
-          "tbtMs": 87.5,
-          "serverResponseMs": 28,
+          "tbtMs": 62,
+          "serverResponseMs": 34,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -477,12 +477,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 32.162
+                    "duration": 45.701
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 297.387
+                    "duration": 300.353
                   }
                 ]
               },
@@ -507,135 +507,10 @@
         },
         {
           "performance": 0.95,
-          "fcpMs": 1059.882,
-          "lcpMs": 2972.8819999999996,
+          "fcpMs": 763.6780000000001,
+          "lcpMs": 2845.5170000000003,
           "cls": 0,
-          "tbtMs": 63,
-          "serverResponseMs": 26,
-          "lcpBreakdown": {
-            "type": "list",
-            "items": [
-              {
-                "type": "table",
-                "headings": [
-                  {
-                    "key": "label",
-                    "valueType": "text",
-                    "label": "Subpart"
-                  },
-                  {
-                    "key": "duration",
-                    "valueType": "ms",
-                    "label": "Duration"
-                  }
-                ],
-                "items": [
-                  {
-                    "subpart": "timeToFirstByte",
-                    "label": "Time to first byte",
-                    "duration": 29.533
-                  },
-                  {
-                    "subpart": "elementRenderDelay",
-                    "label": "Element render delay",
-                    "duration": 263.44
-                  }
-                ]
-              },
-              {
-                "type": "node",
-                "lhId": "page-0-P",
-                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
-                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
-                "boundingRect": {
-                  "top": 181,
-                  "bottom": 265,
-                  "left": 16,
-                  "right": 344,
-                  "width": 328,
-                  "height": 84
-                },
-                "snippet": "<p>",
-                "nodeLabel": "Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Sp…"
-              }
-            ]
-          }
-        }
-      ],
-      "medians": {
-        "performance": 0.97,
-        "lcpMs": 2586.7529999999997,
-        "cls": 0,
-        "tbtMs": 63
-      },
-      "passed": false
-    },
-    {
-      "name": "overall-ranking",
-      "path": "/rounds/d4c9d7f2-4f88-4162-b90a-1a32f19f3b31/rankings",
-      "runs": [
-        {
-          "performance": 0.97,
-          "fcpMs": 1071.7005000000001,
-          "lcpMs": 2549.7005,
-          "cls": 0,
-          "tbtMs": 39,
-          "serverResponseMs": 22,
-          "lcpBreakdown": {
-            "type": "list",
-            "items": [
-              {
-                "type": "table",
-                "headings": [
-                  {
-                    "key": "label",
-                    "valueType": "text",
-                    "label": "Subpart"
-                  },
-                  {
-                    "key": "duration",
-                    "valueType": "ms",
-                    "label": "Duration"
-                  }
-                ],
-                "items": [
-                  {
-                    "subpart": "timeToFirstByte",
-                    "label": "Time to first byte",
-                    "duration": 25.283
-                  },
-                  {
-                    "subpart": "elementRenderDelay",
-                    "label": "Element render delay",
-                    "duration": 261.676
-                  }
-                ]
-              },
-              {
-                "type": "node",
-                "lhId": "page-0-P",
-                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
-                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
-                "boundingRect": {
-                  "top": 181,
-                  "bottom": 265,
-                  "left": 16,
-                  "right": 344,
-                  "width": 328,
-                  "height": 84
-                },
-                "snippet": "<p>",
-                "nodeLabel": "Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nich…"
-              }
-            ]
-          }
-        },
-        {
-          "performance": 0.98,
-          "fcpMs": 1066.764,
-          "lcpMs": 2415.764,
-          "cls": 0,
-          "tbtMs": 49.5,
+          "tbtMs": 75,
           "serverResponseMs": 24,
           "lcpBreakdown": {
             "type": "list",
@@ -658,12 +533,137 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 27.02
+                    "duration": 31.682
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 211.656
+                    "duration": 292.34
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Sp…"
+              }
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "performance": 0.98,
+        "lcpMs": 2444.7435,
+        "cls": 0,
+        "tbtMs": 73.5
+      },
+      "passed": true
+    },
+    {
+      "name": "overall-ranking",
+      "path": "/rounds/02b6cc03-36d0-4adf-8e81-62fa6bad4387/rankings",
+      "runs": [
+        {
+          "performance": 0.96,
+          "fcpMs": 760.934,
+          "lcpMs": 2682.4010000000003,
+          "cls": 0,
+          "tbtMs": 66,
+          "serverResponseMs": 25,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 36.08500001525879
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 242.35299998474122
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,DIV,2,P",
+                "selector": "div.round-shell > section.content-page > div.content-page__intro > p",
+                "boundingRect": {
+                  "top": 181,
+                  "bottom": 265,
+                  "left": 16,
+                  "right": 344,
+                  "width": 328,
+                  "height": 84
+                },
+                "snippet": "<p>",
+                "nodeLabel": "Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nich…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.93,
+          "fcpMs": 763.146,
+          "lcpMs": 2796.719,
+          "cls": 0,
+          "tbtMs": 177,
+          "serverResponseMs": 41,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 64.15900001525878
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 482.1649999847412
                   }
                 ]
               },
@@ -688,11 +688,11 @@
         },
         {
           "performance": 0.95,
-          "fcpMs": 1063.752,
-          "lcpMs": 2833.7519999999995,
+          "fcpMs": 1163,
+          "lcpMs": 2782,
           "cls": 0,
-          "tbtMs": 70,
-          "serverResponseMs": 21,
+          "tbtMs": 95,
+          "serverResponseMs": 33,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -714,12 +714,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 23.894
+                    "duration": 50.087
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 259.391
+                    "duration": 336.211
                   }
                 ]
               },
@@ -744,10 +744,10 @@
         }
       ],
       "medians": {
-        "performance": 0.97,
-        "lcpMs": 2549.7005,
+        "performance": 0.95,
+        "lcpMs": 2782,
         "cls": 0,
-        "tbtMs": 49.5
+        "tbtMs": 95
       },
       "passed": false
     },
@@ -756,12 +756,12 @@
       "path": "/admin/results",
       "runs": [
         {
-          "performance": 0.97,
-          "fcpMs": 1065.927,
-          "lcpMs": 2582.9269999999997,
+          "performance": 0.99,
+          "fcpMs": 758.354,
+          "lcpMs": 2227.531,
           "cls": 0,
-          "tbtMs": 58.5,
-          "serverResponseMs": 36,
+          "tbtMs": 32.5,
+          "serverResponseMs": 41,
           "lcpBreakdown": {
             "type": "list",
             "items": [
@@ -783,12 +783,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 39.964
+                    "duration": 50.874
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 242.606
+                    "duration": 182.347
                   }
                 ]
               },
@@ -812,11 +812,67 @@
           }
         },
         {
-          "performance": 0.94,
-          "fcpMs": 1072.098,
-          "lcpMs": 2862.098,
+          "performance": 0.98,
+          "fcpMs": 963.6679999999999,
+          "lcpMs": 2392.002,
           "cls": 0,
-          "tbtMs": 126,
+          "tbtMs": 55,
+          "serverResponseMs": 30,
+          "lcpBreakdown": {
+            "type": "list",
+            "items": [
+              {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "label",
+                    "valueType": "text",
+                    "label": "Subpart"
+                  },
+                  {
+                    "key": "duration",
+                    "valueType": "ms",
+                    "label": "Duration"
+                  }
+                ],
+                "items": [
+                  {
+                    "subpart": "timeToFirstByte",
+                    "label": "Time to first byte",
+                    "duration": 36.805
+                  },
+                  {
+                    "subpart": "elementRenderDelay",
+                    "label": "Element render delay",
+                    "duration": 183.434
+                  }
+                ]
+              },
+              {
+                "type": "node",
+                "lhId": "page-0-P",
+                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,2,SECTION,1,FORM,5,P",
+                "selector": "section.admin-shell > section.admin-section > form.admin-form > p.admin-form__warning",
+                "boundingRect": {
+                  "top": 514,
+                  "bottom": 687,
+                  "left": 37,
+                  "right": 323,
+                  "width": 286,
+                  "height": 173
+                },
+                "snippet": "<p class=\"admin-form__warning\">",
+                "nodeLabel": "Eine Korrektur wirkt global. Jede Änderung wird als unveränderliche Revision ge…"
+              }
+            ]
+          }
+        },
+        {
+          "performance": 0.98,
+          "fcpMs": 757.068,
+          "lcpMs": 2389.602,
+          "cls": 0,
+          "tbtMs": 39.5,
           "serverResponseMs": 27,
           "lcpBreakdown": {
             "type": "list",
@@ -839,68 +895,12 @@
                   {
                     "subpart": "timeToFirstByte",
                     "label": "Time to first byte",
-                    "duration": 30.603
+                    "duration": 35.44900001525879
                   },
                   {
                     "subpart": "elementRenderDelay",
                     "label": "Element render delay",
-                    "duration": 272.506
-                  }
-                ]
-              },
-              {
-                "type": "node",
-                "lhId": "page-0-P",
-                "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,2,SECTION,1,FORM,5,P",
-                "selector": "section.admin-shell > section.admin-section > form.admin-form > p.admin-form__warning",
-                "boundingRect": {
-                  "top": 514,
-                  "bottom": 687,
-                  "left": 37,
-                  "right": 323,
-                  "width": 286,
-                  "height": 173
-                },
-                "snippet": "<p class=\"admin-form__warning\">",
-                "nodeLabel": "Eine Korrektur wirkt global. Jede Änderung wird als unveränderliche Revision ge…"
-              }
-            ]
-          }
-        },
-        {
-          "performance": 0.97,
-          "fcpMs": 1067.094,
-          "lcpMs": 2565.094,
-          "cls": 0,
-          "tbtMs": 49,
-          "serverResponseMs": 38,
-          "lcpBreakdown": {
-            "type": "list",
-            "items": [
-              {
-                "type": "table",
-                "headings": [
-                  {
-                    "key": "label",
-                    "valueType": "text",
-                    "label": "Subpart"
-                  },
-                  {
-                    "key": "duration",
-                    "valueType": "ms",
-                    "label": "Duration"
-                  }
-                ],
-                "items": [
-                  {
-                    "subpart": "timeToFirstByte",
-                    "label": "Time to first byte",
-                    "duration": 44.025
-                  },
-                  {
-                    "subpart": "elementRenderDelay",
-                    "label": "Element render delay",
-                    "duration": 210.649
+                    "duration": 214.0959999847412
                   }
                 ]
               },
@@ -925,12 +925,12 @@
         }
       ],
       "medians": {
-        "performance": 0.97,
-        "lcpMs": 2582.9269999999997,
+        "performance": 0.98,
+        "lcpMs": 2389.602,
         "cls": 0,
-        "tbtMs": 58.5
+        "tbtMs": 39.5
       },
-      "passed": false
+      "passed": true
     }
   ]
 }

@@ -3,12 +3,8 @@ import "server-only";
 import { ApplicationError } from "@/lib/actions/errors";
 import { readServerEnvironment } from "@/lib/config/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {
-  normalizeAuthRedirect,
-  passwordResetRequestSchema,
-  registerSchema,
-  signInSchema,
-} from "@/features/auth/schemas";
+import { normalizeAuthRedirect } from "@/features/auth/redirects";
+import { passwordResetRequestSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
 import type {
   PasswordResetRequestInput,
   RegistrationInput,
