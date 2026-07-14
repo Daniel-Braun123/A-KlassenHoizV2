@@ -9,8 +9,8 @@ export default async function RoundLayout({
   const { roundId } = await params;
   return (
     <div className="round-shell">
-      {children}
       <RoundNavigation roundId={roundId} />
+      {children}
     </div>
   );
 }

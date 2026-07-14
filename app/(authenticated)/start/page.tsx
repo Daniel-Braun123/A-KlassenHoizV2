@@ -8,6 +8,7 @@ export default async function StartPage() {
     return (
       <section className="start-page">
         <div className="start-page__intro">
+          <p className="product-mark">Zentrale Ligadaten</p>
           <h1>Globale Verwaltung</h1>
           <p>Pflege Ligen, Saisons, Vereine, Spieltage, Spiele und Ergebnisse zentral.</p>
         </div>
@@ -30,6 +31,7 @@ export default async function StartPage() {
   return (
     <section className="start-page">
       <div className="start-page__intro">
+        <p className="product-mark">Übersicht</p>
         <h1>Willkommen zurück</h1>
         <p>Wähle eine Tipprunde oder erstelle eine neue Runde für deine Freunde.</p>
       </div>

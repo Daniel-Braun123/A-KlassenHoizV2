@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
 import type { MyRound } from "@/features/rounds/types";
 export function RoundSwitcher({ rounds }: { rounds: MyRound[] }) {
@@ -7,6 +8,7 @@ export function RoundSwitcher({ rounds }: { rounds: MyRound[] }) {
       <div className="round-list__header">
         <h2 id="round-list-title">Deine Tipprunden</h2>
         <Link href={"/rounds/new" as Route} variant="button">
+          <Icon className="icon" name="plus" />
           Neue Tipprunde
         </Link>
       </div>
@@ -15,11 +17,14 @@ export function RoundSwitcher({ rounds }: { rounds: MyRound[] }) {
           {rounds.map((x) => (
             <li key={x.id!}>
               <Link href={`/rounds/${x.id}` as Route}>
-                <strong>{x.name}</strong>
-                <span>
-                  {x.league_name} · {x.season_label} ·{" "}
-                  {x.role === "owner" ? "Besitzer" : "Mitglied"}
+                <span className="round-list__copy">
+                  <strong>{x.name}</strong>
+                  <span>
+                    {x.league_name} · {x.season_label} ·{" "}
+                    {x.role === "owner" ? "Besitzer" : "Mitglied"}
+                  </span>
                 </span>
+                <Icon className="round-list__chevron" name="chevron-right" />
               </Link>
             </li>
           ))}

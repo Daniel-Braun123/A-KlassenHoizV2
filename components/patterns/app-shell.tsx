@@ -1,21 +1,13 @@
-import type { Route } from "next";
 import type { ReactNode } from "react";
 
 import { Link } from "@/components/ui/link";
 
-export type AppShellNavigationItem = Readonly<{
-  href: Route;
-  label: string;
-  current?: boolean;
-}>;
-
 export type AppShellProps = Readonly<{
   children: ReactNode;
-  navigation?: readonly AppShellNavigationItem[];
   utility?: ReactNode;
 }>;
 
-export function AppShell({ children, navigation = [], utility }: AppShellProps) {
+export function AppShell({ children, utility }: AppShellProps) {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -35,19 +27,6 @@ export function AppShell({ children, navigation = [], utility }: AppShellProps) 
       <main className="app-main" id="main-content" tabIndex={-1}>
         {children}
       </main>
-      {navigation.length > 0 ? (
-        <nav aria-label="Tipprunden-Navigation" className="app-navigation">
-          <ul>
-            {navigation.map((item) => (
-              <li key={item.href}>
-                <Link aria-current={item.current ? "page" : undefined} href={item.href}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      ) : null}
     </div>
   );
 }
