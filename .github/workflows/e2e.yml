@@ -48,7 +48,7 @@ jobs:
       - run: npm run test:e2e -- -Project ${{ matrix.project }}
       - run: npm run test:accessibility -- -Project ${{ matrix.project }}
       - run: npm run test:pwa -- -Project ${{ matrix.project }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report-${{ matrix.project }}
