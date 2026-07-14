@@ -1,5 +1,13 @@
 # Supabase V2-Rollout
 
+## Ausführung 2026-07-14
+
+Freigabe B wurde durch die anschließende umfassende Product-Owner-Freigabe bestätigt. Im isolierten
+Rollout-Verzeichnis wurden exakt 51 V2-Migrationen ohne Seed, Rollenimport oder Altmigrationen auf
+`ewqzhdnfoozjzenzmtlm` angewendet. Die Production-Konfiguration exponiert nur `api`, verwendet
+`extensions`, aktiviert E-Mail-/Passwort-Signup ohne Bestätigung, deaktiviert anonyme Anmeldung und
+setzt die Production-URL/Callback-Allowlist. Der nachfolgende Dry-Run meldete `up to date`.
+
 **Aufgabe:** T276  
 **Stand:** 2026-07-14  
 **Status:** FREIGABE B ERTEILT – WEGEN OFFENER PREVIEW-GATES NICHT AUSGEFÜHRT

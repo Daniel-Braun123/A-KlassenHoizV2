@@ -1,5 +1,13 @@
 # Supabase V2-Verifikation
 
+## Ergebnis 2026-07-14: BESTANDEN
+
+Verifiziert: 51/51 Migrationen; 15/15 `app`-Tabellen mit RLS und Force RLS; 16/16 API-Views mit
+`security_invoker`; 20 Policies; Bucket `club-logos`, öffentlich lesbar, 0 Objekte; Auth-Signup
+aktiv, Autoconfirm aktiv, anonymes Signup aus. Security-Advisor-Warnungen zu bewusst aufrufbaren,
+intern autorisierenden `SECURITY DEFINER`-RPCs und öffentlichem Logo-Listing wurden gegen die
+Negativtests bewertet. Der vollständig bereinigte Production-Smoke bestätigte die Trust-Grenzen.
+
 **Aufgabe:** T277  
 **Stand:** 2026-07-14  
 **Status:** VORBEREITET – NICHT AUSGEFÜHRT

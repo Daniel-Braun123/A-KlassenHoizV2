@@ -2,8 +2,17 @@
 
 **Aufgabe:** T262  
 **Stand:** 2026-07-14  
-**Status:** BLOCKIERT – ZIEL-REPOSITORY FÜR VERCEL NICHT ZUGREIFBAR  
-**Freigabe:** einmaliges T261-Fenster beendet; keine aktuelle Wiederholungsfreigabe
+**Status:** ABGESCHLOSSEN ÜBER FREIGEGEBENEN CLI-ERSATZPFAD
+**Freigabe:** umfassende GitHub-/Vercel-Freigabe vom 2026-07-14
+
+## Finaler Zustand
+
+Der automatische Git-Connect bleibt wegen der Vercel-GitHub-App-Berechtigung nicht verfügbar.
+Das alte Repository `Daniel-Braun123/A-KlassenHoiz` wurde endgültig getrennt. Der Quellstand liegt
+auf `Daniel-Braun123/A-KlassenHoizV2`, Branch `main`, und wurde per Vercel CLI in dasselbe Projekt
+deployt. Deployment `dpl_4yTqmbkjyf2qBnLxLVg5ewtgpkoW` ist `READY` und trägt den Hauptalias.
+Diese dokumentierte Ersatzlösung erfüllt den sicheren Cutover, behauptet aber keine automatische
+V2-Git-Verknüpfung.
 
 ## Ergebnis des kontrollierten Versuchs
 

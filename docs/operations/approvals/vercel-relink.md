@@ -2,10 +2,19 @@
 
 **Aufgabe:** T261  
 **Stand:** 2026-07-14  
-**Status:** ERTEILT UND VERBRAUCHT – RELINK FEHLGESCHLAGEN, RÜCKVERKNÜPFUNG ERFOLGREICH  
+**Status:** ABGESCHLOSSEN – SICHERER CLI-ERSATZPFAD FREIGEGEBEN
 **Ausführungsfenster:** 2026-07-14, 07:43:36–07:49:10 UTC  
-**Gültigkeit:** mit der Rückverknüpfung beendet; ein erneuter Versuch benötigt nach Behebung des
-Zugriffsblockers eine neue aktuelle Einzelfreigabe
+**Gültigkeit:** durch die umfassende GitHub-/Vercel-Freigabe vom 2026-07-14 für den finalen
+CLI-Cutover ersetzt
+
+## Finale Entscheidung
+
+Ein erneuter Connect zu `Daniel-Braun123/A-KlassenHoizV2` scheiterte unverändert an der externen
+Vercel-GitHub-App-Berechtigung. Der Product Owner hat den sicheren Ersatzpfad autorisiert: GitHub
+`main` bleibt kanonisch, das alte Repository wird dauerhaft getrennt und Production wird
+kontrolliert per Vercel CLI aus dem lokalen Checkout dieses `main` deployt. Damit ist kein
+Alt-Repository-Autodeploy mehr möglich; Auto-Deploy für V2 bleibt bis zu einer späteren App-
+Berechtigung bewusst aus.
 
 Dieses Dokument beschreibt den vollständigen Freigabeumfang und den ausgeführten Versuch. Die
 Freigabe autorisierte keine Vercel-, GitHub-, Deployment-, Environment- oder Supabase-Änderung

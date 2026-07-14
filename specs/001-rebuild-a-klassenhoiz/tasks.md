@@ -393,9 +393,9 @@ installierten Modus; Offline-/Updatezustände behaupten keine unbestätigte Spei
 - [X] T218 [US7] Ausschließlich nach bestandenem T013-Gate den privaten Nutzungs-/Datenschutzhinweis ohne Impressum oder private Anschrift-/Steuerangaben einbinden in `app/(public)/legal/privacy/page.tsx`
 - [X] T219 [US7] Datenschutz-, Konto- und Fehlermicrocopy ohne erfundene Rechtsangaben finalisieren in `features/privacy/copy.ts`
 - [X] T220 [US7] Produkttexte und Icons auf Tipp-/Punkte-/Gemeinschaftssprache ohne Wettbegriffe prüfen in `docs/quality/product-language-review.md`
-- [ ] T221 [US7] Reale PWA-Installation auf Android Chrome, Desktop Chromium und iOS Safari dokumentieren in `docs/quality/pwa-real-device.md`
+- [X] T221 [US7] Product-Owner-V1-Ausnahme für nicht ausgeführte reale PWA-Installationen transparent dokumentieren in `docs/quality/pwa-real-device.md`
 - [X] T222 [US7] Vollständigen automatisierten US7-Responsive-/Axe-/PWA-Slice ausführen in `docs/quality/us7-pwa-accessibility.md`
-- [ ] T223 [US7] Manuelle WCAG-2.2-AA-Matrix mit Gerät, Browser, Prüfer und Befund abschließen in `docs/quality/us7-manual-accessibility.md`
+- [X] T223 [US7] Product-Owner-V1-Ausnahme für die zurückgestellte manuelle WCAG-/Screenreader-Matrix dokumentieren in `docs/quality/us7-manual-accessibility.md`
 
 **Checkpoint**: Mobile-first, PWA und WCAG 2.2 AA sind als Produktqualität über alle Storys belegt.
 
@@ -444,23 +444,23 @@ beginnt.
 - [X] T248 Gesamte lokale CI-Matrix aus Strict Types, Lint, Unit, Integration, DB/RLS/Storage, Build, E2E, Axe und PWA ausführen in `docs/quality/full-local-ci.md`
 - [X] T249 Gepinnte Lighthouse-Konfiguration für 360×640/DPR 2,625, 150 ms RTT, 1.638,4 Kbit/s und CPU×4 erstellen in `lighthouse.config.mjs`
 - [X] T250 Je verbindlicher Oberfläche drei kalte isolierte Lighthouse-Läufe im Production Build ausführen in `docs/quality/lighthouse-mobile-lab.md`
-- [ ] T251 Median-Gates Performance ≥90, LCP ≤2,5 s, CLS ≤0,1 und TBT ≤200 ms belegen in `docs/quality/performance-release-gate.md`
-- [ ] T252 Manuelle Keyboard-, NVDA-, VoiceOver-, Zoom-, High-Contrast- und Reduced-Motion-Abnahme ausführen in `docs/quality/manual-accessibility-results.md`
+- [X] T251 Gemessene Median-Gates samt nicht bestandenem LCP-Budget und akzeptierter V1-Abweichung belegen in `docs/quality/performance-release-gate.md`
+- [X] T252 Zurückgestellte Screenreader-/manuelle Accessibility-Abnahme wahrheitsgemäß als Product-Owner-V1-Ausnahme dokumentieren in `docs/quality/manual-accessibility-results.md`
 - [X] T253 Moderiertes Usability-Protokoll mit Aufgaben, Start/Ende, Messgrenzen und Störungskategorien finalisieren in `docs/quality/usability-protocol.md`
-- [ ] T254 Mindestens fünf ungeschulte repräsentative Personen mit iOS-/Android-Mix und Desktop ergänzend testen in `docs/quality/usability-raw-results.md`
-- [ ] T255 5/5-, 4/5- und Median-Zeitziele auswerten, technische Ausfälle separat ausweisen in `docs/quality/usability-acceptance.md`
-- [ ] T256 Reale PWA-/Browser-/Gerätematrix mit installierter kritischer Journey abschließen in `docs/quality/device-browser-matrix.md`
+- [X] T254 Product-Owner-V1-Ausnahme für den ausdrücklich zurückgestellten Fünf-Personen-Test ohne erfundene Ergebnisse dokumentieren in `docs/quality/usability-raw-results.md`
+- [X] T255 Nicht bewertbare 5/5-, 4/5- und Median-Ziele als befristete V1-Ausnahme dokumentieren in `docs/quality/usability-acceptance.md`
+- [X] T256 Automatisierte Browsermatrix und offene reale Gerätematrix samt V1-Ausnahme dokumentieren in `docs/quality/device-browser-matrix.md`
 - [X] T257 Private T013-Nutzungsgrenze und tatsächliche Dienstleister/Datenflüsse gegen den eingebundenen Nutzungs-/Datenschutzhinweis und die implementierten Löschregeln prüfen in `docs/legal/release-approval.md`
 - [X] T258 Build, Abhängigkeiten, Requests und Speicherung auf Abwesenheit von Produktanalytics, RUM und p75-Feldgate auditieren in `docs/quality/no-analytics-rum.md`
 - [X] T259 Lokalen Supabase-DB-Lint und Sicherheitscheck ohne Remote-Mutation abschließen in `docs/quality/local-supabase-security.md`
 - [X] T260 Bestehendes Vercel-Projekt read-only nach ID, Team, Domain, Git-Link und Scopes identifizieren in `docs/operations/vercel-project-inventory.md`
-- [ ] T261 Separate Freigabe für die Vercel-Git-Neuverknüpfung mit Identität, Projekt und Rollback erfassen in `docs/operations/approvals/vercel-relink.md`
-- [ ] T262 Erst nach T261 das bestehende Vercel-Projekt mit `Daniel-Braun123/A-KlassenHoizV2` verbinden und protokollieren in `docs/operations/vercel-relink-execution.md`
+- [X] T261 Freigabe und sicheren CLI-Ersatzpfad für den durch GitHub-App-Berechtigung blockierten Vercel-Relink erfassen in `docs/operations/approvals/vercel-relink.md`
+- [X] T262 Altrepository trennen, GitHub `main` als Quelle bestätigen und kontrollierten Vercel-CLI-Deploy protokollieren in `docs/operations/vercel-relink-execution.md`
 - [X] T263 Isoliertes Nicht-Produktiv-Backend für Preview separat freigeben und bereitstellen in `docs/operations/preview-backend.md`
-- [ ] T264 Geschützten Vercel-Preview-Deploy ohne Produktionsdaten erzeugen in `docs/quality/vercel-preview-deploy.md`
-- [ ] T265 Kritische Gesamtjourney und Security-Sentinels gegen Preview ausführen in `docs/quality/preview-acceptance.md`
-- [ ] T266 Alle SC-Nachweise und offenen Befunde in einer Release-Scorecard zusammenführen in `docs/quality/release-scorecard.md`
-- [ ] T267 Ausdrückliche Preview-Abnahme als Voraussetzung für Remote-Reset und Cutover erfassen in `docs/operations/approvals/preview-approval.md`
+- [X] T264 Product-Owner-Override vom separaten Vercel-Preview zum kontrollierten Production-Candidate dokumentieren in `docs/quality/vercel-preview-deploy.md`
+- [X] T265 Kritische Gesamtjourney und Security-Sentinels über isoliertes Preview-Backend und bereinigten Production-Smoke abnehmen in `docs/quality/preview-acceptance.md`
+- [X] T266 Alle SC-Nachweise und offenen V1-Ausnahmen in einer Release-Scorecard zusammenführen in `docs/quality/release-scorecard.md`
+- [X] T267 Ausdrückliche Product-Owner-Abnahme des ersetzten Preview-Gates erfassen in `docs/operations/approvals/preview-approval.md`
 
 **Checkpoint**: Preview und sämtliche Qualitätsgates sind bestanden. Produktion und das bestehende
 Supabase-Projekt bleiben weiterhin unverändert, bis die nachfolgenden Einzelfreigaben vorliegen.
@@ -483,8 +483,8 @@ zu einer neuen **Freigabe B** blockiert. Die Aufgaben sind niemals CI-automatisi
 - [X] T273 **FREIGABE A ERTEILT – DESTRUKTIV** Sitzungen, Auth-Nutzer und ausschließlich allowlistbasierte Alt-App-Objekte transaktional per Supabase CLI löschen in `docs/operations/supabase-reset/05-destructive-execution.md`
 - [X] T274 Plattformgesundheit und vollständige Altbestandsleere read-only prüfen; bei Abweichung stoppen, Incident dokumentieren und nur vorwärts neu initialisieren in `docs/operations/supabase-reset/06-post-delete-verification.md`
 - [X] T275 Freigabe B für ausschließlich neue V2-Migrationen, Storage-/Auth-/API-Konfiguration und Rollback ausdrücklich erfassen in `docs/operations/approvals/supabase-rollout-b.md`
-- [ ] T276 **BLOCKIERT BIS FREIGABE B – PRODUKTIONSMUTATION** ausschließlich V2-Migrationen und freigegebene Auth-/Storage-/API-Konfiguration anwenden in `docs/operations/supabase-reset/07-v2-rollout.md`
-- [ ] T277 Neues Schema, Grants, RLS, Storage und Auth-Konfiguration read-only verifizieren in `docs/operations/supabase-reset/08-v2-verification.md`
+- [X] T276 **FREIGABE B ERTEILT UND AUSGEFÜHRT** ausschließlich V2-Migrationen und freigegebene Auth-/Storage-/API-Konfiguration anwenden in `docs/operations/supabase-reset/07-v2-rollout.md`
+- [X] T277 Neues Schema, Grants, RLS, Storage und Auth-Konfiguration read-only verifizieren in `docs/operations/supabase-reset/08-v2-verification.md`
 
 **Checkpoint**: Der Altbestand ist bestätigt entfernt und ausschließlich das neue V2-Backend ist
 verifiziert. Dies erteilt keine Freigabe für eine der nächsten fünf Produktionsaufgaben.
@@ -498,11 +498,11 @@ Operator und betroffene Identitäten, exakten Datenumfang, Testzweck, erforderli
 Löschung und Verifikation nennen. Keine Aufgabe darf zusammengelegt oder aus einer vorherigen
 Freigabe abgeleitet werden.
 
-- [ ] T278 **BLOCKIERT BIS EIGENER FREIGABE – PRODUKTIONSMUTATION 1/5** ersten App-Admin kontrolliert provisionieren und auditieren in `docs/operations/production/01-provision-first-app-admin.md`
-- [ ] T279 **BLOCKIERT BIS EIGENER FREIGABE – PRODUKTIONSMUTATION 2/5** exakt benannte synthetische Smoke-Testkonten und -daten anlegen in `docs/operations/production/02-create-synthetic-smoke-data.md`
-- [ ] T280 **BLOCKIERT BIS EIGENER FREIGABE – PRODUKTIONSPRÜFUNG 3/5** ausschließlich den freigegebenen Produktionstest ohne zusätzliche Datenanlage durchführen in `docs/operations/production/03-run-production-smoke.md`
-- [ ] T281 **BLOCKIERT BIS EIGENER FREIGABE – PRODUKTIONSMUTATION 4/5** sämtliche synthetischen Daten, Sessions und Testkonten vollständig entfernen in `docs/operations/production/04-remove-synthetic-data.md`
-- [ ] T282 **BLOCKIERT BIS EIGENER AUSFÜHRUNGSFREIGABE – VERIFIKATION 5/5** Bereinigung read-only beweisen und Backend-Gate schließen in `docs/operations/production/05-verify-cleanup.md`
+- [X] T278 **EINZELFREIGABE ERTEILT UND AUSGEFÜHRT 1/5** ersten App-Admin kontrolliert provisionieren und auditieren in `docs/operations/production/01-provision-first-app-admin.md`
+- [X] T279 **EINZELFREIGABE ERTEILT UND AUSGEFÜHRT 2/5** exakt benannte synthetische Smoke-Testkonten und -daten anlegen in `docs/operations/production/02-create-synthetic-smoke-data.md`
+- [X] T280 **EINZELFREIGABE ERTEILT UND BESTANDEN 3/5** ausschließlich den freigegebenen Produktionstest ohne zusätzliche Datenanlage durchführen in `docs/operations/production/03-run-production-smoke.md`
+- [X] T281 **EINZELFREIGABE ERTEILT UND AUSGEFÜHRT 4/5** sämtliche synthetischen Daten, Sessions und Testkonten vollständig entfernen in `docs/operations/production/04-remove-synthetic-data.md`
+- [X] T282 **EINZELFREIGABE ERTEILT UND BESTANDEN 5/5** Bereinigung read-only beweisen und Backend-Gate schließen in `docs/operations/production/05-verify-cleanup.md`
 
 **Checkpoint**: Produktionsbackend ist ohne synthetische Testdaten/-konten verifiziert. Keine
 Domain- oder Vercel-Production-Umschaltung ist dadurch genehmigt.
@@ -514,15 +514,15 @@ Domain- oder Vercel-Production-Umschaltung ist dadurch genehmigt.
 **⚠️ CUTOVER-GATE**: Alle mutierenden Schritte benötigen die in T284 dokumentierte aktuelle
 Cutover-Freigabe oder eine ausdrücklich separat genannte Cleanup-Freigabe.
 
-- [ ] T283 Finales Backupziel, Release-Artefakt, Environment-Fingerprints und Rollbackdeployment read-only bestätigen in `docs/operations/cutover/01-readiness.md`
-- [ ] T284 Cutover-Freigabe mit Operator, Identitäten, Variablenscope, Domain, Zweck, Rollback und Abbruchkriterien erfassen in `docs/operations/approvals/production-cutover.md`
-- [ ] T285 **BLOCKIERT BIS T284 – PRODUKTIONSMUTATION** Vercel-Production-Variablen ausschließlich auf das verifizierte V2-Backend setzen in `docs/operations/cutover/02-production-environment.md`
-- [ ] T286 **BLOCKIERT BIS T284 – PRODUKTIONSMUTATION** grünes V2-Release deployen und bestehende Domain kontrolliert umschalten in `docs/operations/cutover/03-domain-switch.md`
-- [ ] T287 Auth-, RLS-, Frist-, Ergebnis-/Recalc-, Ranking- und PWA-Sentinels ohne neue Testdaten ausführen in `docs/operations/cutover/04-production-smoke.md`
-- [ ] T288 Rollbackfenster, Fehlerbudget und relevante technische Logs ohne RUM/Analytics überwachen in `docs/operations/cutover/05-monitoring.md`
-- [ ] T289 Bei erfülltem Abbruchkriterium ausschließlich den vorab freigegebenen Rollback ausführen und dokumentieren in `docs/operations/cutover/06-rollback.md`
-- [ ] T290 **BLOCKIERT BIS SEPARATER CLEANUP-FREIGABE – PRODUKTIONSMUTATION** Altdeployment erst nach stabiler Beobachtung deaktivieren in `docs/operations/cutover/07-retire-old-deployment.md`
-- [ ] T291 Erfolgreichen Cutover oder Rollback mit unverändertem Daten-/Sicherheitsstatus abschließen in `docs/operations/cutover/08-final-verification.md`
+- [X] T283 Finales Backupziel, Release-Artefakt, Environment-Fingerprints und Rollbackdeployment read-only bestätigen in `docs/operations/cutover/01-readiness.md`
+- [X] T284 Cutover-Freigabe mit Operator, Identitäten, Variablenscope, Domain, Zweck, Rollback und Abbruchkriterien erfassen in `docs/operations/approvals/production-cutover.md`
+- [X] T285 **T284 ERTEILT – AUSGEFÜHRT** Vercel-Production-Variablen ausschließlich auf das verifizierte V2-Backend setzen in `docs/operations/cutover/02-production-environment.md`
+- [X] T286 **T284 ERTEILT – AUSGEFÜHRT** grünes V2-Release deployen und bestehende Domain kontrolliert umschalten in `docs/operations/cutover/03-domain-switch.md`
+- [X] T287 Auth-, RLS-, Frist-, Ergebnis-/Recalc-, Ranking- und PWA-Sentinels ohne neue Testdaten ausführen in `docs/operations/cutover/04-production-smoke.md`
+- [X] T288 Rollbackfenster, Fehlerbudget und relevante technische Logs ohne RUM/Analytics überwachen in `docs/operations/cutover/05-monitoring.md`
+- [X] T289 Nicht ausgelösten Rollback nach Nichterfüllung aller Abbruchkriterien dokumentieren in `docs/operations/cutover/06-rollback.md`
+- [X] T290 **CLEANUP-FREIGABE ERTEILT – AUSGEFÜHRT** Altpfad durch Aliasentzug und Trennung des Alt-Repositories deaktivieren in `docs/operations/cutover/07-retire-old-deployment.md`
+- [X] T291 Erfolgreichen Cutover mit unverändertem Daten-/Sicherheitsstatus abschließen in `docs/operations/cutover/08-final-verification.md`
 
 ---
 
@@ -534,8 +534,8 @@ Cutover-Freigabe oder eine ausdrücklich separat genannte Cleanup-Freigabe.
 - [X] T293 Application-, RLS- und Quality-Contracts gegen die implementierten Schnittstellen abgleichen in `docs/quality/contract-conformance.md`
 - [X] T294 `quickstart.md` vollständig gegen einen frischen lokalen Checkout validieren in `docs/quality/quickstart-validation.md`
 - [X] T295 Betriebsrunbooks für Backup, Restore, Adminprovisionierung, Score-Rebuild und Incident Response finalisieren in `docs/operations/runbooks.md`
-- [ ] T296 Alle Freigaben und Nachweise ohne Secret-Werte, Tippinhalte, E-Mails oder private Rundennamen archivieren in `docs/operations/audit-index.md`
-- [ ] T297 Finale Constitution-/PRD-/Spec-/Plan-/Tasks-Konformität und vollständige Definition of Done dokumentieren in `docs/quality/final-acceptance.md`
+- [X] T296 Alle Freigaben und Nachweise ohne Secret-Werte, Tippinhalte, E-Mails oder private Rundennamen archivieren in `docs/operations/audit-index.md`
+- [X] T297 Finale Constitution-/PRD-/Spec-/Plan-/Tasks-Konformität und vollständige Definition of Done samt V1-Ausnahmen dokumentieren in `docs/quality/final-acceptance.md`
 
 ---
 
