@@ -94,8 +94,7 @@ h3 {
   z-index: var(--z-sticky);
   top: 0;
   border-bottom: 1px solid color-mix(in oklch, var(--color-border) 82%, transparent);
-  background: color-mix(in oklch, var(--color-canvas) 88%, transparent);
-  backdrop-filter: blur(18px);
+  background: var(--color-canvas);
 }
 
 .app-header__inner {
