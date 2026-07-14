@@ -10,7 +10,7 @@
 Der automatische Git-Connect bleibt wegen der Vercel-GitHub-App-Berechtigung nicht verfügbar.
 Das alte Repository `Daniel-Braun123/A-KlassenHoiz` wurde endgültig getrennt. Der Quellstand liegt
 auf `Daniel-Braun123/A-KlassenHoizV2`, Branch `main`, und wurde per Vercel CLI in dasselbe Projekt
-deployt. Deployment `dpl_4yTqmbkjyf2qBnLxLVg5ewtgpkoW` ist `READY` und trägt den Hauptalias.
+deployt. Deployment `dpl_6Le5Rg75WGWUt1xNTQUjtQyvDW9m` aus Commit `dc05fa3` ist `READY` und trägt den Hauptalias.
 Diese dokumentierte Ersatzlösung erfüllt den sicheren Cutover, behauptet aber keine automatische
 V2-Git-Verknüpfung.
 
