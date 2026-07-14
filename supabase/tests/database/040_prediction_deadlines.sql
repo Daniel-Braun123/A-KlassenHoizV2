@@ -1,0 +1,10 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(8);
+select has_table('app','predictions','predictions exist');
+select has_function('private','prediction_is_open',array['timestamp with time zone','timestamp with time zone'],'deadline helper exists');
+select ok(private.prediction_is_open('2026-08-01 15:00:00+00','2026-08-01 14:59:59+00'),'one second before kickoff is open');
+select ok(not private.prediction_is_open('2026-08-01 15:00:00+00','2026-08-01 15:00:00+00'),'exact kickoff is locked');
+select ok(not private.prediction_is_open('2026-08-01 15:00:00+00','2026-08-01 15:00:01+00'),'after kickoff is locked');
+select is((select count(*) from pg_indexes where schemaname='app' and indexname='predictions_round_membership_match_unique'),1::bigint,'one prediction per member match');
+select is((select relrowsecurity from pg_class where oid='app.predictions'::regclass),true,'prediction RLS enabled');
+select is((select relforcerowsecurity from pg_class where oid='app.predictions'::regclass),true,'prediction RLS forced');
+select * from finish();rollback;

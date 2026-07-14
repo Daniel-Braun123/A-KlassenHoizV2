@@ -29,15 +29,15 @@ abgeleitete Planungsartefakte.
 | A4 – Usability | W9 und der Qualitätsvertrag verlangen mindestens fünf ungeschulte repräsentative Personen, iOS-/Android-Mix plus Desktop, keine Bedienhilfe, dokumentierte Messgrenzen, 5/5- und 4/5-Gates sowie Medianbewertung |
 | A5/A6 – Performance/Analytics | Keine Produktanalytics, kein RUM und kein p75-Feldgate; ausschließlich das reproduzierbare Lighthouse-Mobile-Laborgate mit 90/2,5 s/0,1/200 ms |
 | A7 – Break-Glass | Ausschließlich querschnittlich in W8 Security/Operations; US2 beziehungsweise W4 bleibt unabhängig abnehmbar |
-| A8 – Rechtliches | W0A ist eine vorgelagerte fachliche Ermittlung und Freigabe; technische Einbindung erst danach, ohne erfundene Angaben |
+| A8 – Rechtliches | Projekteigentümer klassifiziert V1 verbindlich als private, nicht-kommerzielle, einladungsbasierte Freunde-Website: kein Impressum und keine private Anschrift-/Steuerangaben; W0A prüft stattdessen den wahrheitsgemäßen Nutzungs-/Datenschutzhinweis und verlangt vor Öffnung oder Monetarisierung eine neue rechtliche Prüfung |
 | A9 – Produktionsmutationen | W11 trennt Provisionierung, synthetische Datenanlage, Produktionstest, Löschung und Bereinigungsverifikation in fünf einzeln freizugebende Schritte |
-| A10 – Prozess | Dieser Lauf aktualisiert nur Planungsartefakte; keine Implementierung, kein Reset, keine Supabase-/Vercel-/Produktionsmutation und keine Regenerierung von `tasks.md` |
+| A10 – Prozess | Die damalige Korrekturrunde blieb dokumentations-only. Der spätere Implementierungslauf darf Remote-Mutationen weiterhin nur über die je Aufgabe verlangten Einzelgates ausführen; die Freigabe vom 13. Juli 2026 gilt ausschließlich für die Altbestandslöschung ohne Backup, nicht für V2-Rollout oder Vercel. |
 
 ## Technical Context
 
 **Language/Version**: Node.js 24.18.0 LTS mit npm 11.18.0; TypeScript 6.0.3 mit `strict: true`; SQL/PLpgSQL auf PostgreSQL 17  
 **Primary Dependencies**: Next.js 16.2.10, React/React DOM 19.2.7, `@supabase/supabase-js` 2.110.2, `@supabase/ssr` 0.12.0, Zod 4.4.3, Tailwind CSS 4.3.2 plus CSS Custom Properties, `qrcode` 1.5.4; eigener kleiner Service Worker; vollständige exakte Toolchain in `research.md`  
-**Storage**: bestehendes Supabase-Projekt `ewqzhdnfoozjzenzmtlm` nach separatem Reset; PostgreSQL im neuen `app`/`private`/`api`-Schema; Supabase Auth; öffentlicher, adminbeschreibbarer `club-logos`-Bucket  
+**Storage**: bestehendes, seit T274 bestätigt leeres Supabase-Projekt `ewqzhdnfoozjzenzmtlm`; PostgreSQL im neuen `app`/`private`/`api`-Schema erst nach Freigabe B; Supabase Auth; öffentlicher, adminbeschreibbarer `club-logos`-Bucket
 **Testing**: Vitest 4.1.10, React Testing Library 16.3.2, jsdom 29.1.1, Supabase CLI 2.109.1/local Postgres, pgTAP, DB-Lint, Playwright 1.61.1, `@axe-core/playwright` 4.12.1, manuelle WCAG-/Real-Device-PWA-Matrix  
 **Target Platform**: moderne Browser auf Smartphone ab 320/375 px, Tablet und Desktop; installierte PWA auf Android Chrome, Desktop Chromium und iOS Safari; Vercel Node runtime in `eu-central`-naher Region soweit im Bestandsprojekt konfigurierbar  
 **Project Type**: einzelne Full-Stack-Webanwendung/PWA mit verwaltetem Supabase-Backend  
@@ -63,10 +63,16 @@ abgeleitete Planungsartefakte.
 | Produktgrenze | keine öffentlichen Runden, Echtgeld-, Quoten-, Gewinn- oder Glücksspielmechaniken; keine V1-Nichtziele eingeschleust | PASS |
 | Clean Room / Strict TS | neues Repository, neues Schema und frische Migrationen; kein `db pull` als Baseline; Strict TS ohne ungeprüfte Suppressions | PASS |
 | Testnachweis | Unit, Component, Integration/Contract, pgTAP/RLS/Storage, E2E, A11y, PWA, Security, verbindliches Fünf-Personen-Usability-Protokoll und reproduzierbares Performance-Labor | PASS |
-| V1-Beobachtung und Rechtstexte | keine Analytics/RUM/p75-Feldgrenze; Rechtstexte erst nach fachlicher Ermittlung und ausdrücklicher Freigabe der realen Angaben | PASS |
+| V1-Beobachtung und privater Hinweis | keine Analytics/RUM/p75-Feldgrenze; kein Impressum oder private Anschrift-/Steuerangaben; wahrheitsgemäßer Nutzungs-/Datenschutzhinweis, neue Prüfung vor Öffnung/Monetarisierung | PASS |
 | Betriebssicherheit | Reset, neue Remote-Migrationen, privilegierte Identität, synthetische Produktionsdaten, Produktionstest, Bereinigung, Vercel-Git-Link und Cutover sind getrennte explizite Freigabegates | PASS |
 
-Es gibt keine Verfassungsverletzung und keine Ausnahme.
+Die einmalige Löschung des Altbestands ohne Sicherung verletzte die Sicherungs-/Rollbackpflicht aus
+Arbeitsablauf und Qualitätsgates Nr. 6. Der Projekteigentümer genehmigte diese eng begrenzte
+Ausnahme am 13. Juli 2026 ausdrücklich und akzeptierte den irreversiblen Verlust. Sie galt nur für
+Projekt `ewqzhdnfoozjzenzmtlm` und ist nach der bestandenen Nachkontrolle T274 ausgelaufen;
+Genehmigung und Ersatzkontrollen stehen in `docs/operations/approvals/supabase-reset-a.md`.
+Datenschutz-, Sicherheits-, Clean-Room- und übrige Governance-Prinzipien bleiben unverändert
+verbindlich.
 
 ## Skills & MCPs
 
@@ -79,11 +85,13 @@ Es gibt keine Verfassungsverletzung und keine Ausnahme.
 | `speckit-specify` | Verbindliche Produktentscheidungen und messbare Abnahmen in der bestehenden Spezifikation nachführen |
 | `speckit-plan` | Phase-0-/Phase-1-Planungsworkflow und Artefakte erzeugen, ohne zu implementieren |
 | `speckit-tasks` | Abhängigkeitsgeordnete, storybasierte und sicher ausführbare Implementierungs-/Testaufgaben erzeugen |
+| `speckit-implement` | Aufgaben strikt phasen- und gategeordnet umsetzen, lokal verifizieren und erledigte Checkboxen nachführen |
 | `supabase:supabase` | Auth-, Data-API-, RLS-, Storage- und sicherer Reset-/Wiederverwendungsplan |
 | `supabase:supabase-postgres-best-practices` | Schema-, Index-, Constraint-, Transaktions-, RLS- und Queryentscheidungen prüfen |
 | `vercel-react-best-practices` | Server-first React/Next.js, kleine Client-Grenzen, Parallelität, Bundle- und Renderingstrategie |
 | `impeccable` | mobile UX, semantisches Designsystem, vollständige Zustände und Accessibility-Qualitätsbar |
 | `playwright-cli` | Cross-Browser-/Mobile-/PWA-/Accessibility-E2E-Strategie und stabile CI-Ausführung |
+| `systematic-debugging` | Reproduzierbare Konfigurationsfehler ursächlich isolieren und mit minimalen Änderungen beheben |
 
 ### Selected tools and connectors
 
@@ -91,12 +99,14 @@ Es gibt keine Verfassungsverletzung und keine Ausnahme.
 |---|---|---|
 | Lokales Git/Dateisystem | Repository/Branch/Dateien prüfen, kanonischen PRD-Pfad herstellen; später lokale Qualitätskommandos | Available |
 | `apply_patch` | PRD, Verfassung, Spezifikation, Plan und abhängige Designartefakte konsistent aktualisieren | Available |
-| Supabase Connector/MCP (read-only in dieser Phase) | Zielprojekt, Altbestand, Auth-/Storage-/Funktionsinventar und aktuelle Doku prüfen; Mutationen bleiben bis zum manuellen Gate gesperrt | Available |
-| Offizielle Web-/Dokumentationssuche | instabile Framework-/Runtimeversionen und Primärquellen verifizieren | Available |
+| Supabase Connector/MCP | Organisation, Kosten und Ziele prüfen; das isolierte Free-Preview-Projekt anlegen und Schema/RLS/Advisors verifizieren; Production ausschließlich read-only nachkontrollieren | Used / T263 complete; Production unchanged |
+| Supabase CLI 2.109.1 | Preview-Projekt im isolierten Arbeitsverzeichnis verknüpfen, exakt 51 V2-Migrationen migrations-only anwenden, API/Auth-Basiskonfiguration setzen und Migrationsgleichstand prüfen | Used / T263 Preview only; no Production mutation |
+| Offizielle Web-/Dokumentationssuche | Node-Archiv/Prüfsumme sowie aktuelle Supabase-Changelog-, Auth- und Autoconfirm-Semantik verifizieren | Used |
+| In-app Browser | Foundation-Shell bei 320×800, 390×844 und 1440×900 auf Reflow, Touchziele, Typografie und Browserfehler prüfen | Used locally; no remote mutation |
 | GitHub Repository über `origin` | neues Repo `Daniel-Braun123/A-KlassenHoizV2` als Quellbasis bestätigen | Available |
-| Vercel Connector/CLI | Bestehende Vercel-Projekt-ID/Settings verifizieren; verpflichtender Dashboard-/CLI-Fallback ist als separate Deployment-Aufgabe eingeplant | Unavailable |
+| Vercel Connector/CLI | Lokalen OIDC-Projektbezug ohne Token-Ausgabe prüfen; Token ist abgelaufen, Live-Verifikation bleibt separate Deployment-Aufgabe | Unavailable / expired local OIDC |
 
-Capability-Einfluss: Die Supabase-Fähigkeiten führten zur `api`/`app`/`private`-Grenze, DB-Zeit/RPC-Transaktionen und vollständigen Grant-/RLS-Matrix. Die React-, Design- und Playwright-Fähigkeiten führten zu Server-first Rendering, kleinen Client-Grenzen, tokenisierten Zuständen, 44-px-Zielen sowie der kombinierten automatischen/manuellen Cross-Browser-, A11y- und PWA-Abnahme.
+Capability-Einfluss: Die Supabase-Fähigkeiten führten zur `api`/`app`/`private`-Grenze, DB-Zeit/RPC-Transaktionen und vollständigen Grant-/RLS-Matrix. Die React-, Design- und Playwright-Fähigkeiten führten zu Server-first Rendering, kleinen Client-Grenzen, tokenisierten Zuständen, 44-px-Zielen sowie der kombinierten automatischen/manuellen Cross-Browser-, A11y- und PWA-Abnahme. Der Implementierungslauf ergänzte eine gepinnte Greenfield-Baseline, projektlokales Node 24.18.0/npm 11.18.0, lokale Remote-Sperren und CI-Gates. Die Foundation-Shell wurde im lokalen Browser bei 320, 390 und 1440 CSS-Pixeln ohne horizontalen Überlauf oder Browserfehler geprüft; die 44-px-Ziele und mobile/desktop Typografie waren wirksam. Connector und CLI bestätigten read-only das alte Supabase-Ziel und lieferten die exakte Lösch-/Schutzinventur; `systematic-debugging` isolierte die lokale PowerShell-Argumentweitergabe sowie zwei transaktional zurückgerollte Objektabhängigkeiten. Die endgültige allowlistbasierte CLI-Transaktion und die unabhängige Nachkontrolle entfernten den Altbestand vollständig, während Projekt und Plattformschemas gesund blieben. Die neue lokale DB-Foundation ist als Quellstand vorhanden, kann ohne Docker-kompatible Engine jedoch noch nicht durch Reset, Lint und pgTAP ausgeführt werden; T024, T040 und T041 bleiben deshalb offen. Vercel-, GitHub- und V2-Rollout-Mutationen bleiben gesperrt.
 
 ## Project Structure
 
@@ -190,7 +200,7 @@ tests/
 scripts/
 ├── verify-local-target.*        # blockiert versehentliche Remote-DB-Kommandos
 ├── provision-app-admin.*        # kontrolliert, auditiert, nicht aus UI
-└── operations/                  # späteres Reset-/Restore-Runbook, nie CI-automatisch
+└── operations/                  # Reset-/Forward-Recovery-Runbook, nie CI-automatisch
 
 .github/workflows/
 ├── quality.yml
@@ -277,27 +287,32 @@ werden. Remote-mutierende Schritte bleiben isoliert.
 
 **Gate**: Production Build einer leeren Shell, Strict Types/Lint grün, keine Altdatei/-migration vorhanden.
 
-### W0A — Betreiber-, Datenschutz- und Rechtstextfreigabe
+### W0A — Private Nutzungsgrenze und Datenschutzhinweis
 
-- Tatsächliche Betreiberangaben, Datenflüsse, Dienstleister und Auftragsverarbeitungen vollständig
-  ermitteln; keine Annahme aus Altbestand oder Platzhaltertext übernehmen.
-- Aufbewahrungs-, Lösch- und Anonymisierungsregeln mit den spezifizierten Konten-, Runden-, Audit-
-  und Backup-Lebenszyklen fachlich abgleichen.
-- Impressum und Datenschutzerklärung auf Basis dieser tatsächlichen Angaben erstellen beziehungsweise
-  rechtlich/fachlich prüfen lassen und ausdrücklich durch den Betreiber freigeben.
-- Die Freigabe mit Version, Datum, verantwortlicher Person und Geltungsbereich dokumentieren; bis
-  dahin ist jede technische Einbindung als freigegebener Rechtstext blockiert.
+- Die verbindliche Produktentscheidung dokumentieren: ausschließlich nicht-kommerziell,
+  einladungsbasiert und für einen privaten Freundeskreis; keine öffentliche Vermarktung oder
+  entgeltliche Leistung.
+- Kein Impressum und keine private Anschrift, Steuer-, Register- oder Unternehmensangaben planen
+  oder veröffentlichen. Vor Öffnung, Monetarisierung oder geschäftlicher Nutzung ist die
+  Anwendbarkeit rechtlicher Pflichten erneut fachkundig zu prüfen.
+- Tatsächlich eingebundene technische Dienstleister, Datenkategorien sowie Konto- und Löschwege für
+  einen knappen Nutzungs- und Datenschutzhinweis ermitteln; keine Annahme aus Altbestand oder
+  Platzhaltertext übernehmen.
+- Die Entscheidung mit Datum, verantwortlicher Person und Geltungsbereich dokumentieren. Die
+  technische Einbindung des Hinweises bleibt bis zur Prüfung seiner tatsächlichen Datenflüsse
+  blockiert.
 
-**Gate**: Vollständige, ausdrücklich freigegebene Fakten- und Rechtstextbasis; ohne Freigabe keine
-Implementierung oder Veröffentlichung der Rechtstext-Routen.
+**Gate**: Private Nutzungsgrenze ausdrücklich bestätigt und tatsächliche Datenflüsse für den Hinweis
+geprüft; ohne Freigabe keine Veröffentlichung des Nutzungs-/Datenschutzhinweises.
 
 ### W1 — Designsystem, App Shell und PWA-Grundlage
 
 - Kontrastvalidierte Tokens, Typografie, Spacing, States, native UI-Primitives.
 - Responsive Shell, vierteilige mobile Rundennavigation, Fokus-/Safe-Area-Verhalten.
 - Manifest, Icons, Offline-Fallback, kleiner cache-sicherer Service Worker und Updatezustand.
-- Rechtstext-Routen ausschließlich aus den in W0A freigegebenen Inhalten integrieren; keine
-  erfundenen Angaben oder als freigegeben ausgegebenen Platzhalter. Systemweite
+- Eine Route für den in W0A freigegebenen privaten Nutzungs- und Datenschutzhinweis integrieren;
+  keine Impressumsroute, privaten Anschrift-/Steuerangaben oder als bestätigt ausgegebenen
+  Platzhalter. Systemweite
   Loading/Error/Empty/Locked/Destructive Patterns.
 
 **Gate**: 320–1440 px, Keyboard/Reflow/Axe, Manifest/SW/Offline-Cache-Allowlist.
@@ -384,7 +399,9 @@ Implementierung oder Veröffentlichung der Rechtstext-Routen.
   Administration mit deterministischen lokalen Testdaten. Drei isolierte Läufe je Oberfläche;
   jeder Median muss Performance ≥ 90, LCP ≤ 2,5 s, CLS ≤ 0,1 und TBT ≤ 200 ms erfüllen.
 - Bestehendes Vercel-Projekt read-only identifizieren/inventarisieren und anschließend in separat autorisierter Aufgabe mit neuem Repo verbinden.
-- Geschützte Preview gegen isoliertes Nicht-Produktiv-Backend; keine Production-Daten.
+- Geschützte Preview gegen das nach eigener T263-Freigabe anzulegende zweite Free-Supabase-Projekt
+  `A-KlassenHoizV2-Preview` in `eu-central-1`; ausschließlich separat erzeugte synthetische
+  Preview-Fixtures, keine Production-Daten und kein local-only Seed mit festen Zugangsdaten.
 
 **Gate**: alle SC-001–SC-016 belegt, Preview freigegeben, Production weiterhin unverändert.
 
@@ -392,13 +409,23 @@ Implementierung oder Veröffentlichung der Rechtstext-Routen.
 
 Dieser Workstream darf weder gemeinsam mit normalen Implementationstasks noch automatisch in CI ausgeführt werden.
 
+**Ausführungsstand 2026-07-13**: Schritte 1–6 (T268–T274) sind abgeschlossen; Schritt 7 bleibt bis
+zur separaten Freigabe B gesperrt.
+
 1. Projekt `ewqzhdnfoozjzenzmtlm` und verantwortliche Freigeber erneut bestätigen.
 2. Vollinventar erstellen: DB-Objekte/Policies/Grants/Typen/Trigger/Funktionen, vier alte Migrationen, zwei Auth-Nutzer/Sitzungen, Storage, Hooks, Secrets/Settings.
-3. DB-Dump, Auth- und Storage-Export außerhalb des neuen Repos erzeugen und Restore-Stichprobe verifizieren.
+3. Den ausdrücklichen No-Backup-Verzicht und die akzeptierte Unwiederbringlichkeit als einmalige
+   Verfassungsausnahme dokumentieren; es gibt für den Altbestand keinen Restore-Pfad.
 4. Exakte Lösch-Allowlist und Plattform-Schutzliste (`auth`, `storage`, Projektref, Region, Billing) gegenzeichnen.
-5. **Freigabe A** einholen; Wartungsfenster aktivieren, Sitzungen widerrufen, Storage über API, Auth über Admin API und App-Objekte kontrolliert löschen.
-6. Leere, Plattformschema-/Auth-/Storage-Gesundheit und vollständige Löschprotokolle prüfen. Bei Abweichung stoppen/restore.
-7. **Freigabe B** einholen; ausschließlich neue V2-Migrationen anwenden, neue Grants/RLS/Storage/Auth-Konfiguration prüfen.
+5. **Freigabe A** mit Ziel, Operator, Datenumfang, Zweck und No-Backup-Verzicht erfassen; die
+   allowlistbasierte Löschung in genau einer DB-Transaktion über die verknüpfte Supabase CLI
+   ausführen. Da keine Storage-Objekte, Buckets, Edge Functions oder Secrets existieren, sind dafür
+   keine ergänzenden API-Löschungen erforderlich.
+6. Leere, Plattformschema-/Auth-/Storage-Gesundheit und vollständige Löschprotokolle prüfen. Bei
+   Abweichung stoppen, Incident dokumentieren und nur vorwärts neu initialisieren – gelöschter
+   Altbestand ist nicht wiederherstellbar.
+7. **Freigabe B** separat einholen; ausschließlich danach neue V2-Migrationen anwenden und neue
+   Grants/RLS/Storage/Auth-Konfiguration prüfen.
 
 **Harte Verbote**: keine Wiederverwendung alter Migrationen; kein ungeprüftes `db pull`; kein pauschaler Ein-Klick-Remote-Reset; keine Kombination von Löschen und Production-Cutover ohne Zwischengate.
 
@@ -478,16 +505,22 @@ Workflowjobs.
 |---|---|---|---|---|
 | Local | Featurebranch | lokaler Supabase-Stack | synthetischer Seed | lokale Dev Keys |
 | CI | Commit/PR | flüchtiger lokaler Supabase-Stack | pro Suite isoliert | keine Production Cloud Keys |
-| Vercel Preview | PR | isolierter Supabase-Branch/Staging nach Freigabe | synthetisch | Preview Scope, OIDC bevorzugt |
+| Vercel Preview | dedizierte vertrauenswürdige Preview-Branch | separates Free-Projekt `A-KlassenHoizV2-Preview` in `eu-central-1` nach T263-Freigabe | ausschließlich separat erzeugte synthetische Fixtures | branchgebundener Preview Scope; server-only Secret nie für untrusted PRs |
 | Production | `main` Release | bestehendes Projekt erst nach Reset+V2-Migration | V2-Neustart ohne Altimport | Production Scope, server-only Secrets |
 
 Das bestehende Vercel-Projekt ist fachlich gesetzt, seine ID konnte mangels Connector/CLI noch nicht verifiziert werden. Die Deployment-Aufgabe beginnt deshalb mit einer read-only Dashboard-/CLI-Identifikation und darf erst danach den Git-Link ändern.
 
 ## Operational Safety and Rollback
 
-- Jede destruktive Operation nennt Projektref, Objekt-Allowlist, Backup-Artefakt, Restorebefehl/-verantwortlichen und Abbruchkriterien.
-- DB-Backups enthalten keine Storage-Dateien; Storage wird separat inventarisiert/exportiert und nur per API gelöscht.
-- Schema-Rollback bevorzugt Forward Fix; vor Cutover bleibt das vorherige Vercel-Deployment verfügbar. Destruktive Datenrückkehr nutzt den vorab getesteten Restore.
+- Jede destruktive Operation nennt Projektref, Objekt-Allowlist, Sicherungs-/Restoreentscheidung und
+  Abbruchkriterien. Regulär sind Backup und getesteter Restore verpflichtend; ausschließlich für die
+  am 13. Juli 2026 genehmigte Altbestandslöschung ersetzt der dokumentierte No-Backup-Verzicht diese
+  beiden Angaben.
+- Storage wird separat inventarisiert und nur bei vorhandenen Objekten über die Storage-API gelöscht;
+  im bestätigten Altbestand existieren weder Buckets noch Objekte.
+- Schema-Rollback bevorzugt Forward Fix; vor Cutover bleibt das vorherige Vercel-Deployment
+  verfügbar. Für den ohne Backup gelöschten Altbestand ist ausschließlich eine leere
+  Vorwärtsinitialisierung möglich.
 - Auth-User/Sitzungen sind eigener Scope. `auth`/`storage`-Schemas werden nie gedroppt.
 - Secret-/Config-Inventare speichern Namen und Scopes, keine Werte.
 - Technische Logs verwenden Request-/Fehlerkorrelation ohne Tippinhalt, E-Mail, Token oder privaten
@@ -507,4 +540,9 @@ Das bestehende Vercel-Projekt ist fachlich gesetzt, seine ID konnte mangels Conn
 
 ## Complexity Tracking
 
-Keine Verfassungsverletzungen oder genehmigungspflichtigen Komplexitätsausnahmen. Die Schema-Trennung, atomaren DB-RPCs und mehrschichtige Teststrategie sind direkte Sicherheits-/Konsistenzanforderungen der Verfassung und keine optionale Architekturabweichung.
+Eine zeitlich und sachlich begrenzte Verfassungsausnahme betraf ausschließlich Backup und Rollback
+der abgeschlossenen Altbestandslöschung im Projekt `ewqzhdnfoozjzenzmtlm`; sie ist nach T274
+ausgelaufen. Details und Genehmigung stehen in
+`docs/operations/approvals/supabase-reset-a.md`. Die Schema-Trennung, atomaren DB-RPCs und
+mehrschichtige Teststrategie sind direkte Sicherheits-/Konsistenzanforderungen der Verfassung und
+keine optionale Architekturabweichung.

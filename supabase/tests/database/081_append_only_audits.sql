@@ -1,0 +1,11 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(9);
+select ok(not has_table_privilege('service_role','app.result_revisions','UPDATE'),'result revisions cannot be updated');
+select ok(not has_table_privilege('service_role','app.result_revisions','DELETE'),'result revisions cannot be deleted');
+select ok(not has_table_privilege('service_role','private.destructive_audit_events','UPDATE'),'delete audit cannot be updated');
+select ok(not has_table_privilege('service_role','private.destructive_audit_events','DELETE'),'delete audit cannot be deleted');
+select ok(not has_table_privilege('service_role','app.admin_access_events','INSERT'),'support audit cannot be directly forged');
+select ok(not has_table_privilege('service_role','app.admin_access_events','UPDATE'),'support audit cannot be updated');
+select ok(not has_table_privilege('service_role','app.admin_access_events','DELETE'),'support audit cannot be deleted');
+select ok(not has_table_privilege('authenticated','app.admin_access_events','UPDATE'),'authenticated cannot update support audit');
+select ok(not has_table_privilege('authenticated','app.admin_access_events','DELETE'),'authenticated cannot delete support audit');
+select * from finish();rollback;

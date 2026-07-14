@@ -53,10 +53,11 @@
 - 5/5 schließen Registrierung, Beitritt und vollständige Tippabgabe ohne Hilfe ab; mindestens 4/5
   erkennen die nächste offene Tippaktion selbstständig. Zeitziele verwenden den Median der
   erfolgreichen Durchläufe. Technische Ausfälle bleiben separat sichtbar.
-- Vor der technischen Einbindung von Impressum und Datenschutzerklärung müssen Betreiberangaben,
-  Datenflüsse, Dienstleister, Aufbewahrungsregeln und beide Rechtstexte fachlich ermittelt und
-  ausdrücklich freigegeben sein. Der Build darf keine erfundenen Platzhalter als freigegebenen
-  Rechtstext ausliefern.
+- Vor der technischen Einbindung müssen die private, nicht-kommerzielle Nutzungsgrenze und der
+  Nutzungs- und Datenschutzhinweis gegen die tatsächlich eingebundenen Dienstleister,
+  Datenkategorien sowie Konto- und Löschwege geprüft sein. Ein Impressum sowie private Anschrift-,
+  Steuer-, Register- oder Unternehmensangaben werden in V1 nicht eingebunden. Der Build darf keine
+  erfundenen Platzhalter als freigegebenen Inhalt ausliefern.
 
 ## Test- und Release-Matrix
 

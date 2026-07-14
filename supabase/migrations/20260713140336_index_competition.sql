@@ -1,0 +1,13 @@
+create index league_seasons_league_id_idx on app.league_seasons(league_id);
+create index league_seasons_season_id_idx on app.league_seasons(season_id);
+create index league_seasons_status_idx on app.league_seasons(status, id);
+create index league_season_clubs_club_id_idx on app.league_season_clubs(club_id);
+create index league_season_clubs_active_idx on app.league_season_clubs(league_season_id, club_id) where status = 'active';
+create index matchdays_league_season_id_idx on app.matchdays(league_season_id, status, number);
+create index matches_matchday_id_idx on app.matches(matchday_id, kickoff_at);
+create index matches_home_club_id_idx on app.matches(home_club_id);
+create index matches_away_club_id_idx on app.matches(away_club_id);
+create index matches_status_kickoff_idx on app.matches(status, kickoff_at);
+create index match_results_updated_by_idx on app.match_results(updated_by);
+create index result_revisions_match_id_idx on app.result_revisions(match_id, revision_no desc);
+create index result_revisions_changed_by_idx on app.result_revisions(changed_by);

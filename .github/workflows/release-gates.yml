@@ -1,0 +1,40 @@
+name: Release Gates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-evidence:
+    runs-on: ubuntu-latest
+    environment: preview
+    timeout-minutes: 35
+    env:
+      PLAYWRIGHT_HTML_OPEN: never
+      PLAYWRIGHT_WEB_SERVER_COMMAND: npm run start
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - run: npm install --global npm@11.18.0
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run db:start
+      - run: npm run build
+      - run: npm run test:e2e -- -Project chromium
+      - run: npm run test:accessibility -- -Project chromium
+      - run: npm run test:pwa -- -Project chromium
+      - run: npm run test:performance:lab
+      - name: Stop local Supabase
+        if: always()
+        run: npx supabase stop --no-backup
+
+  remote-mutation-sentinel:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Remote reset, migrations, production identities, test data and cutover are never CI jobs."

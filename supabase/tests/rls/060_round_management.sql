@@ -1,0 +1,11 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(9);
+select function_privs_are('api','transfer_round_ownership',array['uuid','uuid','integer'],'authenticated',array['EXECUTE'],'transfer is RPC-only');
+select function_privs_are('api','remove_round_member',array['uuid','uuid'],'authenticated',array['EXECUTE'],'remove is RPC-only');
+select function_privs_are('api','leave_round',array['uuid'],'authenticated',array['EXECUTE'],'leave is RPC-only');
+select function_privs_are('api','archive_round',array['uuid','integer'],'authenticated',array['EXECUTE'],'archive is RPC-only');
+select function_privs_are('api','reactivate_round',array['uuid','integer'],'authenticated',array['EXECUTE'],'reactivate is RPC-only');
+select function_privs_are('api','hard_delete_round',array['uuid','integer','text'],'authenticated',array['EXECUTE'],'hard delete is RPC-only');
+select function_privs_are('api','prepare_account_deletion',array[]::text[],'authenticated',array['EXECUTE'],'account preparation is guarded RPC');
+select ok(not has_table_privilege('authenticated','app.round_memberships','UPDATE'),'members cannot bypass lifecycle RPCs');
+select ok(not has_table_privilege('authenticated','app.prediction_rounds','DELETE'),'members cannot bypass hard delete RPC');
+select * from finish();rollback;

@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      test-tooling:
+        patterns:
+          - "@playwright/*"
+          - "@testing-library/*"
+          - "vitest"
+      lint-tooling:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint/*"
+          - "prettier"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

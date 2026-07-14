@@ -1,0 +1,14 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(12);
+select is(private.calculate_prediction_points(2,1,2,1),4::smallint,'exact home win is 4');
+select is(private.calculate_prediction_points(0,0,0,0),4::smallint,'exact nil draw is 4');
+select is(private.calculate_prediction_points(3,2,2,1),3::smallint,'same positive goal difference is 3');
+select is(private.calculate_prediction_points(1,3,0,2),3::smallint,'same negative goal difference is 3');
+select is(private.calculate_prediction_points(1,1,2,2),3::smallint,'non-exact draw is 3');
+select is(private.calculate_prediction_points(3,1,1,0),2::smallint,'home tendency only is 2');
+select is(private.calculate_prediction_points(0,2,1,2),2::smallint,'away tendency only is 2');
+select is(private.calculate_prediction_points(2,2,3,1),0::smallint,'draw instead of home is 0');
+select is(private.calculate_prediction_points(2,0,0,1),0::smallint,'opposite tendency is 0');
+select volatility_is('private','calculate_prediction_points',array['integer','integer','integer','integer'],'immutable','score function is immutable');
+select is(private.score_calculation_version(),1::smallint,'calculation version is one');
+select is((select proisstrict from pg_proc where oid='private.calculate_prediction_points(integer,integer,integer,integer)'::regprocedure),true,'score function is strict');
+select * from finish();rollback;

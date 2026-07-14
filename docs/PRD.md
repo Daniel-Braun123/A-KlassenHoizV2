@@ -516,7 +516,7 @@ Nur App-Admins erreichen den globalen Verwaltungsbereich.
 - Registrierung
 - Passwort vergessen/zurücksetzen
 - Einladungsvorschau
-- Datenschutz und Impressum
+- Privater Nutzungs- und Datenschutzhinweis
 
 Eine umfangreiche Marketing-Website ist für V1 nicht erforderlich.
 
@@ -650,10 +650,16 @@ Die Anwendung erfüllt WCAG 2.2 AA für alle Kernabläufe.
 - In Tipprunden wird primär der Tipprunden-Nickname angezeigt.
 - Es werden nur für den Betrieb erforderliche personenbezogene Daten gespeichert.
 - Nutzer können ihr Konto löschen; Abhängigkeiten zu historischen Ranglisten werden datenschutzkonform anonymisiert oder entfernt.
-- Betreiberangaben, tatsächliche Datenflüsse, Dienstleister, Aufbewahrungsregeln, Impressum und
-  Datenschutzerklärung werden fachlich ermittelt und ausdrücklich freigegeben, bevor die Inhalte
-  technisch eingebunden werden; rechtliche Angaben dürfen nicht erfunden werden.
-- Das freigegebene Impressum und die freigegebene Datenschutzerklärung sind öffentlich erreichbar.
+- V1 ist nach der verbindlichen Entscheidung des Projekteigentümers ausschließlich eine
+  nicht-kommerzielle, einladungsbasierte Website für einen privaten Freundeskreis. Es gibt keine
+  öffentliche Vermarktung, keine entgeltliche Leistung und keine geschäftliche Nutzung.
+- V1 veröffentlicht deshalb kein Impressum und insbesondere keine private Anschrift, Steuer-,
+  Register- oder Unternehmensangaben. Eine spätere Öffnung, Monetarisierung oder geschäftliche
+  Nutzung hebt diese Produktentscheidung auf und erfordert vorab eine neue rechtliche Prüfung.
+- Ein knapper, öffentlich erreichbarer Nutzungs- und Datenschutzhinweis beschreibt wahrheitsgemäß
+  den privaten Zweck, die tatsächlich eingebundenen technischen Dienstleister, die verarbeiteten
+  Datenkategorien sowie Konto- und Löschmöglichkeiten. Nicht bestätigte Angaben dürfen nicht
+  erfunden werden.
 
 ### 15.2 Supabase-Sicherheit
 
@@ -690,7 +696,12 @@ Die vorhandenen Supabase- und Vercel-Projekte sollten wiederverwendet werden, so
 
 ### 17.2 Supabase-Reset
 
-Vor dem Reset wird trotz gewünschter Komplettlöschung ein einmaliges Backup bzw. Export zur Absicherung erstellt und außerhalb des neuen Repositories abgelegt. Danach werden kontrolliert entfernt:
+Der Projekteigentümer hat am 13. Juli 2026 ausdrücklich verlangt, den unten beschriebenen
+Altbestand ohne Backup oder Export endgültig zu löschen, und den unwiederbringlichen Datenverlust
+akzeptiert. Diese einmalige Abweichung von der regulären Sicherungsanforderung wird als genehmigte
+Verfassungsausnahme mit Zielprüfung, Vollinventar, exakter Allowlist, Abbruchkriterien und
+Nachkontrolle dokumentiert. Es existiert danach kein Restore-Pfad für den Altbestand. Kontrolliert
+entfernt werden:
 
 - alle alten Anwendungs-Tabellen, Views, Funktionen, Trigger, Policies und anwendungsspezifischen Typen,
 - alle alten Datensätze,
@@ -708,6 +719,11 @@ Nicht automatisch gelöscht werden:
 - Vercel-Projekt, Domain und Deployment-Infrastruktur.
 
 Die Löschung ist eine separate, ausdrücklich bestätigte Implementierungsaufgabe. Sie darf nicht beiläufig während der Spezifikation erfolgen.
+
+**Ausführungsstand 13. Juli 2026:** Die separate Freigabe A wurde ausdrücklich ohne Backup erteilt.
+Der allowlistbasierte Altbestand und die alten Auth-Nutzer wurden transaktional gelöscht; die
+unabhängige Nachkontrolle bestätigte den leeren, gesunden Projektzustand. Das neue V2-Schema und
+seine Konfiguration bleiben bis zu einer separaten Freigabe B unangetastet.
 
 ### 17.3 Auth-Konfiguration
 
@@ -856,7 +872,7 @@ Da kein fester Termin vorgegeben ist, erfolgt die Planung qualitäts- und risiko
 
 | Risiko | Auswirkung | Gegenmaßnahme |
 |---|---|---|
-| Destruktiver Supabase-Reset löscht benötigte Daten | Datenverlust | Einmaliger Export, explizite Reset-Checkliste und getrennte Bestätigung |
+| Destruktiver Supabase-Reset löscht benötigte Daten | Unwiederbringlicher Datenverlust | Vom Projekteigentümer ausdrücklich ohne Backup freigegeben; exakte Zielprüfung, Vollinventar, Allowlist, transaktionale Ausführung, Abbruchkriterien und getrennte Nachkontrolle |
 | Global falsches Ergebnis betrifft viele Tipprunden | Falsche Ranglisten | Historie, starke Bestätigung, atomare Neuberechnung und Admin-Audit |
 | Manuelle Spielplanpflege ist zeitaufwendig | Admin-Fehler und Verzögerung | Bulk-freundliche Formulare, Duplikatprüfung und klare Entwurfs-/Veröffentlichungszustände |
 | Sportliche Optik wirkt wie Echtgeldwetten | Falsche Produktwahrnehmung | Keine Quoten-/Geldbegriffe, freundliche Community-Sprache und eigenständige Markenidentität |

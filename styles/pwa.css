@@ -1,0 +1,16 @@
+@media (display-mode: standalone) {
+  .app-header__inner {
+    padding-top: max(var(--space-2), env(safe-area-inset-top));
+  }
+  .round-navigation {
+    padding-bottom: max(var(--space-2), env(safe-area-inset-bottom));
+  }
+}
+@media (orientation: landscape) and (max-height: 32rem) {
+  .content-page {
+    padding-block: var(--space-5);
+  }
+  .round-navigation ul {
+    padding-block: var(--space-1);
+  }
+}

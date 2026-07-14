@@ -1,0 +1,11 @@
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(7);
+select policies_are('app','predictions',array['predictions_deadline_read'],'predictions expose one time-aware read policy');
+select ok(not has_table_privilege('authenticated','app.predictions','INSERT'),'no direct prediction insert');
+select ok(not has_table_privilege('authenticated','app.predictions','UPDATE'),'no direct prediction update');
+select ok(not has_table_privilege('authenticated','app.predictions','DELETE'),'no direct prediction delete');
+select function_privs_are('api','save_prediction',array['uuid','uuid','smallint','smallint','uuid'],'authenticated',array['EXECUTE'],'save RPC is guarded application boundary');
+select tests.authenticate_as('app_admin');set local role authenticated;
+select is((select count(*) from app.predictions),0::bigint,'app admin has no prediction read bypass');
+reset role;
+select ok(not private.is_round_member('00000000-0000-4000-8000-000000000099'::uuid),'cross-round IDs confer no membership');
+select * from finish();rollback;

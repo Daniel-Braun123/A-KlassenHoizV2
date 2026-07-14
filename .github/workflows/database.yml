@@ -1,0 +1,36 @@
+name: Database
+
+on:
+  pull_request:
+    paths:
+      - "supabase/**"
+      - "scripts/database.ps1"
+      - ".github/workflows/database.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - run: npm install --global npm@11.18.0
+      - run: npm ci
+      - name: Start local Supabase
+        shell: pwsh
+        run: ./scripts/database.ps1 start
+      - name: Rebuild and test V2 schema
+        shell: pwsh
+        run: ./scripts/database.ps1 test
+      - run: npm run test:integration
+      - run: npm run db:lint
+      - name: Stop local Supabase
+        if: always()
+        run: npx supabase stop --no-backup
