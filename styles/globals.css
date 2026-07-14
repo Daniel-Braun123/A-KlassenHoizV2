@@ -322,12 +322,26 @@ h3 {
   letter-spacing: -0.035em;
 }
 
-.launch-copy > p:last-child {
+.launch-copy__description {
   max-width: 60ch;
   margin: var(--space-6) 0 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-lg);
   text-wrap: pretty;
+}
+
+.launch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.launch-footnote {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .auth-shell {

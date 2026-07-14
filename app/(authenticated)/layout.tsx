@@ -7,7 +7,7 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
   if (!profile || profile.status !== "active") redirect("/login" as Route);
   return (
     <>
-      <AccountNavigation isAppAdmin={profile.app_role === "app_admin"} />
+      <AccountNavigation />
       {children}
     </>
   );

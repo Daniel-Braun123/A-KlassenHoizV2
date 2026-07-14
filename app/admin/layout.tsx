@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
   }
   return (
     <AdminResponsiveLayout>
-      <AccountNavigation isAppAdmin />
+      <AccountNavigation />
       <section className="admin-shell">
         <header className="admin-shell__header">
           <p className="product-mark">Globale Verwaltung</p>

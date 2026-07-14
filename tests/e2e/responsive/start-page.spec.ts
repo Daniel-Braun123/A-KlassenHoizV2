@@ -26,6 +26,6 @@ test("app admin start page only offers global administration", async ({ page }) 
   await page.goto("/start");
 
   await expect(page.getByRole("heading", { level: 1, name: "Globale Verwaltung" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Verwaltung öffnen" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Verwaltung" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Neue Tipprunde" })).toHaveCount(0);
 });
