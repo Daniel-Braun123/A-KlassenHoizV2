@@ -530,10 +530,10 @@ Cutover-Freigabe oder eine ausdrücklich separat genannte Cleanup-Freigabe.
 
 **Zweck**: Nachweise konsolidieren und reproduzierbare Betriebs-/Entwicklungsübergabe sicherstellen.
 
-- [ ] T292 Architekturentscheidungen, Trust-Grenzen und endgültiges Schema aktualisieren in `docs/architecture/v2-architecture.md`
-- [ ] T293 Application-, RLS- und Quality-Contracts gegen die implementierten Schnittstellen abgleichen in `docs/quality/contract-conformance.md`
-- [ ] T294 `quickstart.md` vollständig gegen einen frischen lokalen Checkout validieren in `docs/quality/quickstart-validation.md`
-- [ ] T295 Betriebsrunbooks für Backup, Restore, Adminprovisionierung, Score-Rebuild und Incident Response finalisieren in `docs/operations/runbooks.md`
+- [X] T292 Architekturentscheidungen, Trust-Grenzen und endgültiges Schema aktualisieren in `docs/architecture/v2-architecture.md`
+- [X] T293 Application-, RLS- und Quality-Contracts gegen die implementierten Schnittstellen abgleichen in `docs/quality/contract-conformance.md`
+- [X] T294 `quickstart.md` vollständig gegen einen frischen lokalen Checkout validieren in `docs/quality/quickstart-validation.md`
+- [X] T295 Betriebsrunbooks für Backup, Restore, Adminprovisionierung, Score-Rebuild und Incident Response finalisieren in `docs/operations/runbooks.md`
 - [ ] T296 Alle Freigaben und Nachweise ohne Secret-Werte, Tippinhalte, E-Mails oder private Rundennamen archivieren in `docs/operations/audit-index.md`
 - [ ] T297 Finale Constitution-/PRD-/Spec-/Plan-/Tasks-Konformität und vollständige Definition of Done dokumentieren in `docs/quality/final-acceptance.md`
 
