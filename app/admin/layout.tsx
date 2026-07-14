@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { AccountNavigation } from "@/components/patterns/account-navigation";
 import { AdminNavigation } from "@/components/competition/admin-navigation";
 import { AdminResponsiveLayout } from "@/components/competition/admin-responsive-layout";
 import { requireAppAdmin } from "@/features/competition/server";
@@ -11,6 +12,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
   }
   return (
     <AdminResponsiveLayout>
+      <AccountNavigation isAppAdmin />
       <section className="admin-shell">
         <header className="admin-shell__header">
           <p className="product-mark">Globale Verwaltung</p>

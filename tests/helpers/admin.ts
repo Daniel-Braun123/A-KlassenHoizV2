@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 export async function loginAsLocalAppAdmin(page: Page): Promise<void> {
   await page.goto("/login?next=/admin/competitions");
@@ -6,6 +6,9 @@ export async function loginAsLocalAppAdmin(page: Page): Promise<void> {
   await page.locator('input[name="password"]').fill("LocalFixture42!");
   await page.getByRole("button", { name: "Anmelden" }).click();
   await page.waitForURL(/\/admin\/competitions$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Wettbewerbe zentral pflegen" }),
+  ).toBeVisible();
 }
 
 export async function loginAsLocalUser(

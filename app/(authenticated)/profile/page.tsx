@@ -1,7 +1,6 @@
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 
-import { SessionMenu } from "@/components/auth/session-menu";
 import { Link } from "@/components/ui/link";
 import { InstallApp } from "@/components/patterns/install-app";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -17,7 +16,6 @@ export default async function ProfilePage() {
       <p className="product-mark">Profil</p>
       <h1 id="profile-title">{profile?.display_name ?? "Dein Profil"}</h1>
       <p>Hier verwaltest du später Anzeigename, Konto und Datenschutz.</p>
-      <SessionMenu />
       <Link href={"/profile/delete-account" as Route}>Konto und Datenschutz</Link>
       <InstallApp />
     </section>
