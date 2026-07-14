@@ -1,9 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { ApplicationError } from "@/lib/actions/errors";
+import { berlinDateTimeLocalToIso } from "./berlin-time";
 import { competitionFailure, competitionSuccess } from "./action-state";
 import { createMatch, createMatchday, updateMatch, updateMatchday } from "./schedule-service";
 import type { CompetitionActionState } from "./types";
+
+function kickoffIso(value: FormDataEntryValue | null): string {
+  try {
+    return berlinDateTimeLocalToIso(String(value ?? ""));
+  } catch (error) {
+    throw new ApplicationError("INVALID_INPUT", "Invalid Europe/Berlin kickoff", { cause: error });
+  }
+}
 
 export async function createMatchdayAction(
   _: CompetitionActionState,
@@ -26,12 +36,11 @@ export async function createMatchAction(
   data: FormData,
 ): Promise<CompetitionActionState> {
   try {
-    const kickoff = new Date(String(data.get("kickoffAt")));
     await createMatch({
       matchdayId: data.get("matchdayId"),
       homeClubId: data.get("homeClubId"),
       awayClubId: data.get("awayClubId"),
-      kickoffAt: kickoff.toISOString(),
+      kickoffAt: kickoffIso(data.get("kickoffAt")),
     });
     revalidatePath("/admin/schedule");
     return competitionSuccess("Spiel wurde angelegt.");
@@ -62,14 +71,13 @@ export async function updateMatchAction(
   data: FormData,
 ): Promise<CompetitionActionState> {
   try {
-    const kickoff = new Date(String(data.get("kickoffAt")));
     await updateMatch({
       id: data.get("id"),
       expectedVersion: data.get("expectedVersion"),
       matchdayId: data.get("matchdayId"),
       homeClubId: data.get("homeClubId"),
       awayClubId: data.get("awayClubId"),
-      kickoffAt: kickoff.toISOString(),
+      kickoffAt: kickoffIso(data.get("kickoffAt")),
       status: data.get("status"),
     });
     revalidatePath("/admin/schedule");

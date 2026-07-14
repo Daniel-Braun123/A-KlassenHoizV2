@@ -7,6 +7,7 @@ import { usePredictionAutosave } from "@/features/predictions/use-prediction-aut
 import type { PredictionSheetRow, VisiblePrediction } from "@/features/predictions/types";
 
 const formatter = new Intl.DateTimeFormat("de-DE", {
+  timeZone: "Europe/Berlin",
   weekday: "short",
   day: "2-digit",
   month: "2-digit",
