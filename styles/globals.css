@@ -1776,17 +1776,29 @@ p {
     display: grid;
     width: 100%;
     max-width: none;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-1);
     padding: 0;
   }
 
+  .round-navigation li {
+    min-width: 0;
+  }
+
   .round-navigation a {
+    width: 100%;
+    min-width: 0;
     flex-direction: row;
     justify-content: flex-start;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     font-size: var(--font-size-sm);
     text-align: left;
+  }
+
+  .round-navigation a[aria-current="page"] {
+    box-shadow: inset 3px 0 var(--color-brand);
+    font-weight: 780;
   }
 
   .round-shell > :not(.round-navigation) {

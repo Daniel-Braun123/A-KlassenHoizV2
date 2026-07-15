@@ -18,6 +18,25 @@ for (const width of [320, 375, 768, 1024, 1440])
     if (width >= 1024) {
       expect(navigationBox!.x).toBeLessThan(contentBox!.x);
       expect(navigationBox!.width).toBeLessThan(contentBox!.width);
+
+      const navigationItems = await page.locator(".round-navigation li").evaluateAll((items) =>
+        items.map((item) => {
+          const rect = item.getBoundingClientRect();
+          return { bottom: rect.bottom, left: rect.left, right: rect.right, top: rect.top };
+        }),
+      );
+      for (let index = 1; index < navigationItems.length; index += 1) {
+        expect(navigationItems[index]!.top).toBeGreaterThanOrEqual(
+          navigationItems[index - 1]!.bottom,
+        );
+        expect(navigationItems[index]!.left).toBeCloseTo(navigationItems[0]!.left, 0);
+        expect(navigationItems[index]!.right).toBeCloseTo(navigationItems[0]!.right, 0);
+      }
+      expect(
+        await page
+          .locator(".round-navigation")
+          .evaluate((element) => element.scrollWidth <= element.clientWidth),
+      ).toBe(true);
     } else {
       expect(navigationBox!.y + navigationBox!.height).toBeGreaterThanOrEqual(
         Math.max(640, Math.round(width * 0.9)) - 1,
