@@ -23,7 +23,7 @@ export function RoundNavigation({ roundId }: { roundId: string }) {
             <Link
               aria-current={
                 item.href === base
-                  ? pathname === base || pathname.startsWith(`${base}/settings`)
+                  ? pathname === base
                     ? "page"
                     : undefined
                   : pathname.startsWith(item.href)

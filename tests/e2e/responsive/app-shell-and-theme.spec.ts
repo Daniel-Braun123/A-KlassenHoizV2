@@ -7,6 +7,8 @@ test("authenticated mobile shell has one header and an account menu", async ({ p
   await loginAsLocalUser(page, "owner@example.test");
 
   await expect(page.locator(".app-header")).toHaveCount(1);
+  await expect(page.locator(".app-brand__logo")).toBeVisible();
+  await expect(page.locator(".app-brand__logo")).toHaveAttribute("src", /app-icon\.svg/);
   await expect(page.locator(".account-navigation")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Start", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Profil", exact: true })).toHaveCount(0);

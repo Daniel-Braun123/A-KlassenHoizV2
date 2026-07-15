@@ -43,8 +43,6 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
         )}
       </div>
       <div className="page-actions">
-        <Link href={`/rounds/${round.id}/rankings` as Route}>Rangliste</Link>
-        <Link href={`/rounds/${round.id}/results` as Route}>Ergebnisse</Link>
         {round.role === "owner" ? (
           <Link href={`/rounds/${round.id}/settings` as Route} variant="button">
             Runde verwalten

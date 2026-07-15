@@ -140,17 +140,11 @@ p {
   text-decoration: none;
 }
 
-.app-brand__mark {
-  display: grid;
+.app-brand__logo {
   width: 2.5rem;
   height: 2.5rem;
-  place-items: center;
   border-radius: 0.7rem;
-  background: var(--color-brand);
-  color: var(--color-brand-text);
-  font-size: var(--font-size-sm);
-  font-weight: 850;
-  letter-spacing: -0.03em;
+  object-fit: contain;
 }
 
 .app-header__utility {
@@ -1724,35 +1718,6 @@ p {
     padding-inline: var(--page-gutter);
   }
 
-  .round-shell {
-    padding-bottom: 0;
-  }
-
-  .round-navigation {
-    position: sticky;
-    bottom: auto;
-    top: var(--header-height);
-    margin-inline: calc(-1 * var(--page-gutter));
-    padding-inline: var(--page-gutter);
-    border-top: 0;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .round-navigation ul {
-    display: flex;
-    width: min(100%, var(--content-max));
-    max-width: none;
-    justify-content: flex-start;
-    gap: var(--space-2);
-    padding-block: var(--space-2);
-  }
-
-  .round-navigation a {
-    flex-direction: row;
-    padding-inline: var(--space-4);
-    font-size: var(--font-size-sm);
-  }
-
   .launch-layout {
     grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
     align-items: center;
@@ -1780,6 +1745,52 @@ p {
   .inline-editor {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
+  }
+}
+
+@media (min-width: 64rem) {
+  .round-shell {
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: clamp(var(--space-8), 4vw, var(--space-12));
+    padding-bottom: 0;
+  }
+
+  .round-navigation {
+    position: sticky;
+    z-index: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    top: calc(var(--header-height) + var(--space-8));
+    margin: var(--space-8) 0 0;
+    padding: 0 var(--space-5) 0 0;
+    border-top: 0;
+    border-right: 1px solid var(--color-border);
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .round-navigation ul {
+    display: grid;
+    width: 100%;
+    max-width: none;
+    gap: var(--space-1);
+    padding: 0;
+  }
+
+  .round-navigation a {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+    text-align: left;
+  }
+
+  .round-shell > :not(.round-navigation) {
+    min-width: 0;
   }
 }
 
