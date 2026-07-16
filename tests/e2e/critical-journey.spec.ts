@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { createPredictionFixture } from "../helpers/fixtures";
 import { createLocalActorClient } from "../helpers/local-actors";
+import { finishMatchForLocalTest } from "../helpers/local-database";
 
 test("central competition to registration, invitation, prediction, result and ranking", async ({
   page,
@@ -41,9 +42,11 @@ test("central competition to registration, invitation, prediction, result and ra
   const card = page.locator(".prediction-card").first();
   await card.locator("input").nth(0).fill("2");
   await card.locator("input").nth(1).fill("1");
-  await expect(card.getByText("Gespeichert", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Tipps speichern" }).click();
+  await expect(page.getByText("Der Tipp wurde gespeichert.")).toBeVisible();
 
   const admin = createLocalActorClient("app-admin@example.test");
+  finishMatchForLocalTest(match.id);
   const result = await admin.schema("api").rpc("set_match_result", {
     p_match_id: match.id,
     p_expected_match_version: 2,

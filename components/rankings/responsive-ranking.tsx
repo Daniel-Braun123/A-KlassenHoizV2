@@ -9,7 +9,10 @@ export function ResponsiveRanking({
 }) {
   return (
     <section className="ranking-section">
-      <h2>{title}</h2>
+      <div className="ranking-section__heading">
+        <h2>{title}</h2>
+        <span>{rows.length === 1 ? "1 Mitglied" : `${rows.length} Mitglieder`}</span>
+      </div>
       <div
         className="ranking-table-wrap"
         tabIndex={0}
@@ -26,9 +29,15 @@ export function ResponsiveRanking({
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <RankingRow key={row.membership_id!} row={row} />
-            ))}
+            {rows.length ? (
+              rows.map((row) => <RankingRow key={row.membership_id!} row={row} />)
+            ) : (
+              <tr>
+                <td className="ranking-table__empty" colSpan={4}>
+                  Noch keine Ranglistendaten vorhanden.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

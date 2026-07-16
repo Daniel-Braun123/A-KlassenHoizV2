@@ -23,15 +23,17 @@
     if (refreshRequested) window.location.reload();
   });
   window.setTimeout(() => {
-    void navigator.serviceWorker.register("/sw.js").then((registration) => {
-      if (registration.waiting) showUpdate(registration.waiting);
-      registration.addEventListener("updatefound", () => {
-        const worker = registration.installing;
-        worker?.addEventListener("statechange", () => {
-          if (worker.state === "installed" && navigator.serviceWorker.controller)
-            showUpdate(worker);
+    void navigator.serviceWorker
+      .register("/sw.js", { updateViaCache: "none" })
+      .then((registration) => {
+        if (registration.waiting) showUpdate(registration.waiting);
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          worker?.addEventListener("statechange", () => {
+            if (worker.state === "installed" && navigator.serviceWorker.controller)
+              showUpdate(worker);
+          });
         });
       });
-    });
   }, 2_500);
 })();

@@ -1,8 +1,5 @@
-import type { Route } from "next";
-
-import { MatchdaySelector, type MatchdayOption } from "@/components/predictions/matchday-selector";
-import { PredictionList } from "@/components/predictions/prediction-list";
-import { Link } from "@/components/ui/link";
+import type { MatchdayOption } from "@/components/predictions/matchday-selector";
+import { PredictionWorkspace } from "@/components/predictions/prediction-workspace";
 import { getMyRound } from "@/features/rounds/service";
 import { listPredictionSheet, listVisiblePredictions } from "@/features/predictions/service";
 
@@ -46,21 +43,18 @@ export default async function PredictionsPage({
       <div className="content-page__intro">
         <p className="product-mark">{round.name}</p>
         <h1>Tipps abgeben</h1>
-        <p>
-          Jeder Tipp wird automatisch bestätigt gespeichert. Die Frist endet für jedes Spiel genau
-          beim Anpfiff.
-        </p>
       </div>
       {selectedId ? (
-        <>
-          <MatchdaySelector roundId={roundId} options={options} selectedId={selectedId} />
-          <PredictionList
-            matches={matches}
-            visible={visible.filter((item) =>
-              matches.some((match) => match.match_id === item.match_id),
-            )}
-          />
-        </>
+        <PredictionWorkspace
+          key={selectedId}
+          matches={matches}
+          options={options}
+          roundId={roundId}
+          selectedId={selectedId}
+          visible={visible.filter((item) =>
+            matches.some((match) => match.match_id === item.match_id),
+          )}
+        />
       ) : (
         <div className="status-state">
           <span className="status-state__symbol">i</span>
@@ -70,7 +64,6 @@ export default async function PredictionsPage({
           </div>
         </div>
       )}
-      <Link href={`/rounds/${roundId}` as Route}>Zurück zur Tipprunde</Link>
     </section>
   );
 }

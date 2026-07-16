@@ -1,12 +1,63 @@
 import "server-only";
 
-import { resultSchema } from "./schemas";
-import { requireAppAdmin, throwCompetitionError } from "./server";
+import { z } from "zod";
 
-export async function setMatchResult(
-  input: unknown,
-): Promise<{ revisionNo: number; matchVersion: number; recalculatedCount: number }> {
-  const value = resultSchema.parse(input);
+import type { Json } from "@/lib/supabase/database.types";
+import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
+import type { AdminScheduleRow } from "./types";
+
+const resultInputSchema = z
+  .object({
+    matchId: z.string().uuid(),
+    expectedMatchVersion: z.coerce.number().int().positive(),
+    expectedRevision: z.coerce.number().int().min(0),
+    decision: z.enum(["official", "excluded"]),
+    homeGoals: z.coerce.number().int().min(0).max(99).optional(),
+    awayGoals: z.coerce.number().int().min(0).max(99).optional(),
+    reason: z.string().trim().max(500).optional(),
+  })
+  .superRefine((value, context) => {
+    if (
+      value.decision === "official" &&
+      (value.homeGoals === undefined || value.awayGoals === undefined)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "Für ein offizielles Ergebnis werden beide Torwerte benötigt.",
+      });
+    }
+  });
+
+const resultBatchSchema = z.array(resultInputSchema).min(1).max(100);
+
+export type MatchResultInput = z.infer<typeof resultInputSchema>;
+export type MatchResultMutation = Readonly<{
+  matchId: string;
+  revisionNo: number;
+  matchVersion: number;
+  recalculatedCount: number;
+}>;
+
+export async function listAdminResults(leagueId?: string): Promise<AdminScheduleRow[]> {
+  const supabase = await appAdminClientOrNull();
+  if (!supabase) return [];
+  let query = supabase
+    .schema("api")
+    .from("admin_schedule")
+    .select("*")
+    .order("league_name")
+    .order("year_label", { ascending: false })
+    .order("phase")
+    .order("matchday_number")
+    .order("kickoff_at");
+  if (leagueId) query = query.eq("league_id", leagueId);
+  const { data, error } = await query;
+  throwCompetitionError(error);
+  return data ?? [];
+}
+
+export async function setMatchResult(input: unknown): Promise<MatchResultMutation> {
+  const value = resultInputSchema.parse(input);
   const supabase = await requireAppAdmin();
   const { data, error } = await supabase.schema("api").rpc("set_match_result", {
     p_match_id: value.matchId,
@@ -22,8 +73,32 @@ export async function setMatchResult(
   const row = data?.[0];
   if (!row) throw new Error("Result RPC returned no row");
   return {
+    matchId: value.matchId,
     revisionNo: row.revision_no,
     matchVersion: row.match_version,
     recalculatedCount: row.recalculated_count,
   };
+}
+
+export async function setMatchResultsBatch(input: unknown): Promise<MatchResultMutation[]> {
+  const values = resultBatchSchema.parse(input);
+  const supabase = await requireAppAdmin();
+  const { data, error } = await supabase.schema("api").rpc("set_match_results_batch", {
+    p_results: values.map((value) => ({
+      matchId: value.matchId,
+      expectedMatchVersion: value.expectedMatchVersion,
+      expectedRevision: value.expectedRevision,
+      decision: value.decision,
+      homeGoals: value.decision === "official" ? value.homeGoals! : null,
+      awayGoals: value.decision === "official" ? value.awayGoals! : null,
+      reason: value.reason ?? null,
+    })) as Json,
+  });
+  throwCompetitionError(error);
+  return (data ?? []).map((row) => ({
+    matchId: row.match_id,
+    revisionNo: row.revision_no,
+    matchVersion: row.match_version,
+    recalculatedCount: row.recalculated_count,
+  }));
 }

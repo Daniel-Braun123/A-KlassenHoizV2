@@ -6,9 +6,7 @@ export async function loginAsLocalAppAdmin(page: Page): Promise<void> {
   await page.locator('input[name="password"]').fill("LocalFixture42!");
   await page.getByRole("button", { name: "Anmelden" }).click();
   await page.waitForURL(/\/admin\/competitions$/);
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Wettbewerbe zentral pflegen" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Globale Fußballdaten" })).toBeVisible();
 }
 
 export async function loginAsLocalUser(

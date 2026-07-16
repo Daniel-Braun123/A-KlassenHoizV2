@@ -12,10 +12,121 @@ export type Database = {
       [_ in never]: never
     }
     Views: {
+      admin_leagues: {
+        Row: {
+          club_count: number | null
+          club_ids: string[] | null
+          club_names: string[] | null
+          has_predictions: boolean | null
+          id: string | null
+          name: string | null
+          status: Database["app"]["Enums"]["league_season_status"] | null
+          version: number | null
+          year_label: string | null
+        }
+        Relationships: []
+      }
+      admin_schedule: {
+        Row: {
+          away_club_id: string | null
+          away_club_logo_url: string | null
+          away_club_name: string | null
+          away_goals: number | null
+          can_enter_result: boolean | null
+          decision: Database["app"]["Enums"]["result_decision"] | null
+          display_name: string | null
+          display_status: string | null
+          home_club_id: string | null
+          home_club_logo_url: string | null
+          home_club_name: string | null
+          home_goals: number | null
+          kickoff_at: string | null
+          league_id: string | null
+          league_name: string | null
+          match_has_predictions: boolean | null
+          match_id: string | null
+          match_status: Database["app"]["Enums"]["match_status"] | null
+          match_version: number | null
+          matchday_has_predictions: boolean | null
+          matchday_id: string | null
+          matchday_number: number | null
+          matchday_status: Database["app"]["Enums"]["matchday_status"] | null
+          matchday_version: number | null
+          phase: Database["app"]["Enums"]["matchday_phase"] | null
+          revision_no: number | null
+          year_label: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "competition_catalog"
+            referencedColumns: ["league_season_id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "published_league_seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_away_club_id_fkey"
+            columns: ["away_club_id"]
+            isOneToOne: false
+            referencedRelation: "club_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_away_club_id_fkey"
+            columns: ["away_club_id"]
+            isOneToOne: false
+            referencedRelation: "matchday_prediction_sheet"
+            referencedColumns: ["away_club_id"]
+          },
+          {
+            foreignKeyName: "matches_away_club_id_fkey"
+            columns: ["away_club_id"]
+            isOneToOne: false
+            referencedRelation: "matchday_prediction_sheet"
+            referencedColumns: ["home_club_id"]
+          },
+          {
+            foreignKeyName: "matches_home_club_id_fkey"
+            columns: ["home_club_id"]
+            isOneToOne: false
+            referencedRelation: "club_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_home_club_id_fkey"
+            columns: ["home_club_id"]
+            isOneToOne: false
+            referencedRelation: "matchday_prediction_sheet"
+            referencedColumns: ["away_club_id"]
+          },
+          {
+            foreignKeyName: "matches_home_club_id_fkey"
+            columns: ["home_club_id"]
+            isOneToOne: false
+            referencedRelation: "matchday_prediction_sheet"
+            referencedColumns: ["home_club_id"]
+          },
+        ]
+      }
       club_catalog: {
         Row: {
           id: string | null
           logo_path: string | null
+          logo_url: string | null
           name: string | null
           short_name: string | null
           status: Database["app"]["Enums"]["club_status"] | null
@@ -24,6 +135,7 @@ export type Database = {
         Insert: {
           id?: string | null
           logo_path?: string | null
+          logo_url?: string | null
           name?: string | null
           short_name?: string | null
           status?: Database["app"]["Enums"]["club_status"] | null
@@ -32,6 +144,7 @@ export type Database = {
         Update: {
           id?: string | null
           logo_path?: string | null
+          logo_url?: string | null
           name?: string | null
           short_name?: string | null
           status?: Database["app"]["Enums"]["club_status"] | null
@@ -90,11 +203,13 @@ export type Database = {
           away_club_name: string | null
           away_club_short_name: string | null
           away_logo_path: string | null
+          away_logo_url: string | null
           display_name: string | null
           home_club_id: string | null
           home_club_name: string | null
           home_club_short_name: string | null
           home_logo_path: string | null
+          home_logo_url: string | null
           is_open: boolean | null
           kickoff_at: string | null
           match_id: string | null
@@ -102,9 +217,16 @@ export type Database = {
           matchday_id: string | null
           matchday_number: number | null
           matchday_status: Database["app"]["Enums"]["matchday_status"] | null
+          phase: Database["app"]["Enums"]["matchday_phase"] | null
           predicted_away_goals: number | null
           predicted_home_goals: number | null
+          prediction_points: number | null
           prediction_saved_at: string | null
+          result_away_goals: number | null
+          result_decision: Database["app"]["Enums"]["result_decision"] | null
+          result_home_goals: number | null
+          result_is_correction: boolean | null
+          result_revision_no: number | null
           round_id: string | null
         }
         Relationships: []
@@ -230,6 +352,13 @@ export type Database = {
           version: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "prediction_rounds_league_season_id_fkey"
             columns: ["league_season_id"]
@@ -396,6 +525,13 @@ export type Database = {
             foreignKeyName: "prediction_rounds_league_season_id_fkey"
             columns: ["league_season_id"]
             isOneToOne: false
+            referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
             referencedRelation: "competition_catalog"
             referencedColumns: ["league_season_id"]
           },
@@ -412,16 +548,20 @@ export type Database = {
         Row: {
           away_club_name: string | null
           away_goals: number | null
+          away_logo_url: string | null
           decision: Database["app"]["Enums"]["result_decision"] | null
           display_name: string | null
+          display_status: string | null
           home_club_name: string | null
           home_goals: number | null
+          home_logo_url: string | null
           is_correction: boolean | null
           kickoff_at: string | null
           match_id: string | null
           match_status: Database["app"]["Enums"]["match_status"] | null
           matchday_id: string | null
           matchday_number: number | null
+          phase: Database["app"]["Enums"]["matchday_phase"] | null
           revision_no: number | null
           round_id: string | null
           updated_at: string | null
@@ -450,6 +590,13 @@ export type Database = {
           revision_no: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "matchdays_league_season_id_fkey"
             columns: ["league_season_id"]
@@ -551,6 +698,13 @@ export type Database = {
             foreignKeyName: "predictions_match_id_fkey"
             columns: ["match_id"]
             isOneToOne: false
+            referencedRelation: "admin_schedule"
+            referencedColumns: ["match_id"]
+          },
+          {
+            foreignKeyName: "predictions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
             referencedRelation: "matchday_prediction_sheet"
             referencedColumns: ["match_id"]
           },
@@ -640,8 +794,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      create_admin_league: {
+        Args: { p_club_ids: string[]; p_name: string; p_year_label: string }
+        Returns: string
+      }
       create_club: {
         Args: { p_name: string; p_short_name: string }
+        Returns: string
+      }
+      create_club_simple: {
+        Args: { p_logo_url?: string; p_name: string }
         Returns: string
       }
       create_league: {
@@ -661,11 +823,27 @@ export type Database = {
         }
         Returns: string
       }
+      create_match_simple: {
+        Args: {
+          p_away_club_id: string
+          p_home_club_id: string
+          p_kickoff_at: string
+          p_matchday_id: string
+        }
+        Returns: string
+      }
       create_matchday: {
         Args: {
           p_display_name?: string
           p_league_season_id: string
           p_number: number
+        }
+        Returns: string
+      }
+      create_matchday_auto: {
+        Args: {
+          p_league_id: string
+          p_phase: Database["app"]["Enums"]["matchday_phase"]
         }
         Returns: string
       }
@@ -693,6 +871,14 @@ export type Database = {
           expires_at: string
           grant_id: string
         }[]
+      }
+      delete_match_simple: {
+        Args: { p_expected_version: number; p_id: string }
+        Returns: undefined
+      }
+      delete_matchday_simple: {
+        Args: { p_expected_version: number; p_id: string }
+        Returns: undefined
       }
       get_invitation_preview: {
         Args: { p_token_hash: string }
@@ -734,7 +920,19 @@ export type Database = {
         Returns: string
       }
       leave_round: { Args: { p_round_id: string }; Returns: undefined }
+      move_matchday_phase: {
+        Args: {
+          p_expected_version: number
+          p_id: string
+          p_phase: Database["app"]["Enums"]["matchday_phase"]
+        }
+        Returns: number
+      }
       prepare_account_deletion: { Args: never; Returns: string }
+      publish_admin_league: {
+        Args: { p_expected_version: number; p_id: string }
+        Returns: number
+      }
       reactivate_round: {
         Args: { p_expected_version: number; p_round_id: string }
         Returns: number
@@ -772,6 +970,13 @@ export type Database = {
           saved_at: string
         }[]
       }
+      save_predictions_batch: {
+        Args: { p_predictions: Json; p_round_id: string }
+        Returns: {
+          saved_at: string
+          saved_count: number
+        }[]
+      }
       set_club_logo_path: {
         Args: { p_expected_version: number; p_id: string; p_logo_path: string }
         Returns: number
@@ -787,6 +992,15 @@ export type Database = {
           p_reason?: string
         }
         Returns: {
+          match_version: number
+          recalculated_count: number
+          revision_no: number
+        }[]
+      }
+      set_match_results_batch: {
+        Args: { p_results: Json }
+        Returns: {
+          match_id: string
           match_version: number
           recalculated_count: number
           revision_no: number
@@ -808,6 +1022,17 @@ export type Database = {
         }
         Returns: number
       }
+      update_admin_league: {
+        Args: {
+          p_club_ids: string[]
+          p_expected_version: number
+          p_id: string
+          p_name: string
+          p_reason?: string
+          p_year_label: string
+        }
+        Returns: number
+      }
       update_club: {
         Args: {
           p_expected_version: number
@@ -815,6 +1040,15 @@ export type Database = {
           p_name: string
           p_short_name: string
           p_status: Database["app"]["Enums"]["club_status"]
+        }
+        Returns: number
+      }
+      update_club_simple: {
+        Args: {
+          p_expected_version: number
+          p_id: string
+          p_logo_url?: string
+          p_name: string
         }
         Returns: number
       }
@@ -836,6 +1070,17 @@ export type Database = {
           p_id: string
           p_kickoff_at: string
           p_matchday_id: string
+          p_status: Database["app"]["Enums"]["match_status"]
+        }
+        Returns: number
+      }
+      update_match_simple: {
+        Args: {
+          p_away_club_id: string
+          p_expected_version: number
+          p_home_club_id: string
+          p_id: string
+          p_kickoff_at: string
           p_status: Database["app"]["Enums"]["match_status"]
         }
         Returns: number
@@ -934,8 +1179,9 @@ export type Database = {
           created_at: string
           id: string
           logo_path: string | null
+          logo_url: string | null
           name: string
-          short_name: string
+          short_name: string | null
           status: Database["app"]["Enums"]["club_status"]
           updated_at: string
           version: number
@@ -944,8 +1190,9 @@ export type Database = {
           created_at?: string
           id?: string
           logo_path?: string | null
+          logo_url?: string | null
           name: string
-          short_name: string
+          short_name?: string | null
           status?: Database["app"]["Enums"]["club_status"]
           updated_at?: string
           version?: number
@@ -954,8 +1201,9 @@ export type Database = {
           created_at?: string
           id?: string
           logo_path?: string | null
+          logo_url?: string | null
           name?: string
-          short_name?: string
+          short_name?: string | null
           status?: Database["app"]["Enums"]["club_status"]
           updated_at?: string
           version?: number
@@ -1137,6 +1385,7 @@ export type Database = {
           id: string
           league_season_id: string
           number: number
+          phase: Database["app"]["Enums"]["matchday_phase"]
           status: Database["app"]["Enums"]["matchday_status"]
           updated_at: string
           version: number
@@ -1147,6 +1396,7 @@ export type Database = {
           id?: string
           league_season_id: string
           number: number
+          phase?: Database["app"]["Enums"]["matchday_phase"]
           status?: Database["app"]["Enums"]["matchday_status"]
           updated_at?: string
           version?: number
@@ -1157,6 +1407,7 @@ export type Database = {
           id?: string
           league_season_id?: string
           number?: number
+          phase?: Database["app"]["Enums"]["matchday_phase"]
           status?: Database["app"]["Enums"]["matchday_status"]
           updated_at?: string
           version?: number
@@ -1618,6 +1869,7 @@ export type Database = {
         | "cancelled"
         | "completed"
         | "abandoned"
+      matchday_phase: "first_leg" | "second_leg"
       matchday_status: "draft" | "published" | "completed" | "archived"
       membership_status: "active" | "left" | "removed" | "anonymized"
       profile_status: "active" | "deletion_pending" | "disabled"
@@ -1767,6 +2019,7 @@ export const Constants = {
         "completed",
         "abandoned",
       ],
+      matchday_phase: ["first_leg", "second_leg"],
       matchday_status: ["draft", "published", "completed", "archived"],
       membership_status: ["active", "left", "removed", "anonymized"],
       profile_status: ["active", "deletion_pending", "disabled"],

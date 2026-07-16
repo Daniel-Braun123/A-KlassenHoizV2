@@ -19,12 +19,13 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
     <AdminResponsiveLayout>
       <section className="admin-shell">
         <header className="admin-shell__header">
-          <p className="product-mark">Globale Verwaltung</p>
-          <h1>Wettbewerbe zentral pflegen</h1>
-          <p>Ligen, Spielpläne und Ergebnisse gelten für alle privaten Tipprunden.</p>
+          <p className="product-mark">Administration</p>
+          <h1>Globale Fußballdaten</h1>
         </header>
-        <AdminNavigation />
-        {children}
+        <div className="admin-workspace">
+          <AdminNavigation />
+          <div className="admin-content">{children}</div>
+        </div>
       </section>
     </AdminResponsiveLayout>
   );

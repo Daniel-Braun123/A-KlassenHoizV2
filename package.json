@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "npm run test:unit",
     "test:unit": "vitest run tests/unit tests/component",
     "test:integration": "node scripts/run-powershell.mjs scripts/run-integration-tests.ps1",
     "test:db": "node scripts/run-powershell.mjs scripts/database.ps1 test",

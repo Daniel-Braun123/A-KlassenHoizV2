@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { loginAsLocalUser } from "../../helpers/admin";
 import { createPredictionFixture } from "../../helpers/fixtures";
 import { createLocalActorClient } from "../../helpers/local-actors";
+import { finishMatchForLocalTest } from "../../helpers/local-database";
 
 test("two private rounds receive corrected points and rankings from one central result", async ({
   browser,
@@ -32,6 +33,7 @@ test("two private rounds receive corrected points and rankings from one central 
     p_away_goals: 1,
     p_idempotency_key: crypto.randomUUID(),
   });
+  finishMatchForLocalTest(match.id);
   await adminApi.schema("api").rpc("set_match_result", {
     p_match_id: match.id,
     p_expected_match_version: 2,

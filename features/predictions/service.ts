@@ -3,11 +3,16 @@ import "server-only";
 import { ApplicationError } from "@/lib/actions/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { predictionSheetQuerySchema, savePredictionSchema } from "./schemas";
+import {
+  predictionSheetQuerySchema,
+  savePredictionSchema,
+  savePredictionsBatchSchema,
+} from "./schemas";
 import type {
   PredictionSheetRow,
   RoundOverview,
   SavePredictionConfirmation,
+  SavePredictionsBatchConfirmation,
   VisiblePrediction,
 } from "./types";
 
@@ -76,4 +81,19 @@ export async function savePrediction(input: unknown): Promise<SavePredictionConf
   const confirmation = data?.[0];
   if (!confirmation) throw new ApplicationError("UNAVAILABLE", "Missing save confirmation");
   return { predictionId: confirmation.prediction_id, savedAt: confirmation.saved_at };
+}
+
+export async function savePredictionsBatch(
+  input: unknown,
+): Promise<SavePredictionsBatchConfirmation> {
+  const value = savePredictionsBatchSchema.parse(input);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.schema("api").rpc("save_predictions_batch", {
+    p_round_id: value.roundId,
+    p_predictions: value.predictions,
+  });
+  mapDatabaseError(error);
+  const confirmation = data?.[0];
+  if (!confirmation) throw new ApplicationError("UNAVAILABLE", "Missing batch confirmation");
+  return { savedCount: confirmation.saved_count, savedAt: confirmation.saved_at };
 }

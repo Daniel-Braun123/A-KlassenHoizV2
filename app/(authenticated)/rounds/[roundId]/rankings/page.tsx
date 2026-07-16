@@ -1,6 +1,5 @@
-import type { Route } from "next";
+import { RankingScopeSelect } from "@/components/rankings/ranking-scope-select";
 import { ResponsiveRanking } from "@/components/rankings/responsive-ranking";
-import { Link } from "@/components/ui/link";
 import { listMatchdayRanking, listOverallRanking } from "@/features/rankings/service";
 import { getMyRound } from "@/features/rounds/service";
 
@@ -17,46 +16,40 @@ export default async function RankingsPage({
     listOverallRanking(roundId),
     listMatchdayRanking(roundId),
   ]);
-  const dayIds = [
-    ...new Set(days.map((row) => row.matchday_id).filter((id): id is string => Boolean(id))),
+  const matchdays = [
+    ...new Map(
+      days.flatMap((row) =>
+        row.matchday_id
+          ? [
+              [
+                row.matchday_id,
+                {
+                  id: row.matchday_id,
+                  label: row.display_name || `${row.matchday_number}. Spieltag`,
+                },
+              ] as const,
+            ]
+          : [],
+      ),
+    ).values(),
   ];
   const selected =
-    query.matchday && dayIds.includes(query.matchday) ? query.matchday : dayIds.at(-1);
-  const selectedRows = days.filter((row) => row.matchday_id === selected);
+    query.matchday && matchdays.some((matchday) => matchday.id === query.matchday)
+      ? query.matchday
+      : "overall";
+  const selectedMatchday = matchdays.find((matchday) => matchday.id === selected);
+  const selectedRows =
+    selected === "overall" ? overall : days.filter((row) => row.matchday_id === selected);
+  const title = selectedMatchday?.label ?? "Gesamt";
+
   return (
-    <section className="content-page">
+    <section className="content-page ranking-page">
       <div className="content-page__intro">
         <p className="product-mark">{round.name}</p>
         <h1>Rangliste</h1>
-        <p>
-          Geteilte Punkte bedeuten denselben Platz. Nicknames sortieren die Anzeige, nicht die
-          Wertung.
-        </p>
       </div>
-      <ResponsiveRanking title="Gesamt" rows={overall} />
-      {dayIds.length ? (
-        <>
-          <nav className="matchday-selector" aria-label="Spieltagsrangliste">
-            <ul>
-              {dayIds.map((id) => {
-                const row = days.find((item) => item.matchday_id === id)!;
-                return (
-                  <li key={id}>
-                    <Link
-                      href={`/rounds/${roundId}/rankings?matchday=${id}` as Route}
-                      aria-current={id === selected ? "page" : undefined}
-                    >
-                      {row.display_name || `${row.matchday_number}. Spieltag`}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          <ResponsiveRanking title="Spieltag" rows={selectedRows} />
-        </>
-      ) : null}
-      <Link href={`/rounds/${roundId}` as Route}>Zurück zur Tipprunde</Link>
+      <RankingScopeSelect options={matchdays} roundId={roundId} selected={selected} />
+      <ResponsiveRanking title={title} rows={selectedRows} />
     </section>
   );
 }

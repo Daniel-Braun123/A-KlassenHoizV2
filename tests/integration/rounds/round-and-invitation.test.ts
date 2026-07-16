@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 import type { Database } from "@/lib/supabase/database.types";
+import { createPublishedCompetition } from "../../helpers/fixtures";
 
 const url = process.env.SUPABASE_TEST_URL;
 const key = process.env.SUPABASE_TEST_PUBLISHABLE_KEY;
@@ -20,22 +21,7 @@ describe("private round and invitation contracts", () => {
       password: "LocalFixture42!",
     });
     const suffix = crypto.randomUUID().slice(0, 8);
-    const league = await admin
-      .schema("api")
-      .rpc("create_league", { p_name: `Round League ${suffix}` });
-    const season = await admin.schema("api").rpc("create_season", {
-      p_label: `R-${suffix}`,
-      p_starts_on: "2026-07-01",
-      p_ends_on: "2027-06-30",
-    });
-    const competition = await admin
-      .schema("api")
-      .rpc("create_league_season", { p_league_id: league.data!, p_season_id: season.data! });
-    await admin.schema("api").rpc("transition_league_season", {
-      p_id: competition.data!,
-      p_expected_version: 1,
-      p_status: "published",
-    });
+    const competition = await createPublishedCompetition();
 
     await owner.auth.signInWithPassword({
       email: "owner@example.test",
@@ -44,13 +30,13 @@ describe("private round and invitation contracts", () => {
     const createKey = crypto.randomUUID();
     const first = await owner.schema("api").rpc("create_round", {
       p_name: `Freunde ${suffix}`,
-      p_league_season_id: competition.data!,
+      p_league_season_id: competition.id,
       p_nickname: "Daniel",
       p_idempotency_key: createKey,
     });
     const repeated = await owner.schema("api").rpc("create_round", {
       p_name: "Ignored replay",
-      p_league_season_id: competition.data!,
+      p_league_season_id: competition.id,
       p_nickname: "Ignored",
       p_idempotency_key: createKey,
     });
@@ -60,13 +46,13 @@ describe("private round and invitation contracts", () => {
     const parallel = await Promise.all([
       owner.schema("api").rpc("create_round", {
         p_name: `Parallel ${suffix}`,
-        p_league_season_id: competition.data!,
+        p_league_season_id: competition.id,
         p_nickname: "Parallel",
         p_idempotency_key: parallelKey,
       }),
       owner.schema("api").rpc("create_round", {
         p_name: `Parallel ${suffix}`,
-        p_league_season_id: competition.data!,
+        p_league_season_id: competition.id,
         p_nickname: "Parallel",
         p_idempotency_key: parallelKey,
       }),

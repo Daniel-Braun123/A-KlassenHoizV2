@@ -49,6 +49,27 @@ const themeScript = `
   })();
 `;
 
+const developmentPwaCleanupScript = `
+  (() => {
+    if (!("serviceWorker" in navigator) || !("caches" in window)) return;
+    Promise.all([navigator.serviceWorker.getRegistrations(), caches.keys()])
+      .then(async ([registrations, cacheKeys]) => {
+        const appCacheKeys = cacheKeys.filter((key) => key.startsWith("aklassenhoiz-"));
+        if (registrations.length === 0 && appCacheKeys.length === 0) return;
+        await Promise.all([
+          ...registrations.map((registration) => registration.unregister()),
+          ...appCacheKeys.map((key) => caches.delete(key)),
+        ]);
+        const reloadKey = "ak-pwa-development-cleanup:v1";
+        if (sessionStorage.getItem(reloadKey) !== "done") {
+          sessionStorage.setItem(reloadKey, "done");
+          location.reload();
+        }
+      })
+      .catch(() => {});
+  })();
+`;
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const profile = await getMyProfile();
   const profileMenu = profile ? (
@@ -77,7 +98,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <AppShell utility={profileMenu}>
           <FocusBoundary>{children}</FocusBoundary>
         </AppShell>
-        <script defer src="/pwa-register.js" />
+        {process.env.NODE_ENV === "production" ? (
+          <script defer src="/pwa-register.js" />
+        ) : (
+          <script dangerouslySetInnerHTML={{ __html: developmentPwaCleanupScript }} />
+        )}
       </body>
     </html>
   );

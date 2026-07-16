@@ -63,6 +63,7 @@
 
   --z-navigation: 20;
   --z-sticky: 30;
+  --z-popover: 40;
   --z-dropdown: 40;
   --z-modal: 50;
   --z-toast: 60;

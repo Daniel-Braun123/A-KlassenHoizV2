@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 import type { Database } from "@/lib/supabase/database.types";
 import { createPredictionFixture } from "../../helpers/fixtures";
+import { finishMatchForLocalTest } from "../../helpers/local-database";
 
 const url = process.env.SUPABASE_TEST_URL;
 const key = process.env.SUPABASE_TEST_PUBLISHABLE_KEY;
@@ -47,6 +48,7 @@ describe("result scoring and recovery", () => {
       p_away_goals: 1,
       p_idempotency_key: crypto.randomUUID(),
     });
+    finishMatchForLocalTest(match.id);
     const firstResult = await admin.schema("api").rpc("set_match_result", {
       p_match_id: match.id,
       p_expected_match_version: 2,
@@ -57,6 +59,23 @@ describe("result scoring and recovery", () => {
       p_reason: "Erster Import",
     });
     expect(firstResult.data?.[0]?.recalculated_count).toBe(2);
+    const ownerOutcome = await owner
+      .schema("api")
+      .from("matchday_prediction_sheet")
+      .select(
+        "prediction_points,result_decision,result_home_goals,result_away_goals,result_revision_no,result_is_correction",
+      )
+      .eq("round_id", fixture.roundId)
+      .single();
+    expect(ownerOutcome.error).toBeNull();
+    expect(ownerOutcome.data).toMatchObject({
+      prediction_points: 4,
+      result_decision: "official",
+      result_home_goals: 2,
+      result_away_goals: 1,
+      result_revision_no: 1,
+      result_is_correction: false,
+    });
     expect(
       (
         await owner
@@ -87,6 +106,23 @@ describe("result scoring and recovery", () => {
       p_reason: "Korrektur",
     });
     expect(correction.data?.[0]?.recalculated_count).toBe(2);
+    const correctedOutcome = await owner
+      .schema("api")
+      .from("matchday_prediction_sheet")
+      .select(
+        "prediction_points,result_decision,result_home_goals,result_away_goals,result_revision_no,result_is_correction",
+      )
+      .eq("round_id", fixture.roundId)
+      .single();
+    expect(correctedOutcome.error).toBeNull();
+    expect(correctedOutcome.data).toMatchObject({
+      prediction_points: 2,
+      result_decision: "official",
+      result_home_goals: 3,
+      result_away_goals: 1,
+      result_revision_no: 2,
+      result_is_correction: true,
+    });
     const before = await owner
       .schema("api")
       .from("overall_ranking")

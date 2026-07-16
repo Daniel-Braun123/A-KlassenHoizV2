@@ -1,114 +1,99 @@
 import "server-only";
 
-import {
-  leagueSchema,
-  leagueSeasonSchema,
-  leagueSeasonTransitionSchema,
-  seasonSchema,
-  updateLeagueSchema,
-  updateSeasonSchema,
-} from "./schemas";
-import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
-import type { CompetitionCatalogRow, LeagueCatalogRow, SeasonCatalogRow } from "./types";
+import { cache } from "react";
+import { z } from "zod";
 
+import { adminLeagueSchema, publishAdminLeagueSchema, updateAdminLeagueSchema } from "./schemas";
+import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
+import type { AdminLeagueRow, CompetitionCatalogRow } from "./types";
+
+export async function listAdminLeagues(): Promise<AdminLeagueRow[]> {
+  const supabase = await appAdminClientOrNull();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .schema("api")
+    .from("admin_leagues")
+    .select("*")
+    .order("year_label", { ascending: false })
+    .order("name");
+
+  throwCompetitionError(error);
+  return data ?? [];
+}
+
+export const getAdminLeague = cache(async function getAdminLeague(
+  id: string,
+): Promise<AdminLeagueRow | null> {
+  const parsedId = z.string().uuid().safeParse(id);
+  if (!parsedId.success) return null;
+  const supabase = await appAdminClientOrNull();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .schema("api")
+    .from("admin_leagues")
+    .select("*")
+    .eq("id", parsedId.data)
+    .maybeSingle();
+
+  throwCompetitionError(error);
+  return data;
+});
+
+// Kept as a compatibility boundary while schedule and prediction-round reads
+// move to the simplified admin_leagues view.
 export async function listCompetitionCatalog(): Promise<CompetitionCatalogRow[]> {
   const supabase = await appAdminClientOrNull();
   if (!supabase) return [];
+
   const { data, error } = await supabase
     .schema("api")
     .from("competition_catalog")
     .select("*")
     .order("season_label", { ascending: false });
+
   throwCompetitionError(error);
   return data ?? [];
 }
-export async function listLeagues(): Promise<LeagueCatalogRow[]> {
-  const supabase = await appAdminClientOrNull();
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .schema("api")
-    .from("league_catalog")
-    .select("*")
-    .order("name");
-  throwCompetitionError(error);
-  return data ?? [];
-}
-export async function listSeasons(): Promise<SeasonCatalogRow[]> {
-  const supabase = await appAdminClientOrNull();
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .schema("api")
-    .from("season_catalog")
-    .select("*")
-    .order("starts_on", { ascending: false });
-  throwCompetitionError(error);
-  return data ?? [];
-}
-export async function createLeague(input: unknown): Promise<string> {
-  const value = leagueSchema.parse(input);
+
+export async function createAdminLeague(input: unknown): Promise<string> {
+  const value = adminLeagueSchema.parse(input);
   const supabase = await requireAppAdmin();
-  const { data, error } = await supabase.schema("api").rpc("create_league", {
+  const { data, error } = await supabase.schema("api").rpc("create_admin_league", {
     p_name: value.name,
-    ...(value.shortName ? { p_short_name: value.shortName } : {}),
+    p_year_label: value.yearLabel,
+    p_club_ids: value.clubIds,
   });
+
   throwCompetitionError(error);
   return data!;
 }
-export async function createSeason(input: unknown): Promise<string> {
-  const value = seasonSchema.parse(input);
+
+export async function updateAdminLeague(input: unknown): Promise<number> {
+  const value = updateAdminLeagueSchema.parse(input);
   const supabase = await requireAppAdmin();
-  const { data, error } = await supabase.schema("api").rpc("create_season", {
-    p_label: value.label,
-    p_starts_on: value.startsOn,
-    p_ends_on: value.endsOn,
-  });
-  throwCompetitionError(error);
-  return data!;
-}
-export async function createLeagueSeason(input: unknown): Promise<string> {
-  const value = leagueSeasonSchema.parse(input);
-  const supabase = await requireAppAdmin();
-  const { data, error } = await supabase
-    .schema("api")
-    .rpc("create_league_season", { p_league_id: value.leagueId, p_season_id: value.seasonId });
-  throwCompetitionError(error);
-  return data!;
-}
-export async function updateLeague(input: unknown): Promise<number> {
-  const value = updateLeagueSchema.parse(input);
-  const supabase = await requireAppAdmin();
-  const { data, error } = await supabase.schema("api").rpc("update_league", {
+  const { data, error } = await supabase.schema("api").rpc("update_admin_league", {
     p_id: value.id,
     p_expected_version: value.expectedVersion,
     p_name: value.name,
-    p_short_name: value.shortName ?? "",
-    p_status: value.status,
+    p_year_label: value.yearLabel,
+    p_club_ids: value.clubIds,
+    ...(value.reason ? { p_reason: value.reason } : {}),
   });
+
   throwCompetitionError(error);
   return data!;
 }
-export async function updateSeason(input: unknown): Promise<number> {
-  const value = updateSeasonSchema.parse(input);
+
+export async function publishAdminLeague(input: unknown): Promise<number> {
+  const value = publishAdminLeagueSchema.parse(input);
   const supabase = await requireAppAdmin();
-  const { data, error } = await supabase.schema("api").rpc("update_season", {
+  const { data, error } = await supabase.schema("api").rpc("publish_admin_league", {
     p_id: value.id,
     p_expected_version: value.expectedVersion,
-    p_label: value.label,
-    p_starts_on: value.startsOn,
-    p_ends_on: value.endsOn,
-    p_status: value.status,
   });
-  throwCompetitionError(error);
-  return data!;
-}
-export async function transitionLeagueSeason(input: unknown): Promise<number> {
-  const value = leagueSeasonTransitionSchema.parse(input);
-  const supabase = await requireAppAdmin();
-  const { data, error } = await supabase.schema("api").rpc("transition_league_season", {
-    p_id: value.id,
-    p_expected_version: value.expectedVersion,
-    p_status: value.status,
-  });
+
   throwCompetitionError(error);
   return data!;
 }

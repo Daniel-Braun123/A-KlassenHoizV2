@@ -16,3 +16,20 @@ export type SavePredictionConfirmation = Readonly<{
   predictionId: string;
   savedAt: string;
 }>;
+
+export type SavePredictionsBatchInput = Readonly<{
+  roundId: string;
+  predictions: ReadonlyArray<
+    Readonly<{
+      matchId: string;
+      homeGoals: number;
+      awayGoals: number;
+      idempotencyKey: string;
+    }>
+  >;
+}>;
+
+export type SavePredictionsBatchConfirmation = Readonly<{
+  savedCount: number;
+  savedAt: string;
+}>;

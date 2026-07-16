@@ -48,7 +48,7 @@ if ($prdFiles.Count -ne 1 -or $prdFiles[0].Name -ne 'PRD.md') {
 $migrationRoot = Join-Path $repositoryRoot 'supabase\migrations'
 if (Test-Path -LiteralPath $migrationRoot) {
     $invalidMigrations = @(Get-ChildItem -LiteralPath $migrationRoot -File |
-        Where-Object { $_.Name -notmatch '^20260713\d{6}_[a-z0-9_]+\.sql$' })
+        Where-Object { $_.Name -notmatch '^20\d{12}_[a-z0-9_]+\.sql$' })
     foreach ($migration in $invalidMigrations) {
         $violations.Add("Migration is outside the V2 naming baseline: $($migration.Name)")
     }

@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import { MatchStatus } from "@/components/predictions/match-status";
 import { Link } from "@/components/ui/link";
 import { ResultRevisionNotice } from "@/components/rounds/result-revision-notice";
 import { getMyRound } from "@/features/rounds/service";
@@ -13,7 +14,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ roundI
       <div className="content-page__intro">
         <p className="product-mark">{round.name}</p>
         <h1>Ergebnisse</h1>
-        <p>Offizielle Ergebnisse und nachvollziehbare Korrekturen der zentralen Liga-Saison.</p>
+        <p>Offizielle Ergebnisse und nachvollziehbare Korrekturen der zentralen Liga.</p>
       </div>
       <ResultRevisionNotice count={corrections} />
       <ol className="result-list">
@@ -31,6 +32,12 @@ export default async function ResultsPage({ params }: { params: Promise<{ roundI
                     }).format(new Date(result.kickoff_at))
                   : ""}
               </time>
+              <MatchStatus
+                status={result.match_status}
+                open={false}
+                kickoffAt={result.kickoff_at}
+                decision={result.decision}
+              />
             </div>
             <strong>
               {result.home_club_name}{" "}

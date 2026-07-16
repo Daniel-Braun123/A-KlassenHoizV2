@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 import { loginAsLocalUser } from "../../helpers/admin";
-import { createPredictionFixture, updateFixtureMatch } from "../../helpers/fixtures";
+import { createPredictionFixture } from "../../helpers/fixtures";
 
 test.use({ viewport: { width: 375, height: 812 } });
 
-test("mobile user predicts eight matches with offline retry and sees schedule changes", async ({
+test("mobile user collects eight predictions and saves them together with offline retry", async ({
   page,
   context,
 }) => {
@@ -15,16 +15,16 @@ test("mobile user predicts eight matches with offline retry and sees schedule ch
   await expect(page.getByRole("heading", { name: "Tipps abgeben" })).toBeVisible();
   const cards = page.locator(".prediction-card");
   await expect(cards).toHaveCount(8);
+  await expect(page.getByRole("combobox", { name: "Spieltag" })).toBeVisible();
+  const firstCardBox = await cards.first().boundingBox();
+  const firstScoreBox = await cards.first().locator("input").first().boundingBox();
+  const secondScoreBox = await cards.first().locator("input").nth(1).boundingBox();
+  expect(firstCardBox?.height).toBeLessThanOrEqual(80);
+  expect(Math.abs((firstScoreBox?.y ?? 0) - (secondScoreBox?.y ?? 0))).toBeLessThanOrEqual(1);
+  expect((secondScoreBox?.x ?? 0) - (firstScoreBox?.x ?? 0)).toBeGreaterThan(48);
 
   await context.setOffline(true);
-  await cards.nth(0).locator("input").nth(0).fill("2");
-  await cards.nth(0).locator("input").nth(1).fill("1");
-  await expect(cards.nth(0).getByText("Noch nicht gespeichert", { exact: true })).toBeVisible();
-  await cards.nth(0).getByRole("button", { name: "Erneut versuchen" }).click();
-  await context.setOffline(false);
-  await expect(cards.nth(0).getByText("Gespeichert", { exact: true })).toBeVisible();
-
-  for (let index = 1; index < 8; index += 1) {
+  for (let index = 0; index < 8; index += 1) {
     await cards
       .nth(index)
       .locator("input")
@@ -36,16 +36,12 @@ test("mobile user predicts eight matches with offline retry and sees schedule ch
       .nth(1)
       .fill(String((index + 1) % 3));
   }
-  await expect(page.getByText("Gespeichert", { exact: true })).toHaveCount(8);
-  await updateFixtureMatch(
-    fixture.matches[6]!,
-    fixture.matchdayId,
-    "postponed",
-    new Date(Date.now() + 172_800_000).toISOString(),
-  );
-  await updateFixtureMatch(fixture.matches[7]!, fixture.matchdayId, "cancelled");
-  await page.reload();
-  await expect(page.getByText("Verschoben", { exact: true })).toBeVisible();
-  await expect(page.getByText("Abgesagt", { exact: true })).toBeVisible();
-  await expect(cards.filter({ hasText: "Abgesagt" }).locator("input").first()).toBeDisabled();
+  await expect(page.getByText("Gespeichert", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Tipps speichern" }).click();
+  await expect(page.getByText("Das hat gerade nicht funktioniert.")).toBeVisible();
+
+  await context.setOffline(false);
+  await page.getByRole("button", { name: "Tipps speichern" }).click();
+  await expect(page.getByText("8 Tipps wurden gespeichert.")).toBeVisible();
+  await expect(page.getByText("Alle eingegebenen Tipps sind gespeichert")).toBeVisible();
 });

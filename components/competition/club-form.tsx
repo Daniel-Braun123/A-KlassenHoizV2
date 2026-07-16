@@ -3,100 +3,99 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import {
-  assignClubAction,
-  createClubAction,
-  uploadClubLogoAction,
-} from "@/features/competition/club-actions";
-import {
-  initialCompetitionActionState,
-  type ClubCatalogRow,
-  type CompetitionCatalogRow,
-} from "@/features/competition/types";
+import { createClubAction, updateClubAction } from "@/features/competition/club-actions";
+import { initialCompetitionActionState, type ClubCatalogRow } from "@/features/competition/types";
 import { ActionMessage } from "./action-message";
 
-export function ClubForms({
-  clubs,
-  competitions,
-}: Readonly<{ clubs: ClubCatalogRow[]; competitions: CompetitionCatalogRow[] }>) {
-  const [createState, createAction, createPending] = useActionState(
-    createClubAction,
-    initialCompetitionActionState,
-  );
-  const [assignState, assignAction, assignPending] = useActionState(
-    assignClubAction,
-    initialCompetitionActionState,
-  );
-  const [logoState, logoAction, logoPending] = useActionState(
-    uploadClubLogoAction,
-    initialCompetitionActionState,
-  );
+function CreateClubForm() {
+  const [state, action, pending] = useActionState(createClubAction, initialCompetitionActionState);
+
   return (
-    <div className="admin-form-grid">
-      <form action={createAction} className="admin-form">
+    <form action={action} className="admin-form admin-form--wide">
+      <div>
         <h2>Neuer Verein</h2>
-        <Input label="Vereinsname" name="name" required />
-        <Input label="Kurzname" name="shortName" required />
-        <Button disabled={createPending} type="submit">
-          Verein anlegen
-        </Button>
-        <ActionMessage state={createState} />
-      </form>
-      <form action={assignAction} className="admin-form">
-        <h2>Verein zuordnen</h2>
-        <Select label="Liga-Saison" name="leagueSeasonId" required>
-          <option value="">Bitte wählen</option>
-          {competitions.map((x) => (
-            <option key={x.league_season_id!} value={x.league_season_id!}>
-              {x.league_name} · {x.season_label}
-            </option>
-          ))}
-        </Select>
-        <Select label="Verein" name="clubId" required>
-          <option value="">Bitte wählen</option>
-          {clubs.map((x) => (
-            <option key={x.id!} value={x.id!}>
-              {x.name}
-            </option>
-          ))}
-        </Select>
-        <Button disabled={assignPending} type="submit">
-          Zuordnen
-        </Button>
-        <ActionMessage state={assignState} />
-      </form>
-      <form action={logoAction} className="admin-form">
-        <h2>Logo versionieren</h2>
-        <Select label="Verein" name="clubId" required>
-          <option value="">Bitte wählen</option>
-          {clubs.map((x) => (
-            <option key={x.id!} value={x.id!}>
-              {x.name}
-            </option>
-          ))}
-        </Select>
-        <Input
-          label="Gelesene Vereinsversion"
-          name="expectedVersion"
-          type="number"
-          min={1}
-          required
-        />
-        <Input label="Neue Logoversion" name="version" type="number" min={1} required />
-        <Input
-          accept="image/png,image/jpeg,image/webp"
-          hint="PNG, JPEG oder WebP; höchstens 2 MiB."
-          label="Logodatei"
-          name="logo"
-          type="file"
-          required
-        />
-        <Button disabled={logoPending} type="submit">
-          Logo hochladen
-        </Button>
-        <ActionMessage state={logoState} />
-      </form>
-    </div>
+      </div>
+      <Input autoComplete="off" label="Vereinsname" maxLength={120} name="name" required />
+      <Input
+        autoComplete="url"
+        hint="Optional: direkte HTTPS-Adresse zu einem Bild."
+        label="Logo-URL"
+        maxLength={2048}
+        name="logoUrl"
+        placeholder="https://…"
+        type="url"
+      />
+      <Button disabled={pending} type="submit">
+        {pending ? "Verein wird angelegt …" : "Verein anlegen"}
+      </Button>
+      <ActionMessage state={state} />
+    </form>
+  );
+}
+
+export function ClubEditor({ club }: Readonly<{ club: ClubCatalogRow }>) {
+  const [state, action, pending] = useActionState(updateClubAction, initialCompetitionActionState);
+
+  return (
+    <form action={action} className="admin-form">
+      <div className="admin-card-header">
+        <div>
+          <h2>{club.name}</h2>
+          <p>{club.logo_url ? "Logo hinterlegt" : "Ohne Logo"}</p>
+        </div>
+        {club.logo_url ? (
+          // Externe Vereinslogos sind reine Präsentation; der Vereinsname steht direkt daneben.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="club-logo-preview" src={club.logo_url} alt="" width="48" height="48" />
+        ) : (
+          <span className="club-logo-preview club-logo-preview--fallback" aria-hidden="true">
+            {club.name?.slice(0, 2).toUpperCase()}
+          </span>
+        )}
+      </div>
+      <input name="id" type="hidden" value={club.id!} />
+      <input name="expectedVersion" type="hidden" value={club.version!} />
+      <Input
+        defaultValue={club.name ?? ""}
+        label="Vereinsname"
+        maxLength={120}
+        name="name"
+        required
+      />
+      <Input
+        autoComplete="url"
+        defaultValue={club.logo_url ?? ""}
+        hint="Leer lassen, um das Logo zu entfernen."
+        label="Logo-URL"
+        maxLength={2048}
+        name="logoUrl"
+        placeholder="https://…"
+        type="url"
+      />
+      <Button disabled={pending} type="submit" variant="secondary">
+        {pending ? "Wird gespeichert …" : "Änderungen speichern"}
+      </Button>
+      <ActionMessage state={state} />
+    </form>
+  );
+}
+
+export function ClubAdmin({ clubs }: Readonly<{ clubs: ClubCatalogRow[] }>) {
+  return (
+    <>
+      <CreateClubForm />
+      <section className="editor-list" aria-labelledby="club-catalog-title">
+        <div>
+          <h2 id="club-catalog-title">Globaler Vereinskatalog</h2>
+        </div>
+        {clubs.length ? (
+          <div className="admin-form-grid">
+            {clubs.map((club) => (club.id ? <ClubEditor club={club} key={club.id} /> : null))}
+          </div>
+        ) : (
+          <p>Noch keine Vereine angelegt.</p>
+        )}
+      </section>
+    </>
   );
 }

@@ -4,40 +4,68 @@ const trimmed = (minimum: number, maximum: number) => z.string().trim().min(mini
 const uuid = z.string().uuid();
 const version = z.coerce.number().int().positive();
 
-export const leagueSchema = z.object({
-  name: trimmed(1, 120),
-  shortName: trimmed(1, 20).optional(),
-});
-export const updateLeagueSchema = leagueSchema.extend({
-  id: uuid,
-  expectedVersion: version,
-  status: z.enum(["draft", "active", "archived"]),
-});
-export const seasonSchema = z
-  .object({
-    label: trimmed(1, 40),
-    startsOn: z.iso.date(),
-    endsOn: z.iso.date(),
-  })
-  .refine((value) => value.startsOn <= value.endsOn, {
-    message: "Das Enddatum liegt vor dem Startdatum.",
+const clubIds = z
+  .array(uuid)
+  .min(2, "Wähle mindestens zwei Vereine aus.")
+  .superRefine((ids, context) => {
+    if (new Set(ids).size !== ids.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Jeder Verein darf nur einmal ausgewählt werden.",
+      });
+    }
   });
-export const updateSeasonSchema = seasonSchema.and(
-  z.object({ id: uuid, expectedVersion: version, status: z.enum(["draft", "active", "archived"]) }),
+
+const leagueYear = z
+  .string()
+  .trim()
+  .regex(/^\d{2}\/\d{2}$/, "Verwende das Format 26/27.")
+  .refine((label) => {
+    const [first, second] = label.split("/").map(Number);
+    return first !== undefined && second !== undefined && (first + 1) % 100 === second;
+  }, "Die Jahreszahlen müssen direkt aufeinanderfolgen.");
+
+const optionalHttpsUrl = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  z
+    .url("Gib eine gültige Bild-URL ein.")
+    .max(2048)
+    .refine((value) => new URL(value).protocol === "https:", "Die Bild-URL muss HTTPS verwenden.")
+    .optional(),
 );
-export const leagueSeasonSchema = z.object({ leagueId: uuid, seasonId: uuid });
-export const leagueSeasonTransitionSchema = z.object({
-  id: uuid,
-  expectedVersion: version,
-  status: z.enum(["published", "completed", "archived"]),
+
+export const adminLeagueSchema = z.object({
+  name: trimmed(1, 120),
+  yearLabel: leagueYear,
+  clubIds,
 });
-export const clubSchema = z.object({ name: trimmed(1, 120), shortName: trimmed(1, 20) });
-export const updateClubSchema = clubSchema.extend({
-  id: uuid,
-  expectedVersion: version,
-  status: z.enum(["active", "archived"]),
+
+export const updateAdminLeagueSchema = adminLeagueSchema
+  .extend({
+    id: uuid,
+    expectedVersion: version,
+    hasPredictions: z.coerce.boolean().default(false),
+    reason: z.string().trim().max(500).optional(),
+  })
+  .superRefine((value, context) => {
+    if (value.hasPredictions && !value.reason) {
+      context.addIssue({
+        code: "custom",
+        path: ["reason"],
+        message: "Begründe die Änderung, da bereits Tipps vorhanden sind.",
+      });
+    }
+  });
+
+export const publishAdminLeagueSchema = z.object({ id: uuid, expectedVersion: version });
+
+export const clubSchema = z.object({
+  name: trimmed(1, 120),
+  logoUrl: optionalHttpsUrl,
 });
-export const clubAssignmentSchema = z.object({ leagueSeasonId: uuid, clubId: uuid });
+
+export const updateClubSchema = clubSchema.extend({ id: uuid, expectedVersion: version });
+
 export const matchdaySchema = z.object({
   leagueSeasonId: uuid,
   number: z.coerce.number().int().positive().max(999),

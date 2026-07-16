@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { ActionMessage } from "@/components/ui/action-message";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { updateRoundAction } from "@/features/rounds/actions";
@@ -32,14 +33,7 @@ export function RoundSettingsForm({
           </option>
         ))}
       </Select>
-      {state.status !== "idle" ? (
-        <p
-          className={`admin-form__message admin-form__message--${state.status}`}
-          role={state.status === "error" ? "alert" : "status"}
-        >
-          {state.message}
-        </p>
-      ) : null}
+      <ActionMessage state={state} />
       <Button disabled={pending} type="submit">
         Version {round.version} speichern
       </Button>
