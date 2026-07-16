@@ -35,7 +35,7 @@ export function MatchEditor({
     <div className="admin-form-grid">
       <form action={dayAction} className="admin-form">
         <h2>Spieltag anlegen</h2>
-        <Select label="Liga-Saison" name="leagueSeasonId" required>
+        <Select label="Liga" name="leagueSeasonId" required>
           <option value="">Bitte wählen</option>
           {competitions.map((x) => (
             <option key={x.league_season_id!} value={x.league_season_id!}>

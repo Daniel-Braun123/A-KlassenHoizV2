@@ -33,7 +33,7 @@ export default async function HomePage() {
               <span>1</span>
               <div>
                 <strong>Runde erstellen</strong>
-                <p>Wähle die passende Liga-Saison für eure Gruppe.</p>
+                <p>Wähle die passende Liga für eure Gruppe.</p>
               </div>
             </li>
             <li>

@@ -60,7 +60,7 @@ export function SupportAccessForm() {
               <dd>{state.metadata.round_status}</dd>
             </div>
             <div>
-              <dt>Liga-Saison-ID</dt>
+              <dt>Liga-ID</dt>
               <dd>{state.metadata.league_season_id}</dd>
             </div>
             <div>

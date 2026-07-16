@@ -15,7 +15,7 @@ export default async function NewRoundPage() {
         <CreateRoundFlow competitions={competitions} />
       ) : (
         <p className="status-state">
-          Momentan ist noch keine Liga-Saison für neue Tipprunden veröffentlicht.
+          Momentan ist noch keine Liga für neue Tipprunden veröffentlicht.
         </p>
       )}
     </section>

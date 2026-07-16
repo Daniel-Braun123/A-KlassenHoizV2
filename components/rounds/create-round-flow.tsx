@@ -18,7 +18,7 @@ export function CreateRoundFlow({ competitions }: { competitions: PublishedLeagu
           <span>Nur eingeladene Freunde sehen ihn.</span>
         </li>
         <li>
-          <strong>2. Liga-Saison</strong>
+          <strong>2. Liga</strong>
           <span>Sie gilt später für alle Tipps.</span>
         </li>
         <li>
@@ -27,7 +27,7 @@ export function CreateRoundFlow({ competitions }: { competitions: PublishedLeagu
         </li>
       </ol>
       <Input label="Name der Tipprunde" name="name" required maxLength={80} />
-      <Select label="Liga-Saison" name="leagueSeasonId" required>
+      <Select label="Liga" name="leagueSeasonId" required>
         <option value="">Bitte wählen</option>
         {competitions.map((x) => (
           <option key={x.id!} value={x.id!}>

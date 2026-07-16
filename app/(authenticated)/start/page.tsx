@@ -10,7 +10,7 @@ export default async function StartPage() {
         <div className="start-page__intro">
           <p className="product-mark">Zentrale Ligadaten</p>
           <h1>Globale Verwaltung</h1>
-          <p>Pflege Ligen, Saisons, Vereine, Spieltage, Spiele und Ergebnisse zentral.</p>
+          <p>Pflege Ligen, Vereine, Spieltage, Spiele und Ergebnisse zentral.</p>
         </div>
         <div className="role-panel">
           <div>

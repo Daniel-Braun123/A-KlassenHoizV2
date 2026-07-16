@@ -23,8 +23,8 @@ export function RoundSettingsForm({
       <Input defaultValue={round.name ?? ""} label="Name" name="name" required />
       <Select
         defaultValue={round.league_season_id!}
-        hint="Nach dem ersten Tipp ist die Liga-Saison gesperrt."
-        label="Liga-Saison"
+        hint="Nach dem ersten Tipp ist die Liga gesperrt."
+        label="Liga"
         name="leagueSeasonId"
       >
         {competitions.map((x) => (

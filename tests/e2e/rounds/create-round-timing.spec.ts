@@ -8,7 +8,7 @@ test("round creation task is measurable from form-ready to overview", async ({ p
   const start = Date.now();
   const suffix = crypto.randomUUID().slice(0, 7);
   await page.getByLabel("Name der Tipprunde").fill(`Zeit ${suffix}`);
-  await page.getByLabel("Liga-Saison").selectOption({ label: competition.label });
+  await page.getByLabel("Liga").selectOption({ label: competition.label });
   await page.getByLabel("Dein Rundennickname").fill("Zeitnehmer");
   await page.getByRole("button", { name: "Private Tipprunde erstellen" }).click();
   await expect(page.getByRole("heading", { name: `Zeit ${suffix}` })).toBeVisible();

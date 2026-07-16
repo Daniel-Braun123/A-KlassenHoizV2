@@ -9,7 +9,7 @@ test("owner creates a private round, shares QR/link, and a friend joins", async 
   await loginAsLocalUser(owner, "owner@example.test", "/rounds/new");
   const suffix = crypto.randomUUID().slice(0, 7);
   await owner.getByLabel("Name der Tipprunde").fill(`Freunde ${suffix}`);
-  await owner.getByLabel("Liga-Saison").selectOption({ label: competition.label });
+  await owner.getByLabel("Liga").selectOption({ label: competition.label });
   await owner.getByLabel("Dein Rundennickname").fill("Daniel");
   await owner.getByRole("button", { name: "Private Tipprunde erstellen" }).click();
   await expect(owner.getByRole("heading", { name: `Freunde ${suffix}` })).toBeVisible();

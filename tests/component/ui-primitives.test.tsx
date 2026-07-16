@@ -35,11 +35,11 @@ describe("accessible UI primitives", () => {
 
   it("keeps the select label and validation state explicit", () => {
     render(
-      <Select label="Liga-Saison" required>
+      <Select label="Liga" required>
         <option value="">Bitte wählen</option>
       </Select>,
     );
-    expect(screen.getByRole("combobox", { name: /Liga-Saison/ })).toBeRequired();
+    expect(screen.getByRole("combobox", { name: /Liga/ })).toBeRequired();
   });
 
   it("renders an internal link with a real href", () => {
