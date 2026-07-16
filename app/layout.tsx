@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 
 import { AppShell } from "@/components/patterns/app-shell";
@@ -103,6 +104,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         ) : (
           <script dangerouslySetInnerHTML={{ __html: developmentPwaCleanupScript }} />
         )}
+        <Analytics />
       </body>
     </html>
   );
