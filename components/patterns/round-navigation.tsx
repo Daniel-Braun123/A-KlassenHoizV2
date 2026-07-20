@@ -13,7 +13,7 @@ export function RoundNavigation({ roundId }: { roundId: string }) {
     { href: base as Route, label: "Übersicht", icon: "overview" },
     { href: `${base}/predictions` as Route, label: "Tippen", icon: "predictions" },
     { href: `${base}/rankings` as Route, label: "Rangliste", icon: "rankings" },
-    { href: `${base}/results` as Route, label: "Ergebnisse", icon: "results" },
+    { href: `${base}/table` as Route, label: "Tabelle", icon: "table" },
   ];
   return (
     <nav className="round-navigation" aria-label="Tipprunde">

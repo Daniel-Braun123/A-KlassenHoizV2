@@ -1425,6 +1425,179 @@ p {
   color: var(--color-brand-text);
 }
 
+.league-table-page {
+  gap: var(--space-4);
+}
+
+.league-table-section {
+  display: grid;
+  width: min(100%, 52rem);
+  gap: var(--space-3);
+}
+
+.league-table-summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.league-table-summary span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 650;
+  text-align: left;
+}
+
+.league-table-summary span + span::before {
+  margin-right: var(--space-2);
+  content: "·";
+}
+
+.league-table-wrap {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.league-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+
+.league-table__place {
+  width: 3.25rem;
+}
+
+.league-table__played,
+.league-table__points {
+  width: 3rem;
+}
+
+.league-table__goals {
+  width: 4rem;
+}
+
+.league-table th,
+.league-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.league-table thead th {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 760;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.league-table abbr {
+  text-decoration: none;
+}
+
+.league-table th:nth-child(n + 3),
+.league-table td:nth-child(n + 3) {
+  text-align: right;
+}
+
+.league-table tbody th {
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 720;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.league-table tbody td {
+  font-size: var(--font-size-sm);
+}
+
+.league-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.league-table tbody tr {
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+
+.league-table tbody tr:hover {
+  background: var(--color-surface-raised);
+}
+
+.league-table__rank,
+.league-table__points-value {
+  font-weight: 800;
+}
+
+.league-table__team {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.league-table__team .club-logo {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+}
+
+.league-table__team > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.league-table__empty {
+  padding: var(--space-6) var(--space-4) !important;
+  color: var(--color-text-muted);
+  text-align: center !important;
+}
+
+@media (max-width: 24rem) {
+  .league-table__place {
+    width: 2.75rem;
+  }
+
+  .league-table__played,
+  .league-table__points {
+    width: 2.5rem;
+  }
+
+  .league-table__goals {
+    width: 3.5rem;
+  }
+
+  .league-table th,
+  .league-table td {
+    padding: var(--space-2) var(--space-1);
+  }
+
+  .league-table th:first-child,
+  .league-table td:first-child {
+    padding-left: var(--space-2);
+  }
+
+  .league-table th:last-child,
+  .league-table td:last-child {
+    padding-right: var(--space-2);
+  }
+
+  .league-table__team {
+    gap: var(--space-1);
+  }
+
+  .league-table__team .club-logo {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-basis: 1.75rem;
+  }
+}
+
 .member-list {
   display: grid;
   gap: var(--space-2);

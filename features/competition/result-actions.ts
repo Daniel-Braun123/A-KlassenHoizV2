@@ -10,7 +10,7 @@ function revalidateResults(): void {
   revalidatePath("/admin/competitions/[leagueId]/results", "page");
   revalidatePath("/rounds/[roundId]/predictions", "page");
   revalidatePath("/rounds/[roundId]/rankings", "page");
-  revalidatePath("/rounds/[roundId]/results", "page");
+  revalidatePath("/rounds/[roundId]/table", "page");
 }
 
 export async function setMatchResultAction(

@@ -15,7 +15,8 @@
   .ui-button,
   .field__control,
   .prediction-card,
-  .ranking-table-wrap {
+  .ranking-table-wrap,
+  .league-table-wrap {
     border: 2px solid ButtonText;
   }
   .ranking-row--current {

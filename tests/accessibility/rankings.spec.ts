@@ -4,7 +4,7 @@ import { loginAsLocalUser } from "../helpers/admin";
 import { createPredictionFixture } from "../helpers/fixtures";
 import { createLocalActorClient } from "../helpers/local-actors";
 
-test("mobile rankings and result revisions are semantic and accessible", async ({ page }) => {
+test("mobile rankings and league table are semantic and accessible", async ({ page }) => {
   const fixture = await createPredictionFixture(1);
   const match = fixture.matches[0]!;
   const owner = createLocalActorClient("owner@example.test");
@@ -37,7 +37,7 @@ test("mobile rankings and result revisions are semantic and accessible", async (
   await loginAsLocalUser(page, "owner@example.test", `/rounds/${fixture.roundId}/rankings`);
   let scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze();
   expect(scan.violations).toEqual([]);
-  await page.goto(`/rounds/${fixture.roundId}/results`);
+  await page.goto(`/rounds/${fixture.roundId}/table`);
   scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze();
   expect(scan.violations).toEqual([]);
 });

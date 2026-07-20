@@ -13,6 +13,7 @@ export type IconName =
   | "settings"
   | "sun"
   | "system"
+  | "table"
   | "user";
 
 const paths: Record<IconName, React.ReactNode> = {
@@ -71,6 +72,12 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <rect x="3" y="4" width="18" height="13" rx="2" />
       <path d="M8 21h8m-4-4v4" />
+    </>
+  ),
+  table: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 9h18M8 9v11m8-11v11M3 14h18" />
     </>
   ),
   user: (

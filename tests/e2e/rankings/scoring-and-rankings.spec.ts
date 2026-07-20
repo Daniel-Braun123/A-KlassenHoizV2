@@ -69,8 +69,15 @@ test("two private rounds receive corrected points and rankings from one central 
   memberRow = member.getByRole("table").first().getByRole("row").filter({ hasText: "Freund" });
   await expect(ownerRow.getByRole("cell", { name: "2" })).toBeVisible();
   await expect(memberRow.getByRole("cell", { name: "4" })).toBeVisible();
-  await owner.goto(`/rounds/${fixture.roundId}/results`);
-  await expect(owner.getByText(/1 Ergebnis wurde korrigiert/)).toBeVisible();
+  await owner.goto(`/rounds/${fixture.roundId}/table`);
+  const homeRow = owner.getByRole("row").filter({ hasText: match.homeName });
+  const awayRow = owner.getByRole("row").filter({ hasText: match.awayName });
+  await expect(homeRow).toContainText("3:1");
+  await expect(homeRow).toContainText("3");
+  await expect(awayRow).toContainText("1:3");
+  await expect(awayRow).toContainText("0");
+  await member.goto(`/rounds/${second.data!}/table`);
+  await expect(member.getByRole("row").filter({ hasText: match.homeName })).toContainText("3:1");
   await ownerContext.close();
   await memberContext.close();
 });

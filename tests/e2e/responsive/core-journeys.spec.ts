@@ -9,7 +9,7 @@ for (const width of [320, 375, 768, 1024, 1440])
     await page.setViewportSize({ width, height: Math.max(640, Math.round(width * 0.9)) });
     await loginAsLocalUser(page, "owner@example.test", "/rounds/" + fixture.roundId);
     await expect(page.getByRole("link", { name: "Rangliste", exact: true })).toHaveCount(1);
-    await expect(page.getByRole("link", { name: "Ergebnisse", exact: true })).toHaveCount(1);
+    await expect(page.getByRole("link", { name: "Tabelle", exact: true })).toHaveCount(1);
 
     const navigationBox = await page.locator(".round-navigation").boundingBox();
     const contentBox = await page.locator(".content-page").boundingBox();
@@ -43,7 +43,7 @@ for (const width of [320, 375, 768, 1024, 1440])
       );
     }
 
-    for (const path of ["", "/predictions", "/rankings", "/results"]) {
+    for (const path of ["", "/predictions", "/rankings", "/table"]) {
       await page.goto("/rounds/" + fixture.roundId + path);
       await expect(page.locator("body")).toBeVisible();
       const overflow = await page.evaluate(
