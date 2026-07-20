@@ -6,12 +6,13 @@ import type { PredictionSheetRow } from "@/features/predictions/types";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
+  replace: vi.fn(),
   refresh: vi.fn(),
   saveBatch: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mocks.push, refresh: mocks.refresh }),
+  useRouter: () => ({ push: mocks.push, refresh: mocks.refresh, replace: mocks.replace }),
 }));
 
 vi.mock("@/features/predictions/actions", () => ({
@@ -134,6 +135,9 @@ describe("PredictionWorkspace", () => {
       roundId: "20000000-0000-4000-8000-000000000001",
     });
     expect(await screen.findByText("Der Tipp wurde gespeichert.")).toBeInTheDocument();
-    expect(mocks.refresh).toHaveBeenCalledOnce();
+    expect(mocks.replace).toHaveBeenCalledWith(
+      "/rounds/20000000-0000-4000-8000-000000000001/predictions?matchday=30000000-0000-4000-8000-000000000001",
+    );
+    expect(mocks.refresh).not.toHaveBeenCalled();
   });
 });

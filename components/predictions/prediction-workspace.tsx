@@ -235,7 +235,14 @@ export function PredictionWorkspace({
             ? "Der Tipp wurde gespeichert."
             : `${result.data.savedCount} Tipps wurden gespeichert.`,
       });
-      router.refresh();
+      const selectedRoute =
+        `/rounds/${roundId}/predictions?matchday=${encodeURIComponent(selectedId)}` as Route;
+      const currentMatchday = new URLSearchParams(window.location.search).get("matchday");
+      if (currentMatchday === selectedId) {
+        router.refresh();
+      } else {
+        router.replace(selectedRoute);
+      }
     });
   }
 
