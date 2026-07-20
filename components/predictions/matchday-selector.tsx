@@ -7,6 +7,8 @@ export type MatchdayOption = Readonly<{
   number: number;
   label: string;
   incomplete: boolean;
+  startsOn: string;
+  endsOn: string;
 }>;
 
 export function MatchdaySelector({

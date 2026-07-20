@@ -19,6 +19,7 @@ import {
   deleteMatchSimpleAction,
   deleteMatchdaySimpleAction,
   moveMatchdayPhaseAction,
+  updateMatchdayPeriodAction,
   updateMatchSimpleAction,
 } from "@/features/competition/schedule-actions";
 import {
@@ -26,8 +27,17 @@ import {
   berlinDateLabel,
   defaultKickoffInputValue,
 } from "@/features/competition/schedule-display";
+import {
+  formatMatchdayOptionLabel,
+  formatMatchdayPeriod,
+  nearestMatchdayId,
+  periodsOverlap,
+} from "@/features/competition/matchday-period";
 import type { AdminLeagueRow, AdminScheduleRow } from "@/features/competition/schedule-service";
-import { initialCompetitionActionState } from "@/features/competition/types";
+import {
+  initialCompetitionActionState,
+  type CompetitionActionState,
+} from "@/features/competition/types";
 
 type ClubOption = ClubSelectOption;
 type MatchdayPhase = AdminScheduleRow["phase"];
@@ -38,6 +48,8 @@ type Matchday = {
   matches: AdminScheduleRow[];
   number: number;
   phase: MatchdayPhase;
+  startsOn: string;
+  endsOn: string;
   status: AdminScheduleRow["matchday_status"];
   version: number;
 };
@@ -76,6 +88,8 @@ function toMatchdays(schedule: AdminScheduleRow[]): Matchday[] {
       matches: row.match_id ? [row] : [],
       number: row.matchday_number,
       phase: row.phase,
+      startsOn: row.starts_on,
+      endsOn: row.ends_on,
       status: row.matchday_status,
       version: row.matchday_version,
     });
@@ -123,17 +137,57 @@ function groupMatchesByDate(matches: AdminScheduleRow[]): MatchDateGroup[] {
 
 function CreateMatchdayForm({
   leagueId,
+  matchdays,
   phase,
-}: Readonly<{ leagueId: string; phase: MatchdayPhase }>) {
+}: Readonly<{ leagueId: string; matchdays: Matchday[]; phase: MatchdayPhase }>) {
+  const [startsOn, setStartsOn] = useState("");
+  const [endsOn, setEndsOn] = useState("");
   const [state, action, pending] = useActionState(
-    createMatchdayAutoAction,
+    async (previousState: CompetitionActionState, data: FormData) => {
+      const nextState = await createMatchdayAutoAction(previousState, data);
+      if (nextState.status === "success") {
+        setStartsOn("");
+        setEndsOn("");
+      }
+      return nextState;
+    },
     initialCompetitionActionState,
   );
+  const validPeriod = Boolean(startsOn && endsOn && startsOn <= endsOn);
+  const overlap = validPeriod
+    ? matchdays.find((day) => periodsOverlap({ startsOn, endsOn }, day))
+    : undefined;
+
   return (
-    <form action={action}>
+    <form action={action} className="schedule-matchday-create">
       <input name="leagueId" type="hidden" value={leagueId} />
       <input name="phase" type="hidden" value={phase} />
-      <Button disabled={pending} fullWidth type="submit" variant="secondary">
+      <div className="admin-form-grid admin-form-grid--dates">
+        <Input
+          label="Von"
+          name="startsOn"
+          onChange={(event) => setStartsOn(event.currentTarget.value)}
+          required
+          type="date"
+          value={startsOn}
+        />
+        <Input
+          error={startsOn && endsOn && startsOn > endsOn ? "Liegt vor dem Startdatum." : undefined}
+          label="Bis"
+          min={startsOn || undefined}
+          name="endsOn"
+          onChange={(event) => setEndsOn(event.currentTarget.value)}
+          required
+          type="date"
+          value={endsOn}
+        />
+      </div>
+      {overlap ? (
+        <p className="admin-form__warning" role="status">
+          Der Zeitraum überschneidet sich mit {overlap.displayName}. Das ist erlaubt.
+        </p>
+      ) : null}
+      <Button disabled={pending || !validPeriod} fullWidth type="submit" variant="secondary">
         {pending ? "Wird angelegt …" : "Spieltag hinzufügen"}
       </Button>
       <ActionMessage state={state} />
@@ -182,16 +236,20 @@ function PhaseOverview({
         )}
         {days.map((day) => (
           <option key={day.id} value={day.id}>
-            {day.displayName}
+            {formatMatchdayOptionLabel(day.displayName, day.startsOn, day.endsOn)}
           </option>
         ))}
       </Select>
-      <CreateMatchdayForm leagueId={leagueId} phase={phase} />
+      <CreateMatchdayForm leagueId={leagueId} matchdays={matchdays} phase={phase} />
     </section>
   );
 }
 
-function MatchdayActions({ day }: Readonly<{ day: Matchday }>) {
+function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays: Matchday[] }>) {
+  const [periodState, periodAction, periodPending] = useActionState(
+    updateMatchdayPeriodAction,
+    initialCompetitionActionState,
+  );
   const [moveState, moveAction, movePending] = useActionState(
     moveMatchdayPhaseAction,
     initialCompetitionActionState,
@@ -201,6 +259,14 @@ function MatchdayActions({ day }: Readonly<{ day: Matchday }>) {
     initialCompetitionActionState,
   );
   const targetPhase: MatchdayPhase = day.phase === "first_leg" ? "second_leg" : "first_leg";
+  const [startsOn, setStartsOn] = useState(day.startsOn);
+  const [endsOn, setEndsOn] = useState(day.endsOn);
+  const validPeriod = Boolean(startsOn && endsOn && startsOn <= endsOn);
+  const overlap = validPeriod
+    ? matchdays.find(
+        (candidate) => candidate.id !== day.id && periodsOverlap({ startsOn, endsOn }, candidate),
+      )
+    : undefined;
 
   return (
     <details className="matchday-settings" data-dismissible-settings>
@@ -211,6 +277,41 @@ function MatchdayActions({ day }: Readonly<{ day: Matchday }>) {
         <div>
           <strong>Spieltag verwalten</strong>
         </div>
+        <form action={periodAction} className="admin-form matchday-period-form">
+          <input name="id" type="hidden" value={day.id} />
+          <input name="expectedVersion" type="hidden" value={day.version} />
+          <div className="admin-form-grid admin-form-grid--dates">
+            <Input
+              label="Zeitraum von"
+              name="startsOn"
+              onChange={(event) => setStartsOn(event.currentTarget.value)}
+              required
+              type="date"
+              value={startsOn}
+            />
+            <Input
+              error={
+                startsOn && endsOn && startsOn > endsOn ? "Liegt vor dem Startdatum." : undefined
+              }
+              label="Zeitraum bis"
+              min={startsOn}
+              name="endsOn"
+              onChange={(event) => setEndsOn(event.currentTarget.value)}
+              required
+              type="date"
+              value={endsOn}
+            />
+          </div>
+          {overlap ? (
+            <p className="admin-form__warning" role="status">
+              Der Zeitraum überschneidet sich mit {overlap.displayName}. Das ist erlaubt.
+            </p>
+          ) : null}
+          <Button disabled={periodPending || !validPeriod} type="submit" variant="secondary">
+            {periodPending ? "Wird gespeichert …" : "Zeitraum speichern"}
+          </Button>
+          <ActionMessage state={periodState} />
+        </form>
         {day.hasPredictions ? (
           <p className="admin-form__warning">
             Für diesen Spieltag liegen bereits Tipps vor. Verschieben und Löschen sind deshalb
@@ -298,9 +399,11 @@ function CreateMatchForm({ clubs, day }: Readonly<{ clubs: ClubOption[]; day: Ma
         value={awayClubId}
       />
       <Input
-        defaultValue={defaultKickoffInputValue()}
+        defaultValue={defaultKickoffInputValue(day.startsOn)}
         disabled={unavailable}
         label="Anpfiff"
+        min={`${day.startsOn}T00:00`}
+        max={`${day.endsOn}T23:59`}
         name="kickoffAt"
         type="datetime-local"
         required
@@ -410,6 +513,8 @@ function ExistingMatchForm({
               <Input
                 defaultValue={berlinInput(row.kickoff_at)}
                 label="Anpfiff"
+                min={`${row.starts_on}T00:00`}
+                max={`${row.ends_on}T23:59`}
                 name="kickoffAt"
                 type="datetime-local"
                 required
@@ -471,7 +576,8 @@ export function ScheduleWorkspace({
   }, []);
 
   const matchdays = toMatchdays(schedule);
-  const selectedDay = matchdays.find((day) => day.id === selectedMatchdayId) ?? matchdays.at(0);
+  const resolvedMatchdayId = nearestMatchdayId(matchdays, selectedMatchdayId);
+  const selectedDay = matchdays.find((day) => day.id === resolvedMatchdayId);
   const matchDateGroups = selectedDay ? groupMatchesByDate(selectedDay.matches) : [];
 
   return (
@@ -498,16 +604,18 @@ export function ScheduleWorkspace({
           <section
             className="editor-list schedule-matchday-workspace"
             aria-labelledby="selected-matchday-heading"
+            key={selectedDay.id}
           >
             <div className="round-list__header">
               <div>
                 <h4 id="selected-matchday-heading">{selectedDay.displayName}</h4>
                 <p>
+                  {formatMatchdayPeriod(selectedDay.startsOn, selectedDay.endsOn)} ·{" "}
                   {selectedDay.matches.length}{" "}
                   {selectedDay.matches.length === 1 ? "Spiel" : "Spiele"}
                 </p>
               </div>
-              <MatchdayActions day={selectedDay} />
+              <MatchdayActions day={selectedDay} matchdays={matchdays} />
             </div>
             <CreateMatchForm clubs={clubs} day={selectedDay} />
             <div className="editor-list">

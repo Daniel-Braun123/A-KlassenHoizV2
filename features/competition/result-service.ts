@@ -3,8 +3,8 @@ import "server-only";
 import { z } from "zod";
 
 import type { Json } from "@/lib/supabase/database.types";
-import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
-import type { AdminScheduleRow } from "./types";
+import { listAdminSchedule, type AdminScheduleRow } from "./schedule-service";
+import { requireAppAdmin, throwCompetitionError } from "./server";
 
 const resultInputSchema = z
   .object({
@@ -38,22 +38,8 @@ export type MatchResultMutation = Readonly<{
   recalculatedCount: number;
 }>;
 
-export async function listAdminResults(leagueId?: string): Promise<AdminScheduleRow[]> {
-  const supabase = await appAdminClientOrNull();
-  if (!supabase) return [];
-  let query = supabase
-    .schema("api")
-    .from("admin_schedule")
-    .select("*")
-    .order("league_name")
-    .order("year_label", { ascending: false })
-    .order("phase")
-    .order("matchday_number")
-    .order("kickoff_at");
-  if (leagueId) query = query.eq("league_id", leagueId);
-  const { data, error } = await query;
-  throwCompetitionError(error);
-  return data ?? [];
+export async function listAdminResults(leagueId: string): Promise<AdminScheduleRow[]> {
+  return listAdminSchedule(leagueId);
 }
 
 export async function setMatchResult(input: unknown): Promise<MatchResultMutation> {

@@ -4,7 +4,7 @@ insert into app.seasons(id,label,starts_on,ends_on)values('51000000-0000-4000-80
 insert into app.league_seasons(id,league_id,season_id,status,published_at)values('51000000-0000-4000-8000-000000000003','51000000-0000-4000-8000-000000000001','51000000-0000-4000-8000-000000000002','published',clock_timestamp());
 insert into app.clubs(id,name,short_name)values('51000000-0000-4000-8000-000000000004','Recalc Heim','RH'),('51000000-0000-4000-8000-000000000005','Recalc Gast','RG');
 insert into app.league_season_clubs(league_season_id,club_id)values('51000000-0000-4000-8000-000000000003','51000000-0000-4000-8000-000000000004'),('51000000-0000-4000-8000-000000000003','51000000-0000-4000-8000-000000000005');
-insert into app.matchdays(id,league_season_id,number,status)values('51000000-0000-4000-8000-000000000006','51000000-0000-4000-8000-000000000003',1,'completed');
+insert into app.matchdays(id,league_season_id,number,status,starts_on,ends_on)values('51000000-0000-4000-8000-000000000006','51000000-0000-4000-8000-000000000003',1,'completed','2026-07-01','2026-07-01');
 insert into app.matches(id,matchday_id,home_club_id,away_club_id,kickoff_at,status)values('51000000-0000-4000-8000-000000000007','51000000-0000-4000-8000-000000000006','51000000-0000-4000-8000-000000000004','51000000-0000-4000-8000-000000000005','2026-07-01 12:00+00','completed');
 set constraints all deferred;
 insert into app.prediction_rounds(id,name,league_season_id,owner_membership_id,has_predictions)values('51000000-0000-4000-8000-000000000008','Recalc Runde','51000000-0000-4000-8000-000000000003','51000000-0000-4000-8000-000000000009',true);

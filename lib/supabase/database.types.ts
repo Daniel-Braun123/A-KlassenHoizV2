@@ -36,6 +36,7 @@ export type Database = {
           decision: Database["app"]["Enums"]["result_decision"] | null
           display_name: string | null
           display_status: string | null
+          ends_on: string | null
           home_club_id: string | null
           home_club_logo_url: string | null
           home_club_name: string | null
@@ -54,6 +55,7 @@ export type Database = {
           matchday_version: number | null
           phase: Database["app"]["Enums"]["matchday_phase"] | null
           revision_no: number | null
+          starts_on: string | null
           year_label: string | null
         }
         Relationships: [
@@ -205,6 +207,7 @@ export type Database = {
           away_logo_path: string | null
           away_logo_url: string | null
           display_name: string | null
+          ends_on: string | null
           home_club_id: string | null
           home_club_name: string | null
           home_club_short_name: string | null
@@ -228,12 +231,14 @@ export type Database = {
           result_is_correction: boolean | null
           result_revision_no: number | null
           round_id: string | null
+          starts_on: string | null
         }
         Relationships: []
       }
       matchday_ranking: {
         Row: {
           display_name: string | null
+          ends_on: string | null
           exact_scores: number | null
           is_current_user: boolean | null
           matchday_id: string | null
@@ -246,6 +251,7 @@ export type Database = {
           points: number | null
           rank: number | null
           round_id: string | null
+          starts_on: string | null
         }
         Relationships: [
           {
@@ -842,8 +848,10 @@ export type Database = {
       }
       create_matchday_auto: {
         Args: {
+          p_ends_on: string
           p_league_id: string
           p_phase: Database["app"]["Enums"]["matchday_phase"]
+          p_starts_on: string
         }
         Returns: string
       }
@@ -1092,6 +1100,15 @@ export type Database = {
           p_id: string
           p_number: number
           p_status: Database["app"]["Enums"]["matchday_status"]
+        }
+        Returns: number
+      }
+      update_matchday_period: {
+        Args: {
+          p_ends_on: string
+          p_expected_version: number
+          p_id: string
+          p_starts_on: string
         }
         Returns: number
       }
@@ -1382,10 +1399,12 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string | null
+          ends_on: string
           id: string
           league_season_id: string
           number: number
           phase: Database["app"]["Enums"]["matchday_phase"]
+          starts_on: string
           status: Database["app"]["Enums"]["matchday_status"]
           updated_at: string
           version: number
@@ -1393,10 +1412,12 @@ export type Database = {
         Insert: {
           created_at?: string
           display_name?: string | null
+          ends_on?: string
           id?: string
           league_season_id: string
           number: number
           phase?: Database["app"]["Enums"]["matchday_phase"]
+          starts_on?: string
           status?: Database["app"]["Enums"]["matchday_status"]
           updated_at?: string
           version?: number
@@ -1404,10 +1425,12 @@ export type Database = {
         Update: {
           created_at?: string
           display_name?: string | null
+          ends_on?: string
           id?: string
           league_season_id?: string
           number?: number
           phase?: Database["app"]["Enums"]["matchday_phase"]
+          starts_on?: string
           status?: Database["app"]["Enums"]["matchday_status"]
           updated_at?: string
           version?: number

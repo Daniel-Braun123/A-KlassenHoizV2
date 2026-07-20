@@ -1,3 +1,4 @@
+import { berlinDateKey } from "@/features/competition/schedule-display";
 import { createLocalActorClient } from "./local-actors";
 
 export async function createPublishedCompetition() {
@@ -63,9 +64,13 @@ export async function createPredictionFixture(matchCount = 8, firstKickoffOffset
     p_club_ids: clubs.map((club) => club.id),
   });
   if (competition.error) throw competition.error;
+  const firstKickoff = new Date(Date.now() + firstKickoffOffsetMs);
+  const lastKickoff = new Date(firstKickoff.getTime() + Math.max(0, matchCount - 1) * 3_600_000);
   const matchday = await admin.schema("api").rpc("create_matchday_auto", {
     p_league_id: competition.data!,
     p_phase: "first_leg",
+    p_starts_on: berlinDateKey(firstKickoff),
+    p_ends_on: berlinDateKey(lastKickoff),
   });
   if (matchday.error) throw matchday.error;
 
@@ -79,7 +84,7 @@ export async function createPredictionFixture(matchCount = 8, firstKickoffOffset
   for (let index = 0; index < matchCount; index += 1) {
     const home = clubs[index * 2]!;
     const away = clubs[index * 2 + 1]!;
-    const kickoffAt = new Date(Date.now() + firstKickoffOffsetMs + index * 3_600_000).toISOString();
+    const kickoffAt = new Date(firstKickoff.getTime() + index * 3_600_000).toISOString();
     const match = await admin.schema("api").rpc("create_match_simple", {
       p_matchday_id: matchday.data!,
       p_home_club_id: home.id,

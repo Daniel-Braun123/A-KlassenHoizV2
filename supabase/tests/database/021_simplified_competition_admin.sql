@@ -1,7 +1,26 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(24);
+select plan(36);
+
+select has_column('app', 'matchdays', 'starts_on', 'matchdays have a period start');
+select has_column('app', 'matchdays', 'ends_on', 'matchdays have a period end');
+select col_not_null('app', 'matchdays', 'starts_on', 'matchday period start is required');
+select col_not_null('app', 'matchdays', 'ends_on', 'matchday period end is required');
+select has_column('api', 'admin_schedule', 'starts_on', 'admin schedule exposes period start');
+select has_column('api', 'admin_schedule', 'ends_on', 'admin schedule exposes period end');
+select has_column('api', 'matchday_prediction_sheet', 'starts_on', 'prediction sheet exposes period start');
+select has_column('api', 'matchday_prediction_sheet', 'ends_on', 'prediction sheet exposes period end');
+select has_column('api', 'matchday_ranking', 'starts_on', 'ranking exposes period start');
+select has_column('api', 'matchday_ranking', 'ends_on', 'ranking exposes period end');
+select has_function(
+  'api', 'create_matchday_auto', array['uuid', 'app.matchday_phase', 'date', 'date'],
+  'matchday creation requires its period'
+);
+select has_function(
+  'api', 'update_matchday_period', array['uuid', 'integer', 'date', 'date'],
+  'matchday period can be updated'
+);
 
 select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000004', true);
 set local role authenticated;
@@ -70,21 +89,27 @@ select is(
 select lives_ok(
   $$select api.create_matchday_auto(
     (select id from api.admin_leagues where name = 'A-Klasse Nord' and year_label = '26/27'),
-    'first_leg'
+    'first_leg',
+    (clock_timestamp() at time zone 'Europe/Berlin')::date,
+    (clock_timestamp() at time zone 'Europe/Berlin')::date
   )$$,
   'first first-leg matchday is created automatically'
 );
 select lives_ok(
   $$select api.create_matchday_auto(
     (select id from api.admin_leagues where name = 'A-Klasse Nord' and year_label = '26/27'),
-    'first_leg'
+    'first_leg',
+    (clock_timestamp() at time zone 'Europe/Berlin')::date,
+    (clock_timestamp() at time zone 'Europe/Berlin')::date
   )$$,
   'second first-leg matchday is created automatically'
 );
 select lives_ok(
   $$select api.create_matchday_auto(
     (select id from api.admin_leagues where name = 'A-Klasse Nord' and year_label = '26/27'),
-    'second_leg'
+    'second_leg',
+    (clock_timestamp() at time zone 'Europe/Berlin')::date,
+    (clock_timestamp() at time zone 'Europe/Berlin')::date
   )$$,
   'first second-leg matchday is created automatically'
 );

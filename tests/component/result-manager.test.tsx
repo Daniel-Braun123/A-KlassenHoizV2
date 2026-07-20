@@ -3,7 +3,7 @@ import Link from "next/link";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ResultManager } from "@/components/competition/result-manager";
-import type { AdminScheduleRow } from "@/features/competition/types";
+import type { AdminScheduleRow } from "@/features/competition/schedule-service";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
@@ -63,6 +63,8 @@ function match(overrides: Partial<AdminScheduleRow>): AdminScheduleRow {
     matchday_number: 1,
     phase: "first_leg",
     revision_no: 0,
+    starts_on: "2000-07-01",
+    ends_on: "2000-07-02",
     year_label: "26/27",
     ...overrides,
   } as AdminScheduleRow;

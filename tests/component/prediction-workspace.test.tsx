@@ -81,6 +81,8 @@ describe("PredictionWorkspace", () => {
             incomplete: true,
             label: "Hinrunde · Spieltag 1",
             number: 1,
+            startsOn: "2099-07-24",
+            endsOn: "2099-07-26",
           },
         ]}
         roundId="20000000-0000-4000-8000-000000000001"
@@ -109,6 +111,8 @@ describe("PredictionWorkspace", () => {
             incomplete: true,
             label: "Hinrunde · Spieltag 1",
             number: 1,
+            startsOn: "2099-07-24",
+            endsOn: "2099-07-26",
           },
         ]}
         roundId="20000000-0000-4000-8000-000000000001"

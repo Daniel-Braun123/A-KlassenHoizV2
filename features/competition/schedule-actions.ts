@@ -12,6 +12,7 @@ import {
   deleteMatchSimple,
   deleteMatchdaySimple,
   moveMatchdayPhase,
+  updateMatchdayPeriod,
   updateMatch,
   updateMatchSimple,
   updateMatchday,
@@ -29,6 +30,7 @@ function kickoffIso(value: FormDataEntryValue | null): string {
 function revalidateScheduleAdmin(): void {
   revalidatePath("/admin/competitions");
   revalidatePath("/admin/competitions/[leagueId]/schedule", "page");
+  revalidatePath("/admin/competitions/[leagueId]/results", "page");
 }
 
 export async function createMatchdayAutoAction(
@@ -36,9 +38,32 @@ export async function createMatchdayAutoAction(
   data: FormData,
 ): Promise<CompetitionActionState> {
   try {
-    await createMatchdayAuto({ leagueId: data.get("leagueId"), phase: data.get("phase") });
+    await createMatchdayAuto({
+      leagueId: data.get("leagueId"),
+      phase: data.get("phase"),
+      startsOn: data.get("startsOn"),
+      endsOn: data.get("endsOn"),
+    });
     revalidateScheduleAdmin();
     return competitionSuccess("Der nächste Spieltag wurde angelegt.");
+  } catch (error) {
+    return competitionFailure(error);
+  }
+}
+
+export async function updateMatchdayPeriodAction(
+  _: CompetitionActionState,
+  data: FormData,
+): Promise<CompetitionActionState> {
+  try {
+    await updateMatchdayPeriod({
+      id: data.get("id"),
+      expectedVersion: data.get("expectedVersion"),
+      startsOn: data.get("startsOn"),
+      endsOn: data.get("endsOn"),
+    });
+    revalidateScheduleAdmin();
+    return competitionSuccess("Der Spieltagszeitraum wurde aktualisiert.");
   } catch (error) {
     return competitionFailure(error);
   }

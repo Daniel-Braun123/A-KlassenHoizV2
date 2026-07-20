@@ -6,6 +6,7 @@ import {
   createSimpleMatchSchema,
   deleteScheduleItemSchema,
   moveMatchdayPhaseSchema,
+  updateMatchdayPeriodSchema,
   updateSimpleMatchSchema,
 } from "./schedule-schemas";
 import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
@@ -38,6 +39,8 @@ export type AdminScheduleRow = Omit<
   | "matchday_status"
   | "matchday_version"
   | "phase"
+  | "starts_on"
+  | "ends_on"
   | "year_label"
 > & {
   display_name: string;
@@ -48,6 +51,8 @@ export type AdminScheduleRow = Omit<
   matchday_status: NonNullable<RawAdminScheduleRow["matchday_status"]>;
   matchday_version: number;
   phase: NonNullable<RawAdminScheduleRow["phase"]>;
+  starts_on: string;
+  ends_on: string;
   year_label: string;
 };
 
@@ -103,6 +108,8 @@ export async function listAdminSchedule(leagueId: string): Promise<AdminSchedule
         matchday_status: NonNullable<RawAdminScheduleRow["matchday_status"]>;
         matchday_version: number;
         phase: NonNullable<RawAdminScheduleRow["phase"]>;
+        starts_on: string;
+        ends_on: string;
         year_label: string;
       } =>
         Boolean(
@@ -113,6 +120,8 @@ export async function listAdminSchedule(leagueId: string): Promise<AdminSchedule
           row.matchday_status &&
           row.matchday_version !== null &&
           row.phase &&
+          row.starts_on &&
+          row.ends_on &&
           row.year_label,
         ),
     )
@@ -130,6 +139,21 @@ export async function createMatchdayAuto(input: unknown): Promise<string> {
   const { data, error } = await supabase.schema("api").rpc("create_matchday_auto", {
     p_league_id: value.leagueId,
     p_phase: value.phase,
+    p_starts_on: value.startsOn,
+    p_ends_on: value.endsOn,
+  });
+  throwCompetitionError(error);
+  return data!;
+}
+
+export async function updateMatchdayPeriod(input: unknown): Promise<number> {
+  const value = updateMatchdayPeriodSchema.parse(input);
+  const supabase = await requireAppAdmin();
+  const { data, error } = await supabase.schema("api").rpc("update_matchday_period", {
+    p_id: value.id,
+    p_expected_version: value.expectedVersion,
+    p_starts_on: value.startsOn,
+    p_ends_on: value.endsOn,
   });
   throwCompetitionError(error);
   return data!;

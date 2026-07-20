@@ -2383,6 +2383,25 @@ p {
   display: grid;
 }
 
+.schedule-matchday-create {
+  gap: var(--space-3);
+}
+
+.schedule-matchday-create .admin-form-grid--dates {
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+.matchday-period-form {
+  gap: var(--space-3);
+  padding: var(--space-4);
+  box-shadow: none;
+}
+
+.admin-form-grid--dates {
+  gap: var(--space-3);
+}
+
 .schedule-matchday-workspace {
   position: relative;
   min-width: 0;

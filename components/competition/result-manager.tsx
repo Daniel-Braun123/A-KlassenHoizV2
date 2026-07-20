@@ -2,14 +2,7 @@
 
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-  type FormEvent,
-} from "react";
+import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 
 import { ActionMessage } from "@/components/competition/action-message";
 import { ClubLogo } from "@/components/competition/club-logo";
@@ -24,8 +17,12 @@ import {
   berlinTimeLabel,
 } from "@/features/competition/schedule-display";
 import {
+  formatMatchdayOptionLabel,
+  nearestMatchdayId,
+} from "@/features/competition/matchday-period";
+import type { AdminScheduleRow } from "@/features/competition/schedule-service";
+import {
   initialCompetitionActionState,
-  type AdminScheduleRow,
   type CompetitionActionState,
 } from "@/features/competition/types";
 
@@ -98,9 +95,12 @@ function resultUnlocked(match: AdminScheduleRow, now: number): boolean {
 }
 
 function matchdayLabel(row: AdminScheduleRow): string {
-  if (row.display_name) return row.display_name;
   const phase = row.phase === "second_leg" ? "Rückrunde" : "Hinrunde";
-  return `${phase} · Spieltag ${row.matchday_number ?? "–"}`;
+  return formatMatchdayOptionLabel(
+    row.display_name || `${phase} · Spieltag ${row.matchday_number ?? "–"}`,
+    row.starts_on,
+    row.ends_on,
+  );
 }
 
 function groupMatchesByDate(matches: MatchWithId[]): MatchDateGroup[] {
@@ -316,24 +316,44 @@ export function ResultManager({ schedule }: Readonly<{ schedule: AdminScheduleRo
 
   const [selectedLeague, setSelectedLeague] = useState(() => leagues[0]?.id ?? "");
   const matchdays = useMemo(() => {
-    const values = new Map<string, { id: string; label: string }>();
+    const values = new Map<
+      string,
+      { id: string; label: string; startsOn: string; endsOn: string }
+    >();
     for (const row of schedule) {
       if (row.league_id === selectedLeague && row.matchday_id && !values.has(row.matchday_id)) {
-        values.set(row.matchday_id, { id: row.matchday_id, label: matchdayLabel(row) });
+        values.set(row.matchday_id, {
+          id: row.matchday_id,
+          label: matchdayLabel(row),
+          startsOn: row.starts_on,
+          endsOn: row.ends_on,
+        });
       }
     }
     return [...values.values()];
   }, [schedule, selectedLeague]);
   const [selectedMatchday, setSelectedMatchday] = useState(() => {
     const firstLeagueId = leagues[0]?.id;
-    return schedule.find((row) => row.league_id === firstLeagueId)?.matchday_id ?? "";
+    const leagueMatchdays = schedule
+      .filter((row) => row.league_id === firstLeagueId)
+      .flatMap((row) =>
+        row.matchday_id
+          ? [
+              {
+                id: row.matchday_id,
+                startsOn: row.starts_on,
+                endsOn: row.ends_on,
+              },
+            ]
+          : [],
+      );
+    return nearestMatchdayId(leagueMatchdays) ?? "";
   });
 
   const matches = useMemo(
     () =>
       schedule.filter(
-        (row): row is MatchWithId =>
-          row.matchday_id === selectedMatchday && Boolean(row.match_id),
+        (row): row is MatchWithId => row.matchday_id === selectedMatchday && Boolean(row.match_id),
       ),
     [schedule, selectedMatchday],
   );
@@ -407,7 +427,14 @@ export function ResultManager({ schedule }: Readonly<{ schedule: AdminScheduleRo
 
   function selectLeague(leagueId: string): void {
     setSelectedLeague(leagueId);
-    setSelectedMatchday(schedule.find((row) => row.league_id === leagueId)?.matchday_id ?? "");
+    const leagueMatchdays = schedule
+      .filter((row) => row.league_id === leagueId)
+      .flatMap((row) =>
+        row.matchday_id
+          ? [{ id: row.matchday_id, startsOn: row.starts_on, endsOn: row.ends_on }]
+          : [],
+      );
+    setSelectedMatchday(nearestMatchdayId(leagueMatchdays) ?? "");
     setState(initialCompetitionActionState);
   }
 
@@ -574,11 +601,7 @@ export function ResultManager({ schedule }: Readonly<{ schedule: AdminScheduleRo
                 ? ` ${incompleteCount} ${incompleteCount === 1 ? "unvollständige Eingabe wird" : "unvollständige Eingaben werden"} nicht gespeichert.`
                 : ""}
             </p>
-            <Button
-              disabled={pending || saveableMatches.length === 0}
-              fullWidth
-              type="submit"
-            >
+            <Button disabled={pending || saveableMatches.length === 0} fullWidth type="submit">
               {pending ? "Wird gespeichert …" : "Ergebnisse speichern"}
             </Button>
             <ActionMessage state={state} />

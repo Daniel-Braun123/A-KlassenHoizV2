@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  createMatchdayAutoSchema,
   createSimpleMatchSchema,
+  updateMatchdayPeriodSchema,
   updateSimpleMatchSchema,
 } from "@/features/competition/schedule-schemas";
 
@@ -12,6 +14,25 @@ const match = {
 };
 
 describe("simplified schedule schemas", () => {
+  it("requires an ordered period for create and update", () => {
+    expect(
+      createMatchdayAutoSchema.safeParse({
+        leagueId: "10000000-0000-4000-8000-000000000003",
+        phase: "first_leg",
+        startsOn: "2026-07-24",
+        endsOn: "2026-07-26",
+      }).success,
+    ).toBe(true);
+    expect(
+      updateMatchdayPeriodSchema.safeParse({
+        id: "10000000-0000-4000-8000-000000000003",
+        expectedVersion: 1,
+        startsOn: "2026-07-27",
+        endsOn: "2026-07-26",
+      }).success,
+    ).toBe(false);
+  });
+
   it("loads both schemas and validates create and update inputs", () => {
     expect(
       createSimpleMatchSchema.safeParse({

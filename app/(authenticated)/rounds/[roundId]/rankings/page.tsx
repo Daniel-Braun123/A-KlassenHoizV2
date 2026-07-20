@@ -2,6 +2,7 @@ import { RankingScopeSelect } from "@/components/rankings/ranking-scope-select";
 import { ResponsiveRanking } from "@/components/rankings/responsive-ranking";
 import { listMatchdayRanking, listOverallRanking } from "@/features/rankings/service";
 import { getMyRound } from "@/features/rounds/service";
+import { formatMatchdayOptionLabel } from "@/features/competition/matchday-period";
 
 export default async function RankingsPage({
   params,
@@ -25,7 +26,14 @@ export default async function RankingsPage({
                 row.matchday_id,
                 {
                   id: row.matchday_id,
-                  label: row.display_name || `${row.matchday_number}. Spieltag`,
+                  label:
+                    row.starts_on && row.ends_on
+                      ? formatMatchdayOptionLabel(
+                          row.display_name || `${row.matchday_number}. Spieltag`,
+                          row.starts_on,
+                          row.ends_on,
+                        )
+                      : row.display_name || `${row.matchday_number}. Spieltag`,
                 },
               ] as const,
             ]

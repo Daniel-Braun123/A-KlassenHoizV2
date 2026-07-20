@@ -31,8 +31,15 @@ insert into app.league_season_clubs(league_season_id, club_id)
 values
   ('53000000-0000-4000-8000-000000000003', '53000000-0000-4000-8000-000000000004'),
   ('53000000-0000-4000-8000-000000000003', '53000000-0000-4000-8000-000000000005');
-insert into app.matchdays(id, league_season_id, number, status)
-values ('53000000-0000-4000-8000-000000000006', '53000000-0000-4000-8000-000000000003', 1, 'completed');
+insert into app.matchdays(id, league_season_id, number, status, starts_on, ends_on)
+values (
+  '53000000-0000-4000-8000-000000000006',
+  '53000000-0000-4000-8000-000000000003',
+  1,
+  'completed',
+  '2026-07-01',
+  '2026-07-01'
+);
 insert into app.matches(id, matchday_id, home_club_id, away_club_id, kickoff_at, status)
 values (
   '53000000-0000-4000-8000-000000000007',

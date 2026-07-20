@@ -26,6 +26,8 @@ test.describe("mobile global competition administration", () => {
     const leagueName = `A-Klasse ${suffix}`;
     const homeName = `Heim ${suffix}`;
     const awayName = `Gast ${suffix}`;
+    const kickoff = pastKickoffInput();
+    const matchdayDate = kickoff.slice(0, 10);
 
     await page.getByRole("link", { name: "Vereine", exact: true }).click();
     const clubForm = page
@@ -55,8 +57,12 @@ test.describe("mobile global competition administration", () => {
 
     await page.getByRole("link", { name: "Spielplan", exact: true }).click();
     const firstLeg = page.locator(".schedule-phase-picker").filter({ hasText: "Hinrunde" });
+    await firstLeg.getByLabel("Von").fill(matchdayDate);
+    await firstLeg.getByLabel("Bis").fill(matchdayDate);
     await firstLeg.getByRole("button", { name: "Spieltag hinzufügen" }).click();
-    await expect(firstLeg.getByRole("status")).toContainText("Spieltag wurde angelegt");
+    await expect(
+      firstLeg.getByText("Der nächste Spieltag wurde angelegt.", { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Hinrunde · Spieltag 1" })).toBeVisible();
 
     const matchForm = page
@@ -68,7 +74,7 @@ test.describe("mobile global competition administration", () => {
     const awayField = matchForm.locator(".field").filter({ hasText: "Auswärtsverein" });
     await awayField.locator("summary").click();
     await awayField.getByRole("button", { name: awayName }).click();
-    await matchForm.getByLabel("Anpfiff").fill(pastKickoffInput());
+    await matchForm.getByLabel("Anpfiff").fill(kickoff);
     await matchForm.getByRole("button", { name: "Spiel anlegen" }).click();
     await expect(matchForm.getByRole("status")).toContainText("Spiel wurde angelegt");
     await expect(

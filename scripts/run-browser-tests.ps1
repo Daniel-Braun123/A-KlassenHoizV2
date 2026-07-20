@@ -26,7 +26,8 @@ foreach ($line in $status) { if ($line -match '^(API_URL|PUBLISHABLE_KEY|JWT_SEC
 $env:NEXT_PUBLIC_SUPABASE_URL = $values.API_URL
 $env:NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = $values.PUBLISHABLE_KEY
 $env:SUPABASE_TEST_JWT_SECRET = $values.JWT_SECRET
-$env:NEXT_PUBLIC_SITE_URL = 'http://127.0.0.1:3000'
+$browserBaseUrl = if ($env:PLAYWRIGHT_BASE_URL) { $env:PLAYWRIGHT_BASE_URL } else { 'http://127.0.0.1:3000' }
+$env:NEXT_PUBLIC_SITE_URL = $browserBaseUrl
 $env:NEXT_TELEMETRY_DISABLED = '1'
 
 if (-not $env:PLAYWRIGHT_WEB_SERVER_COMMAND) {

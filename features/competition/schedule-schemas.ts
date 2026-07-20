@@ -4,11 +4,37 @@ const uuid = z.string().uuid();
 const version = z.coerce.number().int().positive();
 const phase = z.enum(["first_leg", "second_leg"]);
 const status = z.enum(["draft", "published", "postponed", "cancelled", "completed", "abandoned"]);
+const dateOnly = z.iso.date();
 
-export const createMatchdayAutoSchema = z.object({
-  leagueId: uuid,
-  phase,
-});
+const matchdayPeriodFields = {
+  startsOn: dateOnly,
+  endsOn: dateOnly,
+} as const;
+
+const validPeriod = <T extends { startsOn: string; endsOn: string }>(value: T) =>
+  value.startsOn <= value.endsOn;
+
+export const createMatchdayAutoSchema = z
+  .object({
+    leagueId: uuid,
+    phase,
+    ...matchdayPeriodFields,
+  })
+  .refine(validPeriod, {
+    message: "Das Enddatum darf nicht vor dem Startdatum liegen.",
+    path: ["endsOn"],
+  });
+
+export const updateMatchdayPeriodSchema = z
+  .object({
+    id: uuid,
+    expectedVersion: version,
+    ...matchdayPeriodFields,
+  })
+  .refine(validPeriod, {
+    message: "Das Enddatum darf nicht vor dem Startdatum liegen.",
+    path: ["endsOn"],
+  });
 
 export const moveMatchdayPhaseSchema = z.object({
   id: uuid,

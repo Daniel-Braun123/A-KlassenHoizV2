@@ -31,6 +31,8 @@ export function berlinTimeLabel(value: string | Date): string {
   return `${berlinTimeLabelFormatter.format(new Date(value))} Uhr`;
 }
 
-export function defaultKickoffInputValue(date = new Date()): string {
-  return `${berlinDateKey(date)}T15:00`;
+export function defaultKickoffInputValue(date: string | Date = new Date()): string {
+  const dateKey =
+    typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(date) ? date : berlinDateKey(date);
+  return `${dateKey}T15:00`;
 }
