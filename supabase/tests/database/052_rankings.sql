@@ -1,4 +1,4 @@
-begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(9);
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(12);
 select has_view('api','overall_ranking','overall ranking exists');
 select has_view('api','matchday_ranking','matchday ranking exists');
 select view_owner_is('api','overall_ranking','postgres','overall ranking has controlled owner');
@@ -30,4 +30,11 @@ select is((select array_agg(rank order by rank,nickname) from api.overall_rankin
 select is((select array_agg(nickname order by rank,nickname) from api.overall_ranking where round_id='52000000-0000-4000-8000-000000000008'),array['Alpha','Beta','Zeta']::text[],'ties display alphabetically');
 select is((select array_agg(rank order by rank,nickname) from api.matchday_ranking where round_id='52000000-0000-4000-8000-000000000008'),array[1,2,2],'matchday ranking shares rank');
 select is((select count(*) from api.overall_ranking where round_id='52000000-0000-4000-8000-000000000008' and is_current_user),1::bigint,'current member is marked once');reset role;
+update app.round_memberships
+set status='removed',ended_at=clock_timestamp()
+where id='52000000-0000-4000-8000-000000000010';
+select set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000003',true);set local role authenticated;
+select is((select count(*) from api.round_members where id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from member view');
+select is((select count(*) from api.overall_ranking where membership_id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from overall ranking');
+select is((select count(*) from api.matchday_ranking where membership_id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from matchday ranking');reset role;
 select * from finish();rollback;

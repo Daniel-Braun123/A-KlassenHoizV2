@@ -9,6 +9,42 @@ const hash = async (token: string) =>
   );
 
 describe("round lifecycle", () => {
+  it("hides a removed member from the member list and rankings", async () => {
+    const fixture = await createRoundInvitationFixture();
+    const owner = createLocalActorClient("owner@example.test");
+    const member = createLocalActorClient("member@example.test");
+    const joined = await member.schema("api").rpc("join_round", {
+      p_token_hash: await hash(fixture.token),
+      p_nickname: "Zu entfernen",
+      p_idempotency_key: crypto.randomUUID(),
+    });
+    expect(joined.error).toBeNull();
+
+    const removal = await owner.schema("api").rpc("remove_round_member", {
+      p_round_id: fixture.roundId,
+      p_membership_id: joined.data!,
+    });
+    expect(removal.error).toBeNull();
+
+    const members = await owner
+      .schema("api")
+      .from("round_members")
+      .select("id")
+      .eq("round_id", fixture.roundId)
+      .eq("id", joined.data!);
+    const ranking = await owner
+      .schema("api")
+      .from("overall_ranking")
+      .select("membership_id")
+      .eq("round_id", fixture.roundId)
+      .eq("membership_id", joined.data!);
+
+    expect(members.error).toBeNull();
+    expect(members.data).toEqual([]);
+    expect(ranking.error).toBeNull();
+    expect(ranking.data).toEqual([]);
+  }, 30_000);
+
   it("transfers the only ownership and supports leave, archive and reactivation", async () => {
     const fixture = await createRoundInvitationFixture();
     const owner = createLocalActorClient("owner@example.test"),
