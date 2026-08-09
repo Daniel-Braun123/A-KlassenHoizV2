@@ -99,7 +99,8 @@ Nicht Bestandteil von Version 1 sind:
 - native iOS- oder Android-Apps,
 - Social Feed, Kommentare oder Direktnachrichten,
 - selbst konfigurierbare Punktesysteme,
-- Real-User-Monitoring und Produktanalytics,
+- Produktanalytics, Session Replay und Werbe-Tracking; ausgenommen ist die ausdrücklich
+  freigegebene, anonymisierte Web-Vitals-Messung mit Vercel Speed Insights,
 - automatischer Import alter Nutzer oder alter Anwendungsdaten.
 
 Diese Punkte können später neu priorisiert werden. Das Datenmodell soll sinnvolle Erweiterungen nicht unnötig verhindern, aber V1 darf dafür keine sichtbare Komplexität tragen.
@@ -755,7 +756,8 @@ Spezifikation, einem Plan oder einer früheren allgemeinen Zustimmung abgeleitet
 ### 18.1 Performance
 
 - Interaktionsfeedback innerhalb von 100 ms, sofern lokal möglich.
-- V1 verwendet keine p75-Feldwert-Grenze und erhebt keine Real-User-Monitoring-Daten.
+- V1 verwendet keine p75-Feldwert-Releasegrenze. Anonyme Speed-Insights-Feldwerte dienen nur der
+  technischen Beobachtung und sind kein Release-Gate.
 - Der Release wird mit einem reproduzierbaren Lighthouse-Mobile-Lab-Budget geprüft: Performance-
   Score mindestens 90, LCP höchstens 2,5 Sekunden, CLS höchstens 0,1 und TBT höchstens
   200 Millisekunden, jeweils als Median aus drei isolierten Läufen.
@@ -821,13 +823,15 @@ Spezifikation, einem Plan oder einer früheren allgemeinen Zustimmung abgeleitet
 
 ## 20. Analytics und Produktbeobachtung
 
-V1 erhebt weder Produktanalytics noch Real-User-Monitoring-Daten. Die zuvor erwogenen Kennzahlen zu
-Registrierung, Rundenerstellung, Einladungen, Tippfortschritt, Speicherfehlern, Geräteklassen und
-PWA-Installationskontext sind ein späteres Nicht-Ziel und kein Releasekriterium für V1.
+V1 verwendet keine Produktanalytics, Sitzungsaufzeichnung oder Werbe-Tracking. Mit ausdrücklicher
+Freigabe des Projekteigentümers vom 10. August 2026 wird ausschließlich Vercel Speed Insights für
+anonymisierte technische Web-Vitals eingesetzt. Erfasst werden aggregierbare Leistungsdaten und
+grobe technische Klassen; Einladungs-Tokens, interne Objekt-IDs, Query-Parameter und URL-Fragmente
+werden vor der Übertragung entfernt. Die Messwerte sind kein p75-Feldwert-Release-Gate.
 
-Eine spätere PII-freie und aggregierte Produkt- oder Performancebeobachtung benötigt eine eigene
-Spezifikation und Datenschutzentscheidung. Unabhängig davon dürfen technische Logs niemals
-Tippinhalte, Passwörter, E-Mail-Adressen, Einladungs-Tokens oder private Rundennamen enthalten.
+Kennzahlen zu Registrierung, Rundenerstellung, Einladungserfolg, Tippfortschritt oder
+PWA-Installationen bleiben Nicht-Ziele. Technische Logs und Messwerte dürfen niemals Tippinhalte,
+Passwörter, E-Mail-Adressen, Einladungs-Tokens oder private Rundennamen enthalten.
 
 ## 21. Release-Strategie
 
@@ -895,7 +899,8 @@ Diese Entscheidungen gelten als gesetzt:
 - manuelle Spielplan- und Ergebnisverwaltung,
 - Punktesystem 4/3/2/0,
 - private Einladungslinks mit QR-Code,
-- keine Produktanalytics und kein Real-User-Monitoring in V1,
+- keine Produktanalytics oder Sitzungsaufzeichnung; ausschließlich anonymisierte technische
+  Web-Vitals über Vercel Speed Insights,
 - reproduzierbare Lighthouse-Mobile-Lab-Budgets statt p75-Feldwert-Grenzen,
 - keine zusätzlichen Gamification-Funktionen in V1.
 

@@ -489,10 +489,11 @@ Speicherbestätigung.
   eingebundene technische Dienstleister, verarbeitete Datenkategorien sowie Konto- und
   Löschmöglichkeiten wahrheitsgemäß beschreiben. Öffnung, Monetarisierung oder geschäftliche Nutzung
   erfordern vorab eine neue rechtliche Prüfung; nicht bestätigte Angaben DÜRFEN nicht erfunden werden.
-- **FR-065**: V1 DARF weder Produktanalytics noch Real-User-Monitoring-Daten erheben. Eine spätere
-  PII-freie, aggregierte Beobachtung benötigt eine eigene Spezifikation und Datenschutzentscheidung.
-  Technische Logs DÜRFEN keine Tippinhalte, Passwörter, E-Mail-Adressen, Einladungs-Tokens oder
-  private Rundennamen enthalten.
+- **FR-065**: V1 DARF keine Produktanalytics, Sitzungsaufzeichnung oder Werbe-Tracking erheben.
+  Aufgrund der ausdrücklichen Freigabe vom 10. August 2026 DARF Vercel Speed Insights ausschließlich
+  anonymisierte technische Web-Vitals erheben. Einladungs-Tokens, interne Objekt-IDs,
+  Query-Parameter und URL-Fragmente MÜSSEN vor der Übertragung entfernt werden. Technische Logs und
+  Messwerte DÜRFEN keine Tippinhalte, Passwörter, E-Mail-Adressen oder private Rundennamen enthalten.
 - **FR-066**: Produkttexte und visuelle Muster MÜSSEN Tipp-, Punkte- und Gemeinschaftssprache
   verwenden und DÜRFEN Echtgeld, Einsätze, Gewinne, Quoten, Buchmacher oder Glücksspiel nicht
   unterstützen oder nahelegen.
@@ -611,7 +612,8 @@ Speicherbestätigung.
 - Push-Benachrichtigungen, Erinnerungen, Social Feed, Kommentare oder Direktnachrichten.
 - Offline-Tippabgabe, Hintergrund- oder Konfliktsynchronisierung.
 - Native iOS-/Android-Apps oder umfangreiche Marketing-Website.
-- Produktanalytics, Real-User-Monitoring und p75-Feldwert-Releasegrenzen.
+- Produktanalytics, Sitzungsaufzeichnung, Werbe-Tracking und p75-Feldwert-Releasegrenzen; die
+  freigegebene anonymisierte Speed-Insights-Web-Vitals-Messung ist davon ausgenommen.
 - Automatischer Import alter Nutzer, Daten, Code, Datenmodelle oder Migrationen.
 - Physischer Supabase-Reset im Rahmen dieser Spezifikationsarbeit.
 
@@ -695,7 +697,8 @@ Speicherbestätigung.
 - Für die ausdrücklich freigegebene Altbestandslöschung wird auf Wunsch des Projekteigentümers kein
   Export oder Backup erstellt. Die exakte Löschliste, Schutzliste und Unwiederbringlichkeit werden
   vor Ausführung separat dokumentiert und danach read-only verifiziert.
-- V1 erhebt keine Produktanalytics oder Real-User-Monitoring-Daten. V1 bleibt privat,
+- V1 erhebt keine Produktanalytics oder Sitzungsaufzeichnungen; die ausdrücklich freigegebene,
+  anonymisierte Speed-Insights-Web-Vitals-Messung ist die einzige Ausnahme. V1 bleibt privat,
   nicht-kommerziell und einladungsbasiert; der Nutzungs-/Datenschutzhinweis wird erst nach Prüfung
   seiner tatsächlichen technischen Angaben eingebunden, ein Impressum und private
   Anschrift-/Steuerangaben nicht.

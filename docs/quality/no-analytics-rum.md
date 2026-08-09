@@ -1,5 +1,10 @@
 # Kein Analytics/RUM in V1
 
+> **Abgelöst am 10. August 2026:** Dieser Nachweis dokumentiert den ursprünglichen Releasezustand.
+> Der Projekteigentümer hat danach die eng begrenzte Integration von Vercel Speed Insights
+> freigegeben. Produktanalytics und Session Replay bleiben ausgeschlossen; private dynamische
+> URL-Segmente und Parameter werden vor der anonymen Web-Vitals-Übertragung entfernt.
+
 Geprüft am 13. Juli 2026:
 
 - Laufzeitabhängigkeiten und direkte Entwicklungsabhängigkeiten enthalten kein PostHog, Mixpanel, Segment, Amplitude, Sentry, Datadog oder New Relic SDK;

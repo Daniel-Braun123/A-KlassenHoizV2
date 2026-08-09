@@ -4,6 +4,13 @@
 **Stand:** 2026-07-13  
 **Status:** VERBINDLICH
 
+> **Aktualisierung vom 10. August 2026:** Der Projekteigentümer hat Vercel Speed Insights
+> ausdrücklich aktiviert und die Integration beauftragt. Die nachfolgende ursprüngliche
+> No-RUM-Grenze ist damit ausschließlich für anonymisierte technische Web-Vitals aufgehoben.
+> Produktanalytics, Session Replay, Werbe-Tracking und die Übertragung privater URL-Bestandteile
+> bleiben verboten. Einladungs-Tokens, Objekt-IDs, Query-Parameter und Fragmente werden clientseitig
+> vor jeder Messwertübertragung entfernt.
+
 ## V1 erhebt keine Produktbeobachtung
 
 A-KlassenHoiz V1 integriert weder Produktanalytics noch Real-User Monitoring (RUM), Session Replay,

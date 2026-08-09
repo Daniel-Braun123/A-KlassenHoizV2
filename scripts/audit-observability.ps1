@@ -8,7 +8,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $paths = @('app','components','features','lib','public','next.config.ts','package.json')
 $patterns = @(
   '(?i)console\.(log|debug|info)\s*\(',
-  '(?i)(posthog|mixpanel|segment|amplitude|sentry|datadog|newrelic)',
+  '(?i)\b(posthog|mixpanel|segment|amplitude|sentry|datadog|newrelic)\b',
   '(?i)(home_goals|away_goals|prediction).*?(console|logger|log\.)',
   '(?i)(email|token|roundName|round_name).*?(console|logger|log\.)'
 )

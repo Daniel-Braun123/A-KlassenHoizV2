@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         <p>{privacyCopy.services}</p>
       </section>
       <section>
-        <h2>Keine Verhaltensmessung</h2>
+        <h2>Anonyme Leistungsmessung</h2>
         <p>{privacyCopy.analytics}</p>
       </section>
       <section>
