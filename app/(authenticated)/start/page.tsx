@@ -1,4 +1,5 @@
 import { RoundSwitcher } from "@/components/rounds/round-switcher";
+import { Link } from "@/components/ui/link";
 import { getMyProfile } from "@/features/profile/service";
 import { listMyRounds } from "@/features/rounds/service";
 export default async function StartPage() {
@@ -15,8 +16,11 @@ export default async function StartPage() {
         <div className="role-panel">
           <div>
             <h2>Administratorkonto</h2>
-            <p>Der Administrationsbereich ist nicht in der normalen Navigation verlinkt.</p>
+            <p>Du bist als App-Admin angemeldet.</p>
           </div>
+          <Link href="/admin/competitions" variant="button">
+            Zur globalen Verwaltung
+          </Link>
           <p className="role-panel__note">
             App-Admins verwalten keine privaten Tipprunden. Verwende dafür ein separates normales
             Benutzerkonto.

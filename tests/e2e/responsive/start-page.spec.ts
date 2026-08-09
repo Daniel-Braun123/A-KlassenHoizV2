@@ -9,6 +9,7 @@ test("mobile player start page is compact and offers round creation", async ({ p
   const heading = page.getByRole("heading", { level: 1, name: "Willkommen zurück" });
   await expect(heading).toBeVisible();
   await expect(page.getByRole("link", { name: "Neue Tipprunde" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Zur globalen Verwaltung" })).toHaveCount(0);
 
   const fontSize = await heading.evaluate((element) =>
     Number.parseFloat(getComputedStyle(element).fontSize),
@@ -26,6 +27,11 @@ test("app admin start page only offers global administration", async ({ page }) 
   await page.goto("/start");
 
   await expect(page.getByRole("heading", { level: 1, name: "Globale Verwaltung" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Verwaltung" })).toHaveCount(0);
+  const administration = page.getByRole("link", { name: "Zur globalen Verwaltung" });
+  await expect(administration).toBeVisible();
+  await expect(administration).toHaveAttribute("href", "/admin/competitions");
   await expect(page.getByRole("link", { name: "Neue Tipprunde" })).toHaveCount(0);
+
+  await administration.click();
+  await expect(page).toHaveURL(/\/admin\/competitions$/u);
 });
