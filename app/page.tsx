@@ -6,13 +6,13 @@ import { HomepageSteps } from "@/components/marketing/homepage-steps";
 import { HomepageStructuredData } from "@/components/seo/homepage-structured-data";
 import { Link } from "@/components/ui/link";
 import { getMyProfile } from "@/features/profile/service";
-import { siteConfig } from "@/lib/config/site";
+import { absoluteUrl, siteConfig } from "@/lib/config/site";
 
 export const metadata: Metadata = {
   title: { absolute: siteConfig.title },
   description: siteConfig.description,
   alternates: {
-    canonical: "/",
+    canonical: absoluteUrl("/"),
   },
   robots: {
     index: true,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteConfig.title,
     description: siteConfig.description,
-    url: "/",
+    url: absoluteUrl("/"),
     siteName: siteConfig.name,
     locale: siteConfig.locale,
     type: "website",
