@@ -27,6 +27,10 @@ test("public homepage exposes complete indexable metadata and matching structure
     "content",
     "summary_large_image",
   );
+  await expect(page.locator('meta[name="google-site-verification"]')).toHaveAttribute(
+    "content",
+    "i0Mr-5n2UeX8Iuc5Y3CFwCTZmjFeobZwuoBBS-KFw0Y",
+  );
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
   expect(canonical).toBeTruthy();

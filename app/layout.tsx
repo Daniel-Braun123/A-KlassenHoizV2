@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   category: "sports",
+  verification: {
+    google: "i0Mr-5n2UeX8Iuc5Y3CFwCTZmjFeobZwuoBBS-KFw0Y",
+  },
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
