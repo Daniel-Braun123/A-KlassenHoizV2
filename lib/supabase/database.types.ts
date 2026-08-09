@@ -251,6 +251,7 @@ export type Database = {
           points: number | null
           rank: number | null
           round_id: string | null
+          scored_tips: number | null
           starts_on: string | null
         }
         Relationships: [
@@ -411,6 +412,7 @@ export type Database = {
           points: number | null
           rank: number | null
           round_id: string | null
+          scored_tips: number | null
         }
         Relationships: [
           {

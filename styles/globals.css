@@ -1353,7 +1353,7 @@ p {
 }
 
 .ranking-table-wrap {
-  overflow-x: auto;
+  overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -1361,13 +1361,27 @@ p {
 
 .ranking-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
 }
 
+.ranking-table__col--rank {
+  width: 12%;
+}
+
+.ranking-table__col--nickname {
+  width: 40%;
+}
+
+.ranking-table__col--metric {
+  width: 16%;
+}
+
 .ranking-table th,
 .ranking-table td {
-  padding: var(--space-3) var(--space-4);
+  min-width: 0;
+  padding: var(--space-3) 0.3rem;
   border-bottom: 1px solid var(--color-border);
   text-align: left;
 }
@@ -1375,8 +1389,13 @@ p {
 .ranking-table thead th {
   background: var(--color-surface-raised);
   color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 760;
+  white-space: nowrap;
+}
+
+.ranking-table__label--long {
+  display: none;
 }
 
 .ranking-table tbody tr {
@@ -1387,11 +1406,6 @@ p {
   background: var(--color-surface-raised);
 }
 
-.ranking-table td:first-child,
-.ranking-table th:first-child {
-  width: 4.5rem;
-}
-
 .ranking-table__empty {
   color: var(--color-text-muted);
   text-align: center !important;
@@ -1399,7 +1413,7 @@ p {
 
 .ranking-table th:nth-child(n + 3),
 .ranking-table td:nth-child(n + 3) {
-  text-align: right;
+  text-align: center;
 }
 
 .ranking-table tbody tr:last-child > * {
@@ -1411,18 +1425,76 @@ p {
   box-shadow: inset 3px 0 0 var(--color-brand);
 }
 
+.ranking-row__identity {
+  overflow-wrap: anywhere;
+}
+
+.ranking-row__name {
+  font-weight: 720;
+}
+
 .ranking-row__you,
 .ranking-row__status {
-  margin-left: var(--space-2);
   color: var(--color-text-muted);
   font-size: var(--font-size-xs);
 }
 
 .ranking-row__you {
+  display: inline-block;
+  margin-top: var(--space-1);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-pill);
   background: var(--color-brand);
   color: var(--color-brand-text);
+  white-space: nowrap;
+}
+
+.ranking-row__status {
+  display: block;
+  margin-top: var(--space-1);
+}
+
+@media (min-width: 40rem) {
+  .ranking-table__col--rank {
+    width: 10%;
+  }
+
+  .ranking-table__col--nickname {
+    width: 48%;
+  }
+
+  .ranking-table__col--metric {
+    width: 14%;
+  }
+
+  .ranking-table th,
+  .ranking-table td {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .ranking-table thead th {
+    font-size: var(--font-size-sm);
+  }
+
+  .ranking-table__label--short {
+    display: none;
+  }
+
+  .ranking-table__label--long {
+    display: inline;
+  }
+
+  .ranking-table th:nth-child(n + 3),
+  .ranking-table td:nth-child(n + 3) {
+    text-align: right;
+  }
+
+  .ranking-row__you,
+  .ranking-row__status {
+    display: inline-block;
+    margin-top: 0;
+    margin-left: var(--space-2);
+  }
 }
 
 .league-table-page {

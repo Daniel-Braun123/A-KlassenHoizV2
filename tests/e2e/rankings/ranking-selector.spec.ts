@@ -15,11 +15,13 @@ test("one dropdown switches between overall and matchday rankings", async ({ pag
   await expect(page.locator(".ranking-section")).toHaveCount(1);
   await expect(page.getByRole("heading", { name: "Gesamt", exact: true })).toBeVisible();
 
+  const matchdayLabel = await selector.getByRole("option").nth(1).textContent();
+  expect(matchdayLabel).toBeTruthy();
   await selector.selectOption(fixture.matchdayId);
   await expect(page).toHaveURL(
     new RegExp(`/rounds/${fixture.roundId}/rankings\\?matchday=${fixture.matchdayId}$`),
   );
-  await expect(page.getByRole("heading", { name: "Hinrunde · Spieltag 1" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: matchdayLabel!, exact: true })).toBeVisible();
   await expect(page.locator(".ranking-section")).toHaveCount(1);
 
   await page.getByRole("combobox", { name: "Rangliste" }).selectOption("overall");
