@@ -49,14 +49,15 @@ test("public homepage exposes complete indexable metadata and matching structure
   expect(socialImageResponse.headers()["content-type"]).toContain("image/png");
 });
 
-test("robots and sitemap expose only the public landing page", async ({ request }) => {
+test("robots lets crawlers read noindex while sitemap exposes only the landing page", async ({
+  request,
+}) => {
   const robotsResponse = await request.get("/robots.txt");
   expect(robotsResponse.ok()).toBe(true);
   const robots = await robotsResponse.text();
   expect(robots).toContain("User-Agent: *");
   expect(robots).toContain("Allow: /");
-  expect(robots).toContain("Disallow: /rounds");
-  expect(robots).toContain("Disallow: /admin");
+  expect(robots).not.toContain("Disallow:");
   expect(robots).toMatch(/Sitemap: https?:\/\/[^\s]+\/sitemap\.xml/);
 
   const sitemapResponse = await request.get("/sitemap.xml");
@@ -68,12 +69,29 @@ test("robots and sitemap expose only the public landing page", async ({ request 
   expect(sitemap).not.toMatch(/login|register|password|rounds|admin/);
 });
 
-test("utility pages are noindex and unknown routes return a real 404", async ({ page }) => {
-  for (const path of ["/login", "/register", "/password/forgot", "/offline"]) {
+test("public utility pages are crawlable but noindex", async ({ page }) => {
+  for (const path of [
+    "/login",
+    "/register",
+    "/password/forgot",
+    "/password/reset",
+    "/legal/privacy",
+    "/offline",
+  ]) {
     await page.goto(path);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex, follow/);
   }
+});
 
+test("protected areas redirect anonymous crawlers to a noindex login page", async ({ page }) => {
+  for (const path of ["/start", "/profile", "/rounds/new", "/admin"]) {
+    await page.goto(path);
+    await expect(page).toHaveURL(/\/login(?:\?|$)/u);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex, follow/);
+  }
+});
+
+test("unknown routes return a real noindex 404", async ({ page }) => {
   const response = await page.goto("/seo-check-this-page-does-not-exist");
   expect(response?.status()).toBe(404);
   await expect(

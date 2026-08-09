@@ -20,7 +20,9 @@ Aktuell soll ausschließlich die öffentliche Startseite `/` indexiert werden. S
 
 ## Noindex-Seiten
 
-Login, Registrierung, Passwort-Wiederherstellung, Einladungen, Datenschutz-/Nutzungshinweise, Offline-Seite, Start/Dashboard, Profile, private Tipprunden und Administration sind bewusst `noindex, follow`. Auth-Callbacks und private Daten bleiben zusätzlich technisch geschützt; `robots.txt` ist kein Sicherheitsmechanismus.
+Login, Registrierung, Passwort-Wiederherstellung, Einladungen, Datenschutz-/Nutzungshinweise, Offline-Seite, Start/Dashboard, Profile, private Tipprunden und Administration sind bewusst `noindex, follow`. Öffentlich erreichbare Utility-Seiten dürfen gecrawlt werden, damit Suchmaschinen diese Anweisung zuverlässig lesen können.
+
+Die `robots.txt` enthält deshalb keine `Disallow`-Regeln. Geschützte Bereiche werden nicht durch Crawling-Regeln abgesichert, sondern durch die bestehende serverseitige Authentifizierung und Autorisierung. Anonyme Aufrufe werden auf die ebenfalls mit `noindex, follow` markierte Anmeldung umgeleitet oder als nicht verfügbar behandelt. Die Sitemap nennt weiterhin ausschließlich die indexierbare Startseite; Auth-Callbacks und private Daten sind nicht darin enthalten. `robots.txt` ist ausdrücklich kein Sicherheitsmechanismus.
 
 ## Google Search Console
 
