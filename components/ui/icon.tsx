@@ -2,12 +2,16 @@ import type { SVGProps } from "react";
 
 export type IconName =
   | "account"
+  | "check-circle"
   | "chevron-right"
+  | "clock"
+  | "lock"
   | "logout"
   | "moon"
   | "overview"
   | "plus"
   | "predictions"
+  | "qr"
   | "rankings"
   | "results"
   | "settings"
@@ -23,7 +27,25 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M5.75 19.25c.55-3.05 2.63-4.75 6.25-4.75s5.7 1.7 6.25 4.75" />
     </>
   ),
+  "check-circle": (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12 2.5 2.5L16.5 8.5" />
+    </>
+  ),
   "chevron-right": <path d="m9 6 6 6-6 6" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="5" y="10" width="14" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </>
+  ),
   logout: (
     <>
       <path d="M14 8V5.75A1.75 1.75 0 0 0 12.25 4h-6.5A1.75 1.75 0 0 0 4 5.75v12.5A1.75 1.75 0 0 0 5.75 20h6.5A1.75 1.75 0 0 0 14 18.25V16" />
@@ -42,6 +64,14 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <path d="M4 19.5h4l10.8-10.8a2.12 2.12 0 0 0-3-3L5 16.5l-1 3Z" />
       <path d="m14.5 7 2.5 2.5" />
+    </>
+  ),
+  qr: (
+    <>
+      <rect x="3.5" y="3.5" width="6" height="6" rx="1" />
+      <rect x="14.5" y="3.5" width="6" height="6" rx="1" />
+      <rect x="3.5" y="14.5" width="6" height="6" rx="1" />
+      <path d="M14.5 14.5h2v2h-2zm4 0h2v6h-2zm-4 4h2v2h-2z" />
     </>
   ),
   rankings: (

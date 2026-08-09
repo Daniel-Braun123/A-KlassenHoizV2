@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { AdminNavigation } from "@/components/competition/admin-navigation";
 import { AdminResponsiveLayout } from "@/components/competition/admin-responsive-layout";
 import { requireAppAdmin } from "@/features/competition/server";
 import { ApplicationError } from "@/lib/actions/errors";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default async function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   try {

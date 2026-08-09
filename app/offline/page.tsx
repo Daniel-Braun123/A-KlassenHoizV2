@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+
 import { Link } from "@/components/ui/link";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
+
 export default function OfflinePage() {
   return (
     <section className="content-page">

@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
+
+import { siteConfig } from "@/lib/config/site";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "A-KlassenHoiz – private Tipprunden",
-    short_name: "A-KlassenHoiz",
-    description: "Das private Tippspiel für lokale Fußballligen.",
+    name: "A-KlassenHoiz – Fußball-Tippspiel mit Freunden",
+    short_name: siteConfig.name,
+    description: siteConfig.description,
     start_url: "/start",
     scope: "/",
     display: "standalone",

@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 
 import { AppShell } from "@/components/patterns/app-shell";
@@ -6,20 +5,32 @@ import { FocusBoundary } from "@/components/patterns/focus-boundary";
 import { ProfileMenu } from "@/components/patterns/profile-menu";
 import { ThemeSync } from "@/components/patterns/theme-sync";
 import { getMyProfile } from "@/features/profile/service";
+import { siteConfig } from "@/lib/config/site";
 
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "A-KlassenHoiz",
-    template: "%s · A-KlassenHoiz",
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "Das private Tippspiel für lokale Fußballligen.",
-  applicationName: "A-KlassenHoiz",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  category: "sports",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
-    apple: "/icons/icon-192.png",
+    icon: [
+      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: [{ url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
+  formatDetection: {
+    address: false,
+    email: false,
+    telephone: false,
   },
 };
 
@@ -104,7 +115,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         ) : (
           <script dangerouslySetInnerHTML={{ __html: developmentPwaCleanupScript }} />
         )}
-        <Analytics />
       </body>
     </html>
   );

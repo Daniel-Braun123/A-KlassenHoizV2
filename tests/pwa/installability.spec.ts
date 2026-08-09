@@ -7,7 +7,7 @@ test("manifest, icons, service worker and offline fallback are complete", async 
   expect(manifestResponse.ok()).toBe(true);
   const manifest = await manifestResponse.json();
   expect(manifest).toMatchObject({
-    name: "A-KlassenHoiz – private Tipprunden",
+    name: "A-KlassenHoiz – Fußball-Tippspiel mit Freunden",
     display: "standalone",
     start_url: "/start",
   });
