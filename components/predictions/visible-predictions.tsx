@@ -13,7 +13,7 @@ export function VisiblePredictions({ predictions }: { predictions: VisiblePredic
               <strong>
                 {prediction.home_goals}:{prediction.away_goals}
               </strong>
-              {prediction.points !== null ? (
+              {typeof prediction.points === "number" ? (
                 <span
                   className={`visible-predictions__points${
                     prediction.points === 0 ? " visible-predictions__points--zero" : ""

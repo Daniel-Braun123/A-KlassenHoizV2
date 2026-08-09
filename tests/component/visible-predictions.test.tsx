@@ -7,8 +7,11 @@ import type { VisiblePrediction } from "@/features/predictions/types";
 afterEach(cleanup);
 
 type VisiblePredictionWithPoints = VisiblePrediction & { points: number | null };
+type VisiblePredictionOverrides = Omit<Partial<VisiblePredictionWithPoints>, "points"> & {
+  points?: number | null | undefined;
+};
 
-function prediction(overrides: Partial<VisiblePredictionWithPoints>): VisiblePredictionWithPoints {
+function prediction(overrides: VisiblePredictionOverrides): VisiblePredictionWithPoints {
   return {
     away_goals: 1,
     home_goals: 2,
@@ -48,5 +51,11 @@ describe("VisiblePredictions", () => {
     render(<VisiblePredictions predictions={[prediction({ points: null })]} />);
 
     expect(screen.queryByText(/P$/u)).not.toBeInTheDocument();
+  });
+
+  it("does not mislabel a missing API field as zero points", () => {
+    render(<VisiblePredictions predictions={[prediction({ points: undefined })]} />);
+
+    expect(screen.queryByText("0 P")).not.toBeInTheDocument();
   });
 });
