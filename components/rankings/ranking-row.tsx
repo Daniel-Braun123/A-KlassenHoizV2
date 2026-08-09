@@ -13,9 +13,9 @@ export function RankingRow({ row }: { row: OverallRankingRow | MatchdayRankingRo
         </span>
         {row.is_current_user ? <span className="ranking-row__you">Du</span> : null}
       </th>
-      <td>{row.points}</td>
-      <td>{row.exact_scores}</td>
       <td>{row.scored_tips}</td>
+      <td>{row.exact_scores}</td>
+      <td>{row.points}</td>
     </tr>
   );
 }

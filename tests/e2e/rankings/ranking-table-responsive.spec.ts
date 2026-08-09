@@ -8,6 +8,13 @@ test("five ranking columns fit mobile and desktop viewports without overflow", a
   await loginAsLocalUser(page, "owner@example.test", `/rounds/${fixture.roundId}/rankings`);
 
   await expect(page.getByRole("columnheader")).toHaveCount(5);
+  await expect(page.getByRole("columnheader")).toHaveText([
+    /Pl\.|Platz/u,
+    /Name|Nickname/u,
+    "Tipps",
+    "Exakt",
+    /Pkt\.|Punkte/u,
+  ]);
   await expect(page.getByRole("columnheader", { name: "Exakte Ergebnisse" })).toBeVisible();
   await expect(page.getByRole("columnheader", { name: "Gewertete Tipps" })).toBeVisible();
 

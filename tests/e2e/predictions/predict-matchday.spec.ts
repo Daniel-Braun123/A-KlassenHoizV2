@@ -4,6 +4,9 @@ import { berlinDateKey } from "@/features/competition/schedule-display";
 import { loginAsLocalUser } from "../../helpers/admin";
 import { createPredictionFixture } from "../../helpers/fixtures";
 import { createLocalActorClient } from "../../helpers/local-actors";
+import { finishMatchForLocalTest } from "../../helpers/local-database";
+
+const bytea = (bytes: Uint8Array) => `\\x${Buffer.from(bytes).toString("hex")}`;
 
 test.use({ viewport: { width: 375, height: 812 } });
 
@@ -123,4 +126,64 @@ test("opens the matchday whose period is nearest to today", async ({ page }) => 
   await loginAsLocalUser(page, "owner@example.test", `/rounds/${fixture.roundId}/predictions`);
 
   await expect(page.getByRole("combobox", { name: "Spieltag" })).toHaveValue(nearestMatchday.data!);
+});
+
+test("shows every member's earned points with the visible round predictions", async ({ page }) => {
+  const fixture = await createPredictionFixture(1);
+  const match = fixture.matches[0]!;
+  const owner = createLocalActorClient("owner@example.test");
+  const member = createLocalActorClient("member@example.test");
+  const admin = createLocalActorClient("app-admin@example.test");
+  const invitationToken = crypto.getRandomValues(new Uint8Array(32));
+
+  const invitation = await owner.schema("api").rpc("rotate_round_invitation", {
+    p_round_id: fixture.roundId,
+    p_token_hash: bytea(invitationToken),
+  });
+  expect(invitation.error).toBeNull();
+  const membership = await member.schema("api").rpc("join_round", {
+    p_token_hash: bytea(invitationToken),
+    p_nickname: "Mitspieler",
+    p_idempotency_key: crypto.randomUUID(),
+  });
+  expect(membership.error).toBeNull();
+
+  const ownerPrediction = await owner.schema("api").rpc("save_prediction", {
+    p_round_id: fixture.roundId,
+    p_match_id: match.id,
+    p_home_goals: 2,
+    p_away_goals: 1,
+    p_idempotency_key: crypto.randomUUID(),
+  });
+  expect(ownerPrediction.error).toBeNull();
+  const memberPrediction = await member.schema("api").rpc("save_prediction", {
+    p_round_id: fixture.roundId,
+    p_match_id: match.id,
+    p_home_goals: 1,
+    p_away_goals: 0,
+    p_idempotency_key: crypto.randomUUID(),
+  });
+  expect(memberPrediction.error).toBeNull();
+
+  finishMatchForLocalTest(match.id);
+  const result = await admin.schema("api").rpc("set_match_result", {
+    p_match_id: match.id,
+    p_expected_match_version: match.version,
+    p_expected_revision: 0,
+    p_decision: "official",
+    p_home_goals: 2,
+    p_away_goals: 1,
+    p_reason: "Punkteanzeige testen",
+  });
+  expect(result.error).toBeNull();
+
+  await loginAsLocalUser(page, "owner@example.test", `/rounds/${fixture.roundId}/predictions`);
+  await page.getByText("Tipps der Runde (2)").click();
+
+  const ownerRow = page.getByRole("listitem").filter({ hasText: "Daniel" });
+  const memberRow = page.getByRole("listitem").filter({ hasText: "Mitspieler" });
+  await expect(ownerRow).toContainText("2:1");
+  await expect(ownerRow.getByLabel("4 Punkte")).toHaveText("+4 P");
+  await expect(memberRow).toContainText("1:0");
+  await expect(memberRow.getByLabel("3 Punkte")).toHaveText("+3 P");
 });

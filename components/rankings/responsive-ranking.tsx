@@ -30,15 +30,15 @@ export function ResponsiveRanking({
                 <span className="ranking-table__label ranking-table__label--short">Name</span>
                 <span className="ranking-table__label ranking-table__label--long">Nickname</span>
               </th>
-              <th scope="col" aria-label="Punkte">
-                <span className="ranking-table__label ranking-table__label--short">Pkt.</span>
-                <span className="ranking-table__label ranking-table__label--long">Punkte</span>
+              <th scope="col" aria-label="Gewertete Tipps">
+                <span className="ranking-table__label">Tipps</span>
               </th>
               <th scope="col" aria-label="Exakte Ergebnisse">
                 <span className="ranking-table__label">Exakt</span>
               </th>
-              <th scope="col" aria-label="Gewertete Tipps">
-                <span className="ranking-table__label">Tipps</span>
+              <th scope="col" aria-label="Punkte">
+                <span className="ranking-table__label ranking-table__label--short">Pkt.</span>
+                <span className="ranking-table__label ranking-table__label--long">Punkte</span>
               </th>
             </tr>
           </thead>

@@ -1,14 +1,20 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(9);
+select plan(13);
 
 select has_column('api', 'matchday_prediction_sheet', 'prediction_points', 'prediction sheet exposes personal points');
 select has_column('api', 'matchday_prediction_sheet', 'result_decision', 'prediction sheet exposes the official decision');
+select has_column('api', 'visible_predictions', 'points', 'visible round predictions expose earned points');
 select is(
   (select reloptions @> array['security_invoker=true'] from pg_class where oid = 'api.matchday_prediction_sheet'::regclass),
   true,
   'prediction sheet keeps invoker security'
+);
+select is(
+  (select reloptions @> array['security_invoker=true'] from pg_class where oid = 'api.visible_predictions'::regclass),
+  true,
+  'visible round predictions keep invoker security'
 );
 
 insert into app.leagues(id, name, short_name)
@@ -133,7 +139,7 @@ values
     1
   );
 
-select tests.authenticate_as('owner');
+select pg_catalog.set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000003', true);
 set local role authenticated;
 select is(
   (select prediction_points from api.matchday_prediction_sheet where round_id = '53000000-0000-4000-8000-000000000008'),
@@ -155,9 +161,19 @@ select is(
   false,
   'first result is not marked as a correction'
 );
+select results_eq(
+  $$
+    select nickname, points
+    from api.visible_predictions
+    where round_id = '53000000-0000-4000-8000-000000000008'
+    order by nickname
+  $$,
+  $$values ('Outcome Member'::text, 2::smallint), ('Outcome Owner'::text, 4::smallint)$$,
+  'round members see the earned points beside every visible prediction'
+);
 reset role;
 
-select tests.authenticate_as('member');
+select pg_catalog.set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000002', true);
 set local role authenticated;
 select is(
   (select prediction_points from api.matchday_prediction_sheet where round_id = '53000000-0000-4000-8000-000000000008'),
@@ -166,12 +182,17 @@ select is(
 );
 reset role;
 
-select tests.authenticate_as('nonmember');
+select pg_catalog.set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000001', true);
 set local role authenticated;
 select is(
   (select count(*) from api.matchday_prediction_sheet where round_id = '53000000-0000-4000-8000-000000000008'),
   0::bigint,
   'nonmember sees no private prediction outcome'
+);
+select is(
+  (select count(*) from api.visible_predictions where round_id = '53000000-0000-4000-8000-000000000008'),
+  0::bigint,
+  'nonmember sees no private round predictions or points'
 );
 reset role;
 

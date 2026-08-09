@@ -26,12 +26,15 @@ describe("ResponsiveRanking", () => {
       />,
     );
 
-    expect(screen.getAllByRole("columnheader")).toHaveLength(5);
-    expect(screen.getByRole("columnheader", { name: "Exakte Ergebnisse" })).toBeInTheDocument();
-    expect(screen.getByRole("columnheader", { name: "Gewertete Tipps" })).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("columnheader").map((header) => header.getAttribute("aria-label")),
+    ).toEqual(["Platz", "Nickname", "Gewertete Tipps", "Exakte Ergebnisse", "Punkte"]);
 
     const row = screen.getByRole("row", { name: /Dän/ });
-    expect(within(row).getAllByRole("cell")).toHaveLength(4);
-    expect(within(row).getByRole("cell", { name: "3" })).toBeInTheDocument();
+    expect(
+      within(row)
+        .getAllByRole("cell")
+        .map((cell) => cell.textContent),
+    ).toEqual(["2", "3", "1", "7"]);
   });
 });

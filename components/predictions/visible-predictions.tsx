@@ -9,9 +9,21 @@ export function VisiblePredictions({ predictions }: { predictions: VisiblePredic
         {predictions.map((prediction) => (
           <li key={prediction.membership_id!}>
             <span>{prediction.nickname}</span>
-            <strong>
-              {prediction.home_goals}:{prediction.away_goals}
-            </strong>
+            <span className="visible-predictions__outcome">
+              <strong>
+                {prediction.home_goals}:{prediction.away_goals}
+              </strong>
+              {prediction.points !== null ? (
+                <span
+                  className={`visible-predictions__points${
+                    prediction.points === 0 ? " visible-predictions__points--zero" : ""
+                  }`}
+                  aria-label={`${prediction.points} Punkte`}
+                >
+                  {prediction.points > 0 ? `+${prediction.points} P` : "0 P"}
+                </span>
+              ) : null}
+            </span>
           </li>
         ))}
       </ul>

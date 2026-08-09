@@ -1263,8 +1263,34 @@ p {
 
 .visible-predictions li {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.visible-predictions__outcome {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.visible-predictions__points {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+}
+
+.visible-predictions__points--zero {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
 }
 
 .revision-notice {

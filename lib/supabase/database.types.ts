@@ -698,6 +698,7 @@ export type Database = {
           match_id: string | null
           membership_id: string | null
           nickname: string | null
+          points: number | null
           round_id: string | null
           updated_at: string | null
         }
