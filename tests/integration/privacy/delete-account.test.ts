@@ -18,7 +18,7 @@ const hash = async (token: string) =>
   );
 
 describe("account deletion preparation", () => {
-  it("anonymizes each membership before auth deletion and is retry-safe", async () => {
+  it("hides anonymized memberships from members and rankings before auth deletion", async () => {
     const fixture = await createRoundInvitationFixture();
     const admin = make("admin", secret);
     const owner = make("owner");
@@ -34,11 +34,13 @@ describe("account deletion preparation", () => {
     const userId = created.data.user!.id;
     const user = make("user");
     await user.auth.signInWithPassword({ email, password });
-    await user.schema("api").rpc("join_round", {
+    const joined = await user.schema("api").rpc("join_round", {
       p_token_hash: await hash(fixture.token),
       p_nickname: "Privater Name",
       p_idempotency_key: crypto.randomUUID(),
     });
+    expect(joined.error).toBeNull();
+    const membershipId = joined.data!;
     const first = await user.schema("api").rpc("prepare_account_deletion");
     const second = await user.schema("api").rpc("prepare_account_deletion");
     expect(first.data).toBe(userId);
@@ -47,14 +49,22 @@ describe("account deletion preparation", () => {
       email: "owner@example.test",
       password: "LocalFixture42!",
     });
-    const historical = await owner
+    const visibleMembers = await owner
       .schema("api")
       .from("round_members")
-      .select("nickname,status")
+      .select("id")
       .eq("round_id", fixture.roundId)
-      .eq("status", "anonymized")
-      .single();
-    expect(historical.data).toEqual({ nickname: "Gelöschtes Mitglied", status: "anonymized" });
+      .eq("id", membershipId);
+    expect(visibleMembers.error).toBeNull();
+    expect(visibleMembers.data).toEqual([]);
+    const visibleRanking = await owner
+      .schema("api")
+      .from("overall_ranking")
+      .select("membership_id")
+      .eq("round_id", fixture.roundId)
+      .eq("membership_id", membershipId);
+    expect(visibleRanking.error).toBeNull();
+    expect(visibleRanking.data).toEqual([]);
     expect((await admin.auth.admin.deleteUser(userId)).error).toBeNull();
     const gone = await admin.auth.admin.getUserById(userId);
     expect(gone.data.user).toBeNull();

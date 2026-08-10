@@ -19,8 +19,8 @@ export default function DeleteAccountPage() {
       <form action={action} className="destructive-state">
         <h2>Unwiderrufliche Kontolöschung</h2>
         <p>
-          Deine Mitgliedschaften werden anonymisiert, damit historische Ranglisten ohne Kontobezug
-          nachvollziehbar bleiben. Danach wird dein Login gelöscht.
+          Deine Mitgliedschaften werden anonymisiert und anschließend weder in Mitgliederlisten noch
+          in Ranglisten oder den Tipps der Runde angezeigt. Danach wird dein Login gelöscht.
         </p>
         <Input
           label="Aktuelles Passwort"

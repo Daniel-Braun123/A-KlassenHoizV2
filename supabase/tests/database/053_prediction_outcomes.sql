@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(13);
+select plan(14);
 
 select has_column('api', 'matchday_prediction_sheet', 'prediction_points', 'prediction sheet exposes personal points');
 select has_column('api', 'matchday_prediction_sheet', 'result_decision', 'prediction sheet exposes the official decision');
@@ -193,6 +193,27 @@ select is(
   (select count(*) from api.visible_predictions where round_id = '53000000-0000-4000-8000-000000000008'),
   0::bigint,
   'nonmember sees no private round predictions or points'
+);
+reset role;
+
+update app.round_memberships
+set
+  user_id = null,
+  status = 'anonymized',
+  ended_at = clock_timestamp(),
+  anonymization_key = '53000000-0000-4000-8000-000000000099',
+  nickname = 'Gelöschtes Mitglied'
+where id = '53000000-0000-4000-8000-000000000010';
+select pg_catalog.set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000003', true);
+set local role authenticated;
+select is(
+  (
+    select count(*)
+    from api.visible_predictions
+    where membership_id = '53000000-0000-4000-8000-000000000010'
+  ),
+  0::bigint,
+  'anonymized member predictions are absent from visible round predictions'
 );
 reset role;
 

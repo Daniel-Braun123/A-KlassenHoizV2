@@ -1,4 +1,4 @@
-begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(14);
+begin;create extension if not exists pgtap with schema extensions;set local search_path=extensions,public,pg_catalog;select plan(17);
 select has_view('api','overall_ranking','overall ranking exists');
 select has_view('api','matchday_ranking','matchday ranking exists');
 select view_owner_is('api','overall_ranking','postgres','overall ranking has controlled owner');
@@ -39,4 +39,11 @@ select set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000003'
 select is((select count(*) from api.round_members where id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from member view');
 select is((select count(*) from api.overall_ranking where membership_id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from overall ranking');
 select is((select count(*) from api.matchday_ranking where membership_id='52000000-0000-4000-8000-000000000010'),0::bigint,'removed member is absent from matchday ranking');reset role;
+update app.round_memberships
+set user_id=null,status='anonymized',ended_at=clock_timestamp(),anonymization_key='52000000-0000-4000-8000-000000000099',nickname='Gelöschtes Mitglied'
+where id='52000000-0000-4000-8000-000000000011';
+select set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000003',true);set local role authenticated;
+select is((select count(*) from api.round_members where id='52000000-0000-4000-8000-000000000011'),0::bigint,'anonymized member is absent from member view');
+select is((select count(*) from api.overall_ranking where membership_id='52000000-0000-4000-8000-000000000011'),0::bigint,'anonymized member is absent from overall ranking');
+select is((select count(*) from api.matchday_ranking where membership_id='52000000-0000-4000-8000-000000000011'),0::bigint,'anonymized member is absent from matchday ranking');reset role;
 select * from finish();rollback;
