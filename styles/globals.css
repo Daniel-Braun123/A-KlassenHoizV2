@@ -555,6 +555,20 @@ p {
   font-size: var(--font-size-sm);
 }
 
+.push-permission-prompt {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.push-permission-prompt > p {
+  margin: 0;
+}
+
+.push-permission-prompt__note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
 .launch-shell {
   display: grid;
   min-height: calc(100dvh - var(--header-height));

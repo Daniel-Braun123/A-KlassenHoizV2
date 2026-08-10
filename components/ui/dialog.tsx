@@ -34,6 +34,9 @@ export function Dialog({ children, description, onClose, open, title }: DialogPr
       aria-describedby={description ? descriptionId : undefined}
       aria-labelledby={titleId}
       className="ui-dialog"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();

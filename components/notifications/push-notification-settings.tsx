@@ -10,59 +10,14 @@ import {
   sendTestPushNotificationAction,
   setMissingTipsPreferenceAction,
 } from "@/features/notifications/actions";
+import {
+  getCurrentPushSubscription,
+  getPushBrowserStatus,
+  pushSubscriptionInput,
+  subscribeBrowserToPush,
+} from "@/features/notifications/browser-client";
 
 type BrowserStatus = "checking" | "available" | "install-required" | "unsupported";
-
-function isIosDevice(): boolean {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent);
-}
-
-function isStandalone(): boolean {
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    Boolean((navigator as Navigator & { standalone?: boolean }).standalone)
-  );
-}
-
-function browserStatus(): BrowserStatus {
-  if (
-    !("serviceWorker" in navigator) ||
-    !("PushManager" in window) ||
-    !("Notification" in window) ||
-    !window.isSecureContext
-  ) {
-    return "unsupported";
-  }
-  if (isIosDevice() && !isStandalone()) return "install-required";
-  return "available";
-}
-
-function publicKeyBuffer(value: string): ArrayBuffer {
-  const padding = "=".repeat((4 - (value.length % 4)) % 4);
-  const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
-  const raw = window.atob(base64);
-  const bytes = Uint8Array.from(raw, (character) => character.charCodeAt(0));
-  return bytes.buffer;
-}
-
-function keyToBase64Url(value: ArrayBuffer | null): string | null {
-  if (!value) return null;
-  let binary = "";
-  for (const byte of new Uint8Array(value)) binary += String.fromCharCode(byte);
-  return window.btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function subscriptionInput(subscription: PushSubscription) {
-  const p256dhKey = keyToBase64Url(subscription.getKey("p256dh"));
-  const authSecret = keyToBase64Url(subscription.getKey("auth"));
-  if (!p256dhKey || !authSecret) throw new Error("Subscription keys unavailable");
-  return {
-    endpoint: subscription.endpoint,
-    p256dhKey,
-    authSecret,
-    userAgent: navigator.userAgent,
-  };
-}
 
 export function PushNotificationSettings({
   initialMissingTipsEnabled,
@@ -82,12 +37,11 @@ export function PushNotificationSettings({
     const inspectBrowser = async () => {
       await Promise.resolve();
       if (cancelled) return;
-      const nextStatus = publicVapidKey ? browserStatus() : "unsupported";
+      const nextStatus = publicVapidKey ? getPushBrowserStatus() : "unsupported";
       setStatus(nextStatus);
       if (nextStatus !== "available") return;
       try {
-        const registration = await navigator.serviceWorker.getRegistration();
-        const subscription = await registration?.pushManager.getSubscription();
+        const subscription = await getCurrentPushSubscription();
         if (!cancelled) setActive(Boolean(subscription));
       } catch {
         if (!cancelled) setActive(false);
@@ -113,14 +67,8 @@ export function PushNotificationSettings({
         });
         return;
       }
-      const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
-      subscription =
-        (await registration.pushManager.getSubscription()) ??
-        (await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: publicKeyBuffer(publicVapidKey),
-        }));
-      const result = await registerPushSubscriptionAction(subscriptionInput(subscription));
+      subscription = await subscribeBrowserToPush(publicVapidKey);
+      const result = await registerPushSubscriptionAction(pushSubscriptionInput(subscription));
       if (!result.ok) {
         await subscription.unsubscribe();
         throw new Error(result.error.message);
@@ -144,8 +92,7 @@ export function PushNotificationSettings({
     setBusy(true);
     setFeedback({ status: "idle" });
     try {
-      const registration = await navigator.serviceWorker.getRegistration();
-      const subscription = await registration?.pushManager.getSubscription();
+      const subscription = await getCurrentPushSubscription();
       if (subscription) {
         const result = await removePushSubscriptionAction(subscription.endpoint);
         if (!result.ok) throw new Error(result.error.message);
@@ -184,8 +131,7 @@ export function PushNotificationSettings({
   const sendTest = async () => {
     setBusy(true);
     setFeedback({ status: "idle" });
-    const registration = await navigator.serviceWorker.getRegistration();
-    const subscription = await registration?.pushManager.getSubscription();
+    const subscription = await getCurrentPushSubscription();
     if (!subscription) {
       setActive(false);
       setFeedback({ status: "error", message: "Auf diesem Gerät ist kein Push-Abo aktiv." });

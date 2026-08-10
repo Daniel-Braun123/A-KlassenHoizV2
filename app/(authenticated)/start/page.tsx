@@ -1,7 +1,10 @@
+import { PushPermissionPrompt } from "@/components/notifications/push-permission-prompt";
 import { RoundSwitcher } from "@/components/rounds/round-switcher";
 import { Link } from "@/components/ui/link";
+import { getMissingTipsPreference } from "@/features/notifications/service";
 import { getMyProfile } from "@/features/profile/service";
 import { listMyRounds } from "@/features/rounds/service";
+import { readServerEnvironment } from "@/lib/config/env";
 export default async function StartPage() {
   const profile = await getMyProfile();
 
@@ -30,7 +33,15 @@ export default async function StartPage() {
     );
   }
 
-  const rounds = await listMyRounds();
+  const [rounds, missingTipsEnabled] = await Promise.all([
+    listMyRounds(),
+    getMissingTipsPreference(),
+  ]);
+  const publicVapidKey = readServerEnvironment().NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const shouldOfferPush =
+    Boolean(publicVapidKey) &&
+    missingTipsEnabled &&
+    rounds.some((round) => round.status === "active");
 
   return (
     <section className="start-page">
@@ -40,6 +51,9 @@ export default async function StartPage() {
         <p>Wähle eine Tipprunde oder erstelle eine neue Runde für deine Freunde.</p>
       </div>
       <RoundSwitcher rounds={rounds} />
+      {shouldOfferPush && publicVapidKey && profile?.user_id ? (
+        <PushPermissionPrompt publicVapidKey={publicVapidKey} userId={profile.user_id} />
+      ) : null}
     </section>
   );
 }

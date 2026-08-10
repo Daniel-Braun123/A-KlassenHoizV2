@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { loginAsLocalAppAdmin, loginAsLocalUser } from "../../helpers/admin";
+import { createRoundInvitationFixture } from "../../helpers/fixtures";
 
 test("mobile player start page is compact and offers round creation", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 659 });
@@ -37,4 +38,50 @@ test("app admin start page only offers global administration", async ({ page }) 
   await administration.click();
   await expect(page).toHaveURL(/\/admin\/competitions$/u);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex, follow/);
+});
+
+test("player receives the contextual push primer only once", async ({ browserName, page }) => {
+  test.skip(browserName !== "chromium", "Push permission behavior is covered in Chromium.");
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "PushManager", {
+      configurable: true,
+      value: class PushManager {},
+    });
+    Object.defineProperty(window, "Notification", {
+      configurable: true,
+      value: class Notification {
+        static permission = "default";
+      },
+    });
+    Object.defineProperty(navigator, "serviceWorker", {
+      configurable: true,
+      value: { getRegistration: async () => undefined },
+    });
+  });
+  await createRoundInvitationFixture();
+  await page.setViewportSize({ width: 393, height: 659 });
+  await loginAsLocalUser(page, "owner@example.test");
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+
+  const dialog = page.getByRole("dialog", { name: "Keine Tippfrist mehr verpassen" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Benachrichtigungen aktivieren" })).toBeVisible();
+
+  const box = await dialog.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(393);
+
+  await page.setViewportSize({ width: 1_280, height: 720 });
+  const desktopBox = await dialog.boundingBox();
+  expect(desktopBox).not.toBeNull();
+  expect(desktopBox!.width).toBeLessThanOrEqual(576);
+  expect(Math.abs(desktopBox!.x - (1_280 - desktopBox!.width) / 2)).toBeLessThanOrEqual(2);
+
+  await dialog.getByRole("button", { name: "Später" }).click();
+  await expect(dialog).not.toBeVisible();
+  await page.reload();
+  await page.waitForTimeout(1_750);
+  await expect(dialog).not.toBeVisible();
 });
