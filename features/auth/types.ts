@@ -10,6 +10,10 @@ export type RegistrationInput = Readonly<{
   next?: string;
 }>;
 
+export type RegistrationResult =
+  | Readonly<{ kind: "authenticated"; destination: string }>
+  | Readonly<{ kind: "confirmation_required" }>;
+
 export type SignInInput = Readonly<{
   email: string;
   password: string;

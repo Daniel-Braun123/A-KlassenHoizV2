@@ -50,7 +50,7 @@ Die normale Repository-Arbeitskopie bleibt unlinked. Der lokale Remote-Guard wir
 separate Production-Konfiguration erstellt und feldweise freigegeben. Sie enthält mindestens:
 
 - Data API: nur Schema `api`, zusätzlicher Suchpfad `extensions`, `max_rows = 1000`;
-- Auth: E-Mail-/Passwort-Signup aktiv, E-Mail-Bestätigung deaktiviert, anonyme Anmeldung
+- Auth: E-Mail-/Passwort-Signup aktiv, E-Mail-Bestätigung aktiviert, anonyme Anmeldung
   deaktiviert, Rotation und Passwortgrenze gemäß Plan;
 - exakte kanonische HTTPS-Production-URL sowie nur die konkret benötigten, vertrauenswürdigen
   V2-Candidate-/Callback-URLs; keine Wildcards und kein localhost;

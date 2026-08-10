@@ -34,8 +34,8 @@ jede solche Aktion bleibt an ihrem eigenen Freigabegate gesperrt.
 
 Eine read-only-Prüfung am 2026-07-13 bestätigte, dass das Supabase-Ziel erreichbar ist und der bereits
 im Remote-Guard gesperrten Projektreferenz entspricht. E-Mail-Login und Registrierung sind aktiv, die
-Altprojektkonfiguration liefert jedoch `mailer_autoconfirm=false` und verlangt damit aktuell noch die
-E-Mail-Bestätigung. Diese Abweichung zum PRD wurde nicht verändert. Der vorhandene Vercel-OIDC-Token
+Die Auth-Konfiguration verwendet `mailer_autoconfirm=false` und verlangt damit die
+E-Mail-Bestätigung. Diese Einstellung entspricht der aktuellen Produktentscheidung. Der vorhandene Vercel-OIDC-Token
 enthält einen Vercel-Aussteller und Projektbezug, ist aber abgelaufen und kann keine spätere
 Live-Verknüpfung authentisieren.
 

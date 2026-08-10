@@ -3,32 +3,39 @@ import "server-only";
 import { ApplicationError } from "@/lib/actions/errors";
 import { readServerEnvironment } from "@/lib/config/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { normalizeAuthRedirect } from "@/features/auth/redirects";
+import { buildAuthCallbackUrl, normalizeAuthRedirect } from "@/features/auth/redirects";
 import { passwordResetRequestSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
 import type {
   PasswordResetRequestInput,
   RegistrationInput,
+  RegistrationResult,
   SignInInput,
 } from "@/features/auth/types";
 import { mapAuthError } from "@/features/auth/security";
 
-export async function register(input: RegistrationInput): Promise<string> {
+export async function register(input: RegistrationInput): Promise<RegistrationResult> {
   const parsed = registerSchema.parse(input);
+  const environment = readServerEnvironment();
+  const destination = normalizeAuthRedirect(parsed.next);
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.email,
     password: parsed.password,
-    options: { data: { display_name: parsed.displayName } },
+    options: {
+      data: { display_name: parsed.displayName },
+      emailRedirectTo: buildAuthCallbackUrl(environment.NEXT_PUBLIC_SITE_URL, destination),
+    },
   });
 
-  if (error || !data.user || !data.session) {
+  if (error || !data.user) {
     throw (
       mapAuthError(error) ??
       new ApplicationError("UNAVAILABLE", "Registration failed without exposing account state")
     );
   }
 
-  return normalizeAuthRedirect(parsed.next);
+  if (!data.session) return { kind: "confirmation_required" };
+  return { kind: "authenticated", destination };
 }
 
 export async function signIn(input: SignInInput): Promise<string> {
@@ -59,11 +66,10 @@ export async function requestPasswordReset(input: PasswordResetRequestInput): Pr
   const parsed = passwordResetRequestSchema.parse(input);
   const environment = readServerEnvironment();
   const supabase = await createSupabaseServerClient();
-  const callback = new URL("/auth/callback", environment.NEXT_PUBLIC_SITE_URL);
-  callback.searchParams.set("next", "/password/reset");
+  const callback = buildAuthCallbackUrl(environment.NEXT_PUBLIC_SITE_URL, "/password/reset");
 
   // The public response is deliberately identical for known and unknown accounts.
-  await supabase.auth.resetPasswordForEmail(parsed.email, { redirectTo: callback.toString() });
+  await supabase.auth.resetPasswordForEmail(parsed.email, { redirectTo: callback });
 }
 
 export async function completePasswordReset(password: string): Promise<void> {

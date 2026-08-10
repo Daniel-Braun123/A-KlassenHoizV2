@@ -101,7 +101,7 @@ lokalen Ports, lokalem SMTP und experimentellen Feldern. Sie darf nicht unverän
 Für Preview wird eine separat geprüfte Konfiguration im isolierten Arbeitsverzeichnis verwendet:
 
 - Data API exponiert ausschließlich `api`; `extra_search_path = ["extensions"]`, `max_rows = 1000`;
-- E-Mail-/Passwort-Registrierung aktiv, E-Mail-Bestätigung deaktiviert, anonyme Anmeldung deaktiviert;
+- E-Mail-/Passwort-Registrierung aktiv, E-Mail-Bestätigung aktiviert, anonyme Anmeldung deaktiviert;
 - `site_url` und Redirect-Allowlist enthalten ausschließlich die zuvor bestätigte feste HTTPS-URL
   der vertrauenswürdigen Preview-Branch; keine Produktions-URL, kein `localhost` und kein
   Host-Wildcard;
@@ -228,7 +228,7 @@ zeigte Production weiterhin `ACTIVE_HEALTHY` mit leerer Migrationshistorie.
   meldete „up to date“.
 - Die Data API exponiert ausschließlich `api`, mit `extensions` als zusätzlichem Suchpfad und
   `max_rows = 1000`.
-- E-Mail-/Passwort-Registrierung ist aktiv, E-Mail-Bestätigung und anonyme Anmeldung sind
+- E-Mail-/Passwort-Registrierung und E-Mail-Bestätigung sind aktiv, anonyme Anmeldung ist
   deaktiviert, die Passwort-Mindestlänge beträgt acht Zeichen.
 - Die Auth-Site-URL bleibt bis T264 bewusst auf `http://localhost:3000`; zusätzliche Redirect-URLs
   sind leer. Es wurde keine Vercel-URL erfunden und keine Production-URL eingetragen.

@@ -63,7 +63,7 @@ export default async function HomePage() {
               </Link>
               <Link href={"/login" as Route}>Schon dabei? Anmelden</Link>
             </div>
-            <p className="launch-footnote">Privat, kostenlos und ohne E-Mail-Bestätigung.</p>
+            <p className="launch-footnote">Privat, kostenlos und mit bestätigter E-Mail-Adresse.</p>
           </div>
 
           <HomepageSteps />

@@ -21,8 +21,8 @@ Fehlercodes: `UNAUTHENTICATED`, `FORBIDDEN`, `VALIDATION_FAILED`, `CONFLICT`, `D
 ### `register`
 
 - Input: `email`, `password`, `displayName`, optionaler servergebundener Einladungskontext.
-- Ergebnis: aktive Sitzung und nächstes fachliches Ziel.
-- Regeln: E-Mail-Bestätigung aus; Passwortmanager/Paste erlaubt; keine Account-Existenz-Offenlegung.
+- Ergebnis: ausstehende E-Mail-Bestätigung; nach gültigem Bestätigungslink aktive Sitzung und nächstes fachliches Ziel.
+- Regeln: E-Mail-Bestätigung verpflichtend; Passwortmanager/Paste erlaubt; keine Account-Existenz-Offenlegung.
 
 ### `signIn`, `signOut`, `requestPasswordReset`, `completePasswordReset`
 

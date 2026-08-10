@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { createPredictionFixture } from "../helpers/fixtures";
 import { createLocalActorClient } from "../helpers/local-actors";
-import { finishMatchForLocalTest } from "../helpers/local-database";
+import { finishMatchForLocalTest, waitForLocalConfirmationLink } from "../helpers/local-database";
 
 test("central competition to registration, invitation, prediction, result and ranking", async ({
   page,
@@ -30,9 +30,12 @@ test("central competition to registration, invitation, prediction, result and ra
   const suffix = crypto.randomUUID().slice(0, 8);
   const nickname = `Freund ${suffix}`;
   await page.getByLabel("Anzeigename").fill(nickname);
-  await page.getByLabel("E-Mail-Adresse").fill(`journey-${suffix}@example.test`);
+  const email = `journey-${suffix}@example.test`;
+  await page.getByLabel("E-Mail-Adresse").fill(email);
   await page.locator('input[name="password"]').fill("LocalFixture42!");
   await page.getByRole("button", { name: "Konto erstellen" }).click();
+  await expect(page.getByText("Prüfe jetzt dein E-Mail-Postfach")).toBeVisible();
+  await page.goto(await waitForLocalConfirmationLink(email));
   await expect(page.getByRole("heading", { name: "Der Tipprunde beitreten" })).toBeVisible();
   await page.getByLabel("Dein Rundennickname").fill(nickname);
   await page.getByRole("button", { name: "Jetzt beitreten" }).click();

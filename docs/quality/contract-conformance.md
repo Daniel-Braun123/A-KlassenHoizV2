@@ -10,7 +10,7 @@ releasefähig.
 
 | Vertragsbereich     | Implementierte Grenze                                                                                       | Nachweis                                   | Status  |
 | ------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------- |
-| Auth                | `features/auth/*`, serverseitige Redirect-Allowlist, Supabase Auth ohne E-Mail-Bestätigung                  | Unit, Integration und Auth-E2E             | erfüllt |
+| Auth                | `features/auth/*`, serverseitige Redirect-Allowlist, Supabase Auth mit E-Mail-Bestätigung                   | Unit, Integration und Auth-E2E             | erfüllt |
 | globale Wettbewerbe | `features/competition/*` → versionierte `api`-RPCs                                                          | Integration, pgTAP, Admin-E2E              | erfüllt |
 | Runde/Owner         | `features/rounds/*` → atomare Create/Update/Transfer/Archive/Hard-Delete-RPCs                               | Integration, RLS, E2E                      | erfüllt |
 | Einladung/QR        | Token nur als SHA-256-Hash in DB; Rotation, Widerruf, Ablauf und Join über RPC                              | Unit, Integration, RLS, E2E                | erfüllt |

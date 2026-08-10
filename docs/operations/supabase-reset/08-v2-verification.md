@@ -73,7 +73,7 @@ Felder gefiltert und enthält weder Token noch Schlüssel.
 
 Auth-Sollwerte:
 
-- E-Mail-Signup aktiv und unmittelbare Sitzung ohne E-Mail-Bestätigung;
+- E-Mail-Signup aktiv und Sitzung erst nach erfolgreicher E-Mail-Bestätigung;
 - anonyme Anmeldung deaktiviert;
 - exakte kanonische Site-URL und ausschließlich freigegebene HTTPS-Redirects;
 - keine localhost-, Wildcard-, alte Repository- oder unerwartete Preview-URL;

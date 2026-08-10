@@ -32,32 +32,35 @@ freigegebenen PRD und der Projektverfassung.
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Registrieren und unmittelbar starten (Priority: P1)
+### User Story 1 - Registrieren und E-Mail-Adresse bestätigen (Priority: P1)
 
-Als neuer Nutzer möchte ich mich mit E-Mail-Adresse, Passwort und Anzeigename registrieren und
-ohne E-Mail-Bestätigung sofort eine aktive Sitzung erhalten, damit ich eine Tipprunde erstellen
-oder einer Einladung folgen kann.
+Als neuer Nutzer möchte ich mich mit E-Mail-Adresse, Passwort und Anzeigename registrieren, meine
+E-Mail-Adresse bestätigen und danach eine aktive Sitzung erhalten, damit nur bestätigte Konten
+eine Tipprunde erstellen oder einer Einladung folgen können.
 
 **Why this priority**: Ohne einen einfachen und verlässlichen Zugang ist kein privater
 Tippspiel-Ablauf nutzbar.
 
-**Independent Test**: Ein neuer Nutzer registriert sich, wird ohne Bestätigungszwischenschritt
-angemeldet und abhängig von seinem Kontext korrekt zum Onboarding oder zur zuvor geöffneten
-Einladung weitergeleitet.
+**Independent Test**: Ein neuer Nutzer registriert sich, erhält zunächst keine Sitzung, bestätigt
+seine E-Mail-Adresse und wird danach abhängig von seinem Kontext korrekt zum Onboarding oder zur
+zuvor geöffneten Einladung weitergeleitet.
 
 **Acceptance Scenarios**:
 
 1. **Given** eine noch nicht registrierte E-Mail-Adresse, **When** der Nutzer gültige
-   Registrierungsdaten absendet, **Then** wird genau ein Konto angelegt und unmittelbar eine aktive
-   Sitzung hergestellt.
-2. **Given** eine bereits registrierte E-Mail-Adresse, **When** eine erneute Registrierung versucht
+   Registrierungsdaten absendet, **Then** wird genau ein unbestätigtes Konto angelegt, eine
+   Bestätigungs-E-Mail versendet und noch keine aktive Sitzung hergestellt.
+2. **Given** eine ausstehende Registrierung, **When** der Nutzer den gültigen Bestätigungslink
+   öffnet, **Then** wird die Adresse bestätigt, eine aktive Sitzung hergestellt und der sichere
+   interne Zielkontext der Registrierung wieder aufgenommen.
+3. **Given** eine bereits registrierte E-Mail-Adresse, **When** eine erneute Registrierung versucht
    wird, **Then** wird der Vorgang abgelehnt, ohne unnötige Kontodetails offenzulegen.
-3. **Given** einen gültigen Einladungskontext vor Registrierung, **When** die Registrierung
+4. **Given** einen gültigen Einladungskontext vor Registrierung, **When** die Registrierung
    erfolgreich endet, **Then** kehrt der Nutzer zur Einladungsvorschau zurück.
-4. **Given** einen bestehenden Nutzer, **When** er sich mit korrekten Zugangsdaten anmeldet,
+5. **Given** einen bestehenden Nutzer, **When** er sich mit korrekten Zugangsdaten anmeldet,
    **Then** öffnet sich bei keiner Tipprunde das Onboarding, bei genau einer Tipprunde deren
    Übersicht und bei mehreren Tipprunden die zuletzt aktive Runde.
-5. **Given** einen registrierten Nutzer ohne Zugriff auf sein Passwort, **When** er die
+6. **Given** einen registrierten Nutzer ohne Zugriff auf sein Passwort, **When** er die
    Zurücksetzung anfordert, **Then** kann er sein Passwort über eine E-Mail sicher erneuern.
 
 ---
@@ -325,8 +328,9 @@ Speicherbestätigung.
 
 - **FR-001**: Das System MUSS Registrierung mit eindeutiger E-Mail-Adresse, Passwort und globalem
   Anzeigenamen ermöglichen.
-- **FR-002**: Das System MUSS nach erfolgreicher Registrierung ohne E-Mail-Bestätigung unmittelbar
-  eine aktive Sitzung bereitstellen.
+- **FR-002**: Das System MUSS nach einer Neuregistrierung eine Bestätigungs-E-Mail senden und darf
+  erst nach erfolgreicher E-Mail-Bestätigung über den serverseitigen Auth-Callback eine aktive
+  Sitzung bereitstellen.
 - **FR-003**: Das System MUSS Anmeldung und Abmeldung mit E-Mail-Adresse und Passwort ermöglichen.
 - **FR-004**: Das System MUSS Passwort-Zurücksetzung per E-Mail ermöglichen, obwohl die
   Registrierungsbestätigung deaktiviert ist.
@@ -678,8 +682,8 @@ Speicherbestätigung.
 - Der erste reale Nutzerkreis besteht aus Betreiber, Freunden und Bekannten; spätere weitere private
   Gruppen sind möglich, aber kein Vermarktungsziel von V1.
 - Die Produktsprache ist Deutsch, und Zeiten werden fachlich in `Europe/Berlin` dargestellt.
-- E-Mail-Bestätigung bleibt für Neuregistrierungen deaktiviert; Passwort-Zurücksetzung per E-Mail
-  bleibt aktiv.
+- E-Mail-Bestätigung ist für Neuregistrierungen aktiviert; Passwort-Zurücksetzung per E-Mail bleibt
+  aktiv.
 - Manuelle globale Spielplan- und Ergebnisverwaltung genügt für V1; externe Importe sind nicht
   erforderlich.
 - Mehrere globale App-Admins sind in V1 zulässig. Ihre Rechte werden ausschließlich über einen

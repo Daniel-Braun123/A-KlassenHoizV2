@@ -27,9 +27,9 @@ export async function registerAction(
   _previous: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  let destination: string;
+  let result: Awaited<ReturnType<typeof register>>;
   try {
-    destination = await register({
+    result = await register({
       displayName: String(formData.get("displayName") ?? ""),
       email: String(formData.get("email") ?? ""),
       password: String(formData.get("password") ?? ""),
@@ -38,7 +38,16 @@ export async function registerAction(
   } catch (error) {
     return failureState(error);
   }
-  redirect(destination as Route);
+
+  if (result.kind === "confirmation_required") {
+    return {
+      status: "success",
+      message:
+        "Prüfe jetzt dein E-Mail-Postfach und bestätige deine Adresse über den Link von A-KlassenHoiz.",
+    };
+  }
+
+  redirect(result.destination as Route);
 }
 
 export async function signInAction(

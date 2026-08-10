@@ -83,12 +83,12 @@ können gemäß Abhängigkeitsgraph beginnen.
 
 ---
 
-## Phase 3: User Story 1 – Registrieren und unmittelbar starten (P1) 🎯 MVP
+## Phase 3: User Story 1 – Registrieren und E-Mail-Adresse bestätigen (P1) 🎯 MVP
 
-**Ziel**: E-Mail-/Passwort-Registrierung ohne Bestätigung, Login, Logout, Passwort-Reset und korrekte
+**Ziel**: E-Mail-/Passwort-Registrierung mit Bestätigung, Login, Logout, Passwort-Reset und korrekte
 kontextabhängige Weiterleitung.
 
-**Independent Test**: Ein neuer Nutzer registriert sich ohne E-Mail-Bestätigung, besitzt sofort eine
+**Independent Test**: Ein neuer Nutzer registriert sich, erhält erst nach E-Mail-Bestätigung eine
 Sitzung und landet abhängig von Runden- oder Einladungskontext am richtigen Ziel; Login, Logout und
 Passwort-Reset funktionieren mit neutralen Fehlermeldungen.
 
@@ -108,7 +108,7 @@ Passwort-Reset funktionieren mit neutralen Fehlermeldungen.
 - [X] T050 [US1] Register-, Sign-in-, Sign-out- und Passwort-Reset-Service mit `getClaims()`-Prüfung erstellen in `features/auth/service.ts`
 - [X] T051 [US1] Dünne authentifizierte Server Actions mit neutraler Fehlerabbildung anlegen in `features/auth/actions.ts`
 - [X] T052 [US1] Auth-Callback und Cookie-Refresh-Proxy mit Redirect-Allowlist implementieren in `app/auth/callback/route.ts` und `proxy.ts`
-- [X] T053 [US1] Zugängliche Registrierungsansicht mit Anzeigename und unmittelbarer Sitzung erstellen in `app/(public)/register/page.tsx` und `components/auth/register-form.tsx`
+- [X] T053 [US1] Zugängliche Registrierungsansicht mit Anzeigename und E-Mail-Bestätigungsstatus erstellen in `app/(public)/register/page.tsx` und `components/auth/register-form.tsx`
 - [X] T054 [US1] Loginansicht mit Passwort-Sichtbarkeit und Enumeration-sicherem Feedback erstellen in `app/(public)/login/page.tsx` und `components/auth/login-form.tsx`
 - [X] T055 [US1] Passwort-vergessen- und Passwort-neu-setzen-Abläufe implementieren in `app/(public)/password/forgot/page.tsx` und `app/(public)/password/reset/page.tsx`
 - [X] T056 [US1] Einladungskontext servergebunden über Auth-Übergänge erhalten in `features/auth/invitation-context.ts`

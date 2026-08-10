@@ -31,3 +31,38 @@ export function finishMatchForLocalTest(matchId: string): void {
     stdio: "pipe",
   });
 }
+
+/**
+ * Reads the matching local-only Mailpit message and returns its Supabase confirmation link.
+ * Production tests must never read real mailboxes.
+ */
+export async function waitForLocalConfirmationLink(email: string): Promise<string> {
+  const inboxUrl = process.env.SUPABASE_TEST_INBOX_URL;
+  if (!inboxUrl) throw new Error("Local Mailpit URL is required for confirmation tests.");
+
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const listResponse = await fetch(`${inboxUrl}/api/v1/messages`);
+    if (listResponse.ok) {
+      const inbox = (await listResponse.json()) as {
+        messages?: Array<{ ID: string; To?: Array<{ Address?: string }> }>;
+      };
+      const message = inbox.messages?.find((candidate) =>
+        candidate.To?.some((recipient) => recipient.Address?.toLowerCase() === email.toLowerCase()),
+      );
+      if (!message) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        continue;
+      }
+
+      const messageResponse = await fetch(
+        `${inboxUrl}/view/${encodeURIComponent(message.ID)}.html`,
+      );
+      const html = messageResponse.ok ? await messageResponse.text() : "";
+      const href = html.match(/href=["']([^"']+\/auth\/v1\/verify[^"']*)["']/iu)?.[1];
+      if (href) return href.replaceAll("&amp;", "&");
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+
+  throw new Error("No local confirmation email arrived in Mailpit.");
+}

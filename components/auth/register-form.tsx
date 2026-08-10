@@ -13,6 +13,21 @@ import { initialAuthActionState } from "@/features/auth/state";
 
 export function RegisterForm({ next }: { next?: string | undefined }) {
   const [state, action, pending] = useActionState(registerAction, initialAuthActionState);
+
+  if (state.status === "success") {
+    return (
+      <div className="auth-form">
+        <p className="auth-form__message" role="status">
+          {state.message}
+        </p>
+        <p className="auth-form__hint">
+          Die Nachricht kann einen Moment brauchen. Prüfe gegebenenfalls auch deinen Spam-Ordner.
+        </p>
+        <Link href={authHrefWithContext("/login", next) as Route}>Zur Anmeldung</Link>
+      </div>
+    );
+  }
+
   return (
     <form action={action} className="auth-form">
       <input name="next" type="hidden" value={next ?? ""} />

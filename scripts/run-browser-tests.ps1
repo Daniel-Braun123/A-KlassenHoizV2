@@ -22,10 +22,11 @@ if ($env:DOCKER_CERT_PATH -and -not (Test-Path -LiteralPath $env:DOCKER_CERT_PAT
 $status = & $supabaseCli status -o env
 if ($LASTEXITCODE -ne 0) { throw 'Local Supabase must be running before browser tests.' }
 $values = @{}
-foreach ($line in $status) { if ($line -match '^(API_URL|PUBLISHABLE_KEY|JWT_SECRET)="([^"]+)"$') { $values[$matches[1]] = $matches[2] } }
+foreach ($line in $status) { if ($line -match '^(API_URL|PUBLISHABLE_KEY|JWT_SECRET|INBUCKET_URL)="([^"]+)"$') { $values[$matches[1]] = $matches[2] } }
 $env:NEXT_PUBLIC_SUPABASE_URL = $values.API_URL
 $env:NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = $values.PUBLISHABLE_KEY
 $env:SUPABASE_TEST_JWT_SECRET = $values.JWT_SECRET
+$env:SUPABASE_TEST_INBOX_URL = $values.INBUCKET_URL
 $browserBaseUrl = if ($env:PLAYWRIGHT_BASE_URL) { $env:PLAYWRIGHT_BASE_URL } else { 'http://127.0.0.1:3000' }
 $env:NEXT_PUBLIC_SITE_URL = $browserBaseUrl
 $env:NEXT_TELEMETRY_DISABLED = '1'

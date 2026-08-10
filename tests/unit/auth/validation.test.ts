@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { completePasswordResetSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
-import { normalizeAuthRedirect } from "@/features/auth/redirects";
+import { buildAuthCallbackUrl, normalizeAuthRedirect } from "@/features/auth/redirects";
 
 describe("auth validation", () => {
   it("normalizes registration data without weakening passwords", () => {
@@ -41,5 +41,14 @@ describe("auth validation", () => {
     expect(normalizeAuthRedirect("https://evil.example/phish")).toBe("/start");
     expect(normalizeAuthRedirect("//evil.example/phish")).toBe("/start");
     expect(normalizeAuthRedirect(null)).toBe("/start");
+  });
+
+  it("builds a same-site auth callback with a normalized internal destination", () => {
+    expect(buildAuthCallbackUrl("https://a-klassenhoiz.de", "/invite/abc?from=register")).toBe(
+      "https://a-klassenhoiz.de/auth/callback?next=%2Finvite%2Fabc%3Ffrom%3Dregister",
+    );
+    expect(buildAuthCallbackUrl("https://a-klassenhoiz.de", "https://evil.example/phish")).toBe(
+      "https://a-klassenhoiz.de/auth/callback?next=%2Fstart",
+    );
   });
 });

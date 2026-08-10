@@ -58,7 +58,7 @@ Quellen: [Next.js App Router](https://nextjs.org/docs/app), [Server and Client C
 - `@supabase/ssr` stellt getrennte Browser- und Server-Clients mit Cookie-Sitzungen bereit.
 - Der Next.js Proxy aktualisiert ablaufende Tokens. Serverseitige Identität wird mit `getClaims()` verifiziert; ein ungeprüftes `getSession()`-Userobjekt ist nie Autorisierungsgrundlage.
 - Normale Nutzeraktionen laufen mit Publishable Key und Benutzer-JWT, damit `auth.uid()` und RLS gelten. Secret-/Service-Role-Schlüssel bleiben ausschließlich serverseitigen, eng begrenzten Betriebsabläufen vorbehalten.
-- Registrierung und Anmeldung verwenden E-Mail/Passwort. „Confirm email“ wird in einer später ausdrücklich autorisierten Konfigurationsaufgabe deaktiviert; Passwort-Reset bleibt aktiv.
+- Registrierung und Anmeldung verwenden E-Mail/Passwort. „Confirm email“ ist für Neuregistrierungen aktiviert; Passwort-Reset bleibt aktiv.
 - Rollen stammen aus der Datenbank, nicht aus E-Mail, `user_metadata` oder allein aus potenziell veralteten JWT-Metadaten.
 
 ### Begründung und verworfene Alternativen

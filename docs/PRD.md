@@ -61,7 +61,7 @@ Das Produkt soll technisch und konzeptionell so sauber aufgebaut sein, dass spä
 
 ### 5.1 Produktziele
 
-1. Ein neuer Nutzer kann sich ohne E-Mail-Bestätigung registrieren und unmittelbar loslegen.
+1. Ein neuer Nutzer kann sich registrieren, seine E-Mail-Adresse bestätigen und anschließend loslegen.
 2. Eine Tipprunde kann in weniger als zwei Minuten erstellt und geteilt werden.
 3. Ein kompletter Spieltag mit mindestens acht Spielen kann auf einem Smartphone in weniger als drei Minuten getippt werden.
 4. Die aktuell wichtigste Aktion ist jederzeit eindeutig: offene Tipps vervollständigen.
@@ -306,8 +306,8 @@ Eine Tipprunde besitzt keinen eigenen duplizierten Spielplan. Stattdessen verwei
 
 - Registrierung erfolgt mit E-Mail-Adresse, Passwort und Anzeigename.
 - Eine E-Mail-Adresse darf nur einmal registriert sein.
-- Eine E-Mail-Bestätigung ist in V1 deaktiviert.
-- Nach erfolgreicher Registrierung besteht unmittelbar eine aktive Sitzung.
+- Eine E-Mail-Bestätigung ist für jede Neuregistrierung verpflichtend.
+- Erst nach erfolgreicher Bestätigung wird über den sicheren Auth-Callback eine aktive Sitzung hergestellt.
 - Login erfolgt mit E-Mail-Adresse und Passwort.
 - Passwortfelder besitzen eine Anzeigen/Verbergen-Funktion und unterstützen Passwortmanager.
 - Fehlermeldungen dürfen nicht unnötig offenlegen, ob ein bestimmtes Konto existiert.
@@ -729,7 +729,7 @@ seine Konfiguration bleiben bis zu einer separaten Freigabe B unangetastet.
 ### 17.3 Auth-Konfiguration
 
 - E-Mail-/Passwort-Registrierung bleibt aktiv.
-- E-Mail-Bestätigung für Neuregistrierungen ist deaktiviert.
+- E-Mail-Bestätigung für Neuregistrierungen ist aktiviert.
 - Passwort-Reset-E-Mails bleiben aktiv.
 - Redirect-URLs werden für lokale Entwicklung, Preview und Produktion neu geprüft.
 - Nach dem Reset wird ein neuer App-Admin kontrolliert angelegt.
@@ -796,7 +796,7 @@ Spezifikation, einem Plan oder einer früheren allgemeinen Zustimmung abgeleitet
 ### 19.2 Kritische End-to-End-Abnahme
 
 1. App-Admin erstellt Liga-Saison, Vereine, Spieltag und Spiele und veröffentlicht sie.
-2. Nutzer registriert sich ohne E-Mail-Bestätigung.
+2. Nutzer registriert sich und bestätigt seine E-Mail-Adresse über den zugesandten Link.
 3. Nutzer erstellt eine Tipprunde mit der veröffentlichten Liga-Saison.
 4. Besitzer erzeugt einen Einladungslink.
 5. Zweiter Nutzer registriert sich über den Link und tritt bei.

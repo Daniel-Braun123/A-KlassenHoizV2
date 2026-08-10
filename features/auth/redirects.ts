@@ -10,3 +10,9 @@ export function normalizeAuthRedirect(value: string | null | undefined): string 
     return "/start";
   }
 }
+
+export function buildAuthCallbackUrl(siteUrl: string, next: string): string {
+  const callback = new URL("/auth/callback", siteUrl);
+  callback.searchParams.set("next", normalizeAuthRedirect(next));
+  return callback.toString();
+}

@@ -9,7 +9,7 @@ export default async function RegisterPage({
   const { next } = await searchParams;
   return (
     <AuthFormShell
-      description="Ein Anzeigename, deine E-Mail-Adresse und ein Passwort – danach bist du direkt drin."
+      description="Erstelle dein Konto und bestätige anschließend deine E-Mail-Adresse über den zugesandten Link."
       title="Konto erstellen"
     >
       <RegisterForm next={next} />

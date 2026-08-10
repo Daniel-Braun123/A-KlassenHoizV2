@@ -29,18 +29,34 @@ describe("local Supabase auth lifecycle", () => {
   const email = `auth-${crypto.randomUUID()}@example.test`;
   const password = "FreundeSindStark42!";
 
-  it("creates an immediately active session and profile without email confirmation", async () => {
+  it("requires email confirmation before creating an active session", async () => {
     const { data, error } = await publicClient.auth.signUp({
       email,
       password,
-      options: { data: { display_name: "Lokaler Test" } },
+      options: {
+        data: { display_name: "Lokaler Test" },
+        emailRedirectTo: "http://127.0.0.1:3000/auth/callback?next=%2Fstart",
+      },
     });
 
     expect(error).toBeNull();
-    expect(data.session).not.toBeNull();
-    expect(data.user?.email_confirmed_at).toBeTruthy();
+    expect(data.session).toBeNull();
+    expect(data.user?.email_confirmed_at).toBeFalsy();
     if (!data.user) throw new Error("Expected a created local auth user.");
     createdUserIds.push(data.user.id);
+
+    const beforeConfirmation = await publicClient.auth.signInWithPassword({ email, password });
+    expect(beforeConfirmation.error).not.toBeNull();
+    expect(beforeConfirmation.data.session).toBeNull();
+
+    const confirmation = await adminClient.auth.admin.updateUserById(data.user.id, {
+      email_confirm: true,
+    });
+    expect(confirmation.error).toBeNull();
+
+    const signIn = await publicClient.auth.signInWithPassword({ email, password });
+    expect(signIn.error).toBeNull();
+    expect(signIn.data.session).not.toBeNull();
 
     const { data: profile, error: profileError } = await publicClient
       .schema("api")

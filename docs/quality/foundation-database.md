@@ -6,7 +6,7 @@
 
 ## Implementierter Stand
 
-- lokale Supabase-Konfiguration exponiert ausschließlich `api` und deaktiviert die
+- lokale Supabase-Konfiguration exponiert ausschließlich `api` und aktiviert die
   E-Mail-Bestätigung bei aktivem E-Mail-/Passwort- und Reset-Ablauf;
 - vier ausschließlich neue V2-Migrationen für Schema-Grenzen, Default Privileges, Core-Typen/
   Helper und `club-logos`;
