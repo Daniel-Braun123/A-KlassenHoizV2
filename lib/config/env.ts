@@ -5,15 +5,32 @@ const supabaseBrowserEnvironmentSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
+function optionalTrimmedString(minimumLength: number) {
+  return z.preprocess(
+    (value) =>
+      typeof value === "string" &&
+      (value.trim() === "" || value.trim().toLowerCase() === "[sensitive]")
+        ? undefined
+        : value,
+    z.string().trim().min(minimumLength).optional(),
+  );
+}
+
 const serverEnvironmentInputSchema = supabaseBrowserEnvironmentSchema.extend({
   NEXT_PUBLIC_SITE_URL: z.url().optional(),
-  VERCEL_URL: z.string().trim().min(1).optional(),
-  SUPABASE_SECRET_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: optionalTrimmedString(32),
+  VERCEL_URL: optionalTrimmedString(1),
+  PUSH_CRON_SECRET: optionalTrimmedString(32),
+  SUPABASE_SECRET_KEY: optionalTrimmedString(1),
+  VAPID_PRIVATE_KEY: optionalTrimmedString(32),
 });
 
 const serverEnvironmentSchema = supabaseBrowserEnvironmentSchema.extend({
   NEXT_PUBLIC_SITE_URL: z.url(),
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().trim().min(32).optional(),
+  PUSH_CRON_SECRET: z.string().min(32).optional(),
   SUPABASE_SECRET_KEY: z.string().min(1).optional(),
+  VAPID_PRIVATE_KEY: z.string().trim().min(32).optional(),
 });
 
 export type PublicEnvironment = z.infer<typeof supabaseBrowserEnvironmentSchema>;

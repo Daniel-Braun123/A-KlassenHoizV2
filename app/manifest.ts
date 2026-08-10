@@ -7,6 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "A-KlassenHoiz – Fußball-Tippspiel mit Freunden",
     short_name: siteConfig.name,
     description: siteConfig.description,
+    id: "/",
     start_url: "/start",
     scope: "/",
     display: "standalone",

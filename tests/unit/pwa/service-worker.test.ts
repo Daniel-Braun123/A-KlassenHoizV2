@@ -22,6 +22,14 @@ function deferred<T>() {
 }
 
 describe("Service Worker", () => {
+  it("shows push messages and handles notification clicks", () => {
+    const source = readFileSync("public/sw.js", "utf8");
+    expect(source).toContain('self.addEventListener("push"');
+    expect(source).toContain("self.registration.showNotification");
+    expect(source).toContain('self.addEventListener("notificationclick"');
+    expect(source).toContain("self.clients.openWindow");
+  });
+
   it("lädt versionierte Next-Assets zuerst aus dem Netzwerk", async () => {
     const source = readFileSync("public/sw.js", "utf8");
     const listeners = new Map<string, (event: never) => void>();

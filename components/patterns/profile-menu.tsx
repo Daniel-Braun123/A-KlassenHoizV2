@@ -3,8 +3,7 @@
 import type { Route } from "next";
 import { useEffect, useId, useRef, useState } from "react";
 
-import { signOutAction } from "@/features/auth/actions";
-import { Button } from "@/components/ui/button";
+import { PushAwareSignOut } from "@/components/notifications/push-aware-sign-out";
 import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
 import { applyTheme, readThemePreference, type ThemePreference } from "@/lib/ui/theme";
@@ -126,16 +125,7 @@ export function ProfileMenu({
                 <Icon className="icon profile-menu__chevron" name="chevron-right" />
               </Link>
             ) : null}
-            <form action={signOutAction}>
-              <Button
-                className="profile-menu__action profile-menu__logout"
-                type="submit"
-                variant="ghost"
-              >
-                <Icon className="icon" name="logout" />
-                <span>Abmelden</span>
-              </Button>
-            </form>
+            <PushAwareSignOut />
           </div>
         </section>
       ) : null}

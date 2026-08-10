@@ -1,4 +1,4 @@
-const VERSION = "aklassenhoiz-public-v3";
+const VERSION = "aklassenhoiz-public-v4";
 const PUBLIC_ASSETS = [
   "/offline",
   "/manifest.webmanifest",
@@ -24,6 +24,50 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("push", (event) => {
+  let payload = {
+    title: "A-KlassenHoiz",
+    body: "Du hast eine neue Benachrichtigung.",
+    url: "/start",
+    tag: "a-klassenhoiz",
+  };
+  try {
+    if (event.data) payload = { ...payload, ...event.data.json() };
+  } catch {
+    // Keep the safe generic notification when a payload cannot be parsed.
+  }
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      tag: payload.tag,
+      data: { url: payload.url },
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const requestedTarget = new URL(
+    event.notification.data?.url || "/start",
+    self.location.origin,
+  );
+  const target =
+    requestedTarget.origin === self.location.origin
+      ? requestedTarget
+      : new URL("/start", self.location.origin);
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(async (clients) => {
+      for (const client of clients) {
+        if ("navigate" in client) await client.navigate(target.href);
+        if ("focus" in client) return client.focus();
+      }
+      return self.clients.openWindow(target.href);
+    }),
+  );
 });
 
 function isPublicAsset(url) {

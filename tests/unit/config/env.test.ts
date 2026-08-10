@@ -22,6 +22,18 @@ describe("environment configuration", () => {
     expect(readServerEnvironment(validPublicEnvironment)).toEqual(validPublicEnvironment);
   });
 
+  it("treats empty optional deployment values as unconfigured", () => {
+    expect(
+      readServerEnvironment({
+        ...validPublicEnvironment,
+        PUSH_CRON_SECRET: "",
+        SUPABASE_SECRET_KEY: "[SENSITIVE]",
+        VAPID_PRIVATE_KEY: "[SENSITIVE]",
+        VERCEL_URL: "",
+      }),
+    ).toMatchObject(validPublicEnvironment);
+  });
+
   it("derives the server-only site URL from the immutable Vercel deployment host", () => {
     expect(
       readServerEnvironment({

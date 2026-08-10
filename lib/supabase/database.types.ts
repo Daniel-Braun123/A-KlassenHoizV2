@@ -344,6 +344,62 @@ export type Database = {
           },
         ]
       }
+      my_push_notification_preferences: {
+        Row: {
+          missing_tips_enabled: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          missing_tips_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          missing_tips_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "my_profile"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      my_push_subscriptions: {
+        Row: {
+          auth_secret: string | null
+          created_at: string | null
+          endpoint: string | null
+          id: string | null
+          last_seen_at: string | null
+          p256dh_key: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auth_secret?: string | null
+          created_at?: string | null
+          endpoint?: string | null
+          id?: string | null
+          last_seen_at?: string | null
+          p256dh_key?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_secret?: string | null
+          created_at?: string | null
+          endpoint?: string | null
+          id?: string | null
+          last_seen_at?: string | null
+          p256dh_key?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       my_rounds: {
         Row: {
           created_at: string | null
@@ -803,6 +859,29 @@ export type Database = {
         }
         Returns: undefined
       }
+      claim_due_push_reminders: {
+        Args: { p_limit?: number; p_now?: string }
+        Returns: {
+          auth_secret: string
+          delivery_id: string
+          endpoint: string
+          kind: Database["app"]["Enums"]["push_reminder_kind"]
+          matchday_id: string
+          missing_count: number
+          next_kickoff_at: string
+          p256dh_key: string
+          round_id: string
+          subscription_id: string
+        }[]
+      }
+      complete_push_delivery: {
+        Args: {
+          p_delivery_id: string
+          p_error_code?: string
+          p_succeeded: boolean
+        }
+        Returns: undefined
+      }
       create_admin_league: {
         Args: { p_club_ids: string[]; p_name: string; p_year_label: string }
         Returns: string
@@ -891,6 +970,10 @@ export type Database = {
         Args: { p_expected_version: number; p_id: string }
         Returns: undefined
       }
+      delete_push_subscription: {
+        Args: { p_subscription_id: string }
+        Returns: undefined
+      }
       get_invitation_preview: {
         Args: { p_token_hash: string }
         Returns: {
@@ -949,6 +1032,10 @@ export type Database = {
         Returns: number
       }
       rebuild_all_scores: { Args: never; Returns: number }
+      remove_my_push_subscription: {
+        Args: { p_endpoint: string }
+        Returns: boolean
+      }
       remove_round_member: {
         Args: { p_membership_id: string; p_round_id: string }
         Returns: undefined
@@ -1016,6 +1103,10 @@ export type Database = {
           recalculated_count: number
           revision_no: number
         }[]
+      }
+      set_my_push_preferences: {
+        Args: { p_missing_tips_enabled: boolean }
+        Returns: boolean
       }
       transfer_round_ownership: {
         Args: {
@@ -1156,6 +1247,15 @@ export type Database = {
           p_status: Database["app"]["Enums"]["catalog_status"]
         }
         Returns: number
+      }
+      upsert_my_push_subscription: {
+        Args: {
+          p_auth_secret: string
+          p_endpoint: string
+          p_p256dh_key: string
+          p_user_agent?: string
+        }
+        Returns: string
       }
     }
     Enums: {
@@ -1725,6 +1825,149 @@ export type Database = {
           },
         ]
       }
+      push_deliveries: {
+        Row: {
+          attempts: number
+          claimed_at: string | null
+          created_at: string
+          id: string
+          kind: Database["app"]["Enums"]["push_reminder_kind"]
+          last_error_code: string | null
+          matchday_id: string
+          round_id: string
+          sent_at: string | null
+          status: Database["app"]["Enums"]["push_delivery_status"]
+          subscription_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          kind: Database["app"]["Enums"]["push_reminder_kind"]
+          last_error_code?: string | null
+          matchday_id: string
+          round_id: string
+          sent_at?: string | null
+          status?: Database["app"]["Enums"]["push_delivery_status"]
+          subscription_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["app"]["Enums"]["push_reminder_kind"]
+          last_error_code?: string | null
+          matchday_id?: string
+          round_id?: string
+          sent_at?: string | null
+          status?: Database["app"]["Enums"]["push_delivery_status"]
+          subscription_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_deliveries_matchday_id_fkey"
+            columns: ["matchday_id"]
+            isOneToOne: false
+            referencedRelation: "matchdays"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_deliveries_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_deliveries_subscription_id_user_id_fkey"
+            columns: ["subscription_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "push_subscriptions"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      push_notification_preferences: {
+        Row: {
+          created_at: string
+          missing_tips_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          missing_tips_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          missing_tips_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth_secret: string
+          created_at: string
+          endpoint: string
+          id: string
+          last_seen_at: string
+          p256dh_key: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth_secret: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_seen_at?: string
+          p256dh_key: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth_secret?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_seen_at?: string
+          p256dh_key?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       result_revisions: {
         Row: {
           changed_at: string
@@ -1899,6 +2142,8 @@ export type Database = {
       matchday_status: "draft" | "published" | "completed" | "archived"
       membership_status: "active" | "left" | "removed" | "anonymized"
       profile_status: "active" | "deletion_pending" | "disabled"
+      push_delivery_status: "pending" | "processing" | "sent" | "failed"
+      push_reminder_kind: "advance_24h" | "final_60m"
       result_decision: "official" | "excluded"
       round_role: "owner" | "member"
       round_status: "active" | "archived"
@@ -2049,6 +2294,8 @@ export const Constants = {
       matchday_status: ["draft", "published", "completed", "archived"],
       membership_status: ["active", "left", "removed", "anonymized"],
       profile_status: ["active", "deletion_pending", "disabled"],
+      push_delivery_status: ["pending", "processing", "sent", "failed"],
+      push_reminder_kind: ["advance_24h", "final_60m"],
       result_decision: ["official", "excluded"],
       round_role: ["owner", "member"],
       round_status: ["active", "archived"],

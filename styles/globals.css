@@ -459,6 +459,102 @@ p {
   margin-bottom: 0;
 }
 
+.push-settings {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.push-settings__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.push-settings__heading h2,
+.push-settings__heading p,
+.push-settings__notice,
+.push-settings__privacy {
+  margin-bottom: 0;
+}
+
+.push-settings__heading p,
+.push-settings__notice,
+.push-settings__privacy,
+.push-settings__preference small {
+  color: var(--color-text-muted);
+}
+
+.push-settings__heading p {
+  margin-top: var(--space-2);
+}
+
+.push-settings__status {
+  flex: 0 0 auto;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.push-settings__status[data-active="true"] {
+  background: var(--color-success-soft);
+  color: var(--color-brand-strong);
+}
+
+.push-settings__notice {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.push-settings__controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.push-settings__preference {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  cursor: pointer;
+}
+
+.push-settings__preference span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.push-settings__preference small {
+  line-height: 1.4;
+}
+
+.push-settings__preference input {
+  width: 2.75rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+.push-settings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.push-settings__privacy {
+  font-size: var(--font-size-sm);
+}
+
 .launch-shell {
   display: grid;
   min-height: calc(100dvh - var(--header-height));

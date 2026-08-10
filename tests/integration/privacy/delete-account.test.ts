@@ -41,10 +41,25 @@ describe("account deletion preparation", () => {
     });
     expect(joined.error).toBeNull();
     const membershipId = joined.data!;
+    const pushEndpoint = `https://push.example.test/${crypto.randomUUID()}`;
+    const pushRegistration = await user.schema("api").rpc("upsert_my_push_subscription", {
+      p_endpoint: pushEndpoint,
+      p_p256dh_key: "p256dh_key_fixture_value_0123456789",
+      p_auth_secret: "auth_secret_fixture",
+      p_user_agent: "Deletion integration test",
+    });
+    expect(pushRegistration.error).toBeNull();
     const first = await user.schema("api").rpc("prepare_account_deletion");
     const second = await user.schema("api").rpc("prepare_account_deletion");
     expect(first.data).toBe(userId);
     expect(second.data).toBe(userId);
+    const remainingPushDevices = await user
+      .schema("api")
+      .from("my_push_subscriptions")
+      .select("id")
+      .eq("endpoint", pushEndpoint);
+    expect(remainingPushDevices.error).toBeNull();
+    expect(remainingPushDevices.data).toEqual([]);
     await owner.auth.signInWithPassword({
       email: "owner@example.test",
       password: "LocalFixture42!",
