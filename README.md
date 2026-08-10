@@ -36,4 +36,4 @@ npm run test:e2e      # Playwright-E2E-Tests
 npm run build         # Produktions-Build
 ```
 
-Produktiv: [a-klassenhoiz.vercel.app](https://a-klassenhoiz.vercel.app/)
+Produktiv: [a-klassenhoiz.de](https://a-klassenhoiz.de/)
