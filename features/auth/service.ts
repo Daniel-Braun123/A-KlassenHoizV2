@@ -76,4 +76,9 @@ export async function completePasswordReset(password: string): Promise<void> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.updateUser({ password });
   if (error) throw new ApplicationError("UNAVAILABLE", "Password update failed");
+
+  const { error: signOutError } = await supabase.auth.signOut({ scope: "global" });
+  if (signOutError) {
+    throw new ApplicationError("UNAVAILABLE", "Password reset session cleanup failed");
+  }
 }

@@ -92,10 +92,11 @@ export async function completePasswordResetAction(
       passwordConfirmation: String(formData.get("passwordConfirmation") ?? ""),
     });
     await completePasswordReset(parsed.password);
-    return { status: "success", message: "Dein neues Passwort ist gespeichert." };
   } catch (error) {
     return failureState(error);
   }
+
+  redirect("/login?passwordChanged=1" as Route);
 }
 
 export async function signOutAction(): Promise<void> {

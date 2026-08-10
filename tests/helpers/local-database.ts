@@ -36,7 +36,10 @@ export function finishMatchForLocalTest(matchId: string): void {
  * Reads the matching local-only Mailpit message and returns its Supabase confirmation link.
  * Production tests must never read real mailboxes.
  */
-export async function waitForLocalConfirmationLink(email: string): Promise<string> {
+export async function waitForLocalConfirmationLink(
+  email: string,
+  type: "signup" | "recovery" = "signup",
+): Promise<string> {
   const inboxUrl = process.env.SUPABASE_TEST_INBOX_URL;
   if (!inboxUrl) throw new Error("Local Mailpit URL is required for confirmation tests.");
 
@@ -46,23 +49,25 @@ export async function waitForLocalConfirmationLink(email: string): Promise<strin
       const inbox = (await listResponse.json()) as {
         messages?: Array<{ ID: string; To?: Array<{ Address?: string }> }>;
       };
-      const message = inbox.messages?.find((candidate) =>
-        candidate.To?.some((recipient) => recipient.Address?.toLowerCase() === email.toLowerCase()),
-      );
-      if (!message) {
-        await new Promise((resolve) => setTimeout(resolve, 250));
-        continue;
-      }
+      const messages =
+        inbox.messages?.filter((candidate) =>
+          candidate.To?.some(
+            (recipient) => recipient.Address?.toLowerCase() === email.toLowerCase(),
+          ),
+        ) ?? [];
 
-      const messageResponse = await fetch(
-        `${inboxUrl}/view/${encodeURIComponent(message.ID)}.html`,
-      );
-      const html = messageResponse.ok ? await messageResponse.text() : "";
-      const href = html.match(/href=["']([^"']+\/auth\/v1\/verify[^"']*)["']/iu)?.[1];
-      if (href) return href.replaceAll("&amp;", "&");
+      for (const message of messages) {
+        const messageResponse = await fetch(
+          `${inboxUrl}/view/${encodeURIComponent(message.ID)}.html`,
+        );
+        const html = messageResponse.ok ? await messageResponse.text() : "";
+        const encodedHref = html.match(/href=["']([^"']+\/auth\/v1\/verify[^"']*)["']/iu)?.[1];
+        const href = encodedHref?.replaceAll("&amp;", "&");
+        if (href && new URL(href).searchParams.get("type") === type) return href;
+      }
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
-  throw new Error("No local confirmation email arrived in Mailpit.");
+  throw new Error(`No local ${type} email arrived in Mailpit.`);
 }

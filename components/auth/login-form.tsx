@@ -11,11 +11,22 @@ import { signInAction } from "@/features/auth/actions";
 import { authHrefWithContext } from "@/features/auth/invitation-context";
 import { initialAuthActionState } from "@/features/auth/state";
 
-export function LoginForm({ next }: { next?: string | undefined }) {
+export function LoginForm({
+  next,
+  notice,
+}: {
+  next?: string | undefined;
+  notice?: string | undefined;
+}) {
   const [state, action, pending] = useActionState(signInAction, initialAuthActionState);
   return (
     <form action={action} className="auth-form">
       <input name="next" type="hidden" value={next ?? ""} />
+      {notice ? (
+        <p className="auth-form__message" role="status">
+          {notice}
+        </p>
+      ) : null}
       <Input
         autoCapitalize="none"
         autoComplete="email"
