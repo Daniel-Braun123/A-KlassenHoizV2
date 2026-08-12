@@ -87,6 +87,29 @@ test("public utility pages are crawlable but noindex", async ({ page }) => {
   }
 });
 
+test("Google sign-in and privacy policy disclose the actual OAuth data flow", async ({ page }) => {
+  await page.goto("/login");
+  await expect(
+    page.getByText(
+      /Google übermittelt nur die für Anmeldung und Konto erforderlichen Profildaten/u,
+    ),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Datenschutzerklärung" })).toHaveAttribute(
+    "href",
+    "/legal/privacy#google-anmeldung",
+  );
+
+  await page.goto("/legal/privacy");
+  await expect(page.getByRole("heading", { level: 1, name: "Datenschutzerklärung" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Anmeldung mit Google" })).toBeVisible();
+  await expect(
+    page.getByText(/keinen Zugriff auf Google Drive, Kontakte, Kalender/u),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Speicherdauer und Löschung" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Deine Rechte" })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex, follow/);
+});
+
 test("protected areas redirect anonymous crawlers to a noindex login page", async ({ page }) => {
   for (const path of ["/start", "/profile", "/rounds/new", "/admin"]) {
     await page.goto(path);

@@ -1026,6 +1026,13 @@ p {
   flex: 0 0 auto;
 }
 
+.google-auth__privacy {
+  margin: calc(-1 * var(--space-2)) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
 .auth-form__message {
   margin: 0;
   padding: var(--space-3) var(--space-4);
@@ -1122,6 +1129,42 @@ p {
 .content-page__intro > p:last-child {
   color: var(--color-text-muted);
   font-size: var(--font-size-lg);
+}
+
+.legal-copy {
+  width: min(100%, 48rem);
+  margin-inline: auto;
+}
+
+.legal-copy section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.legal-copy section > :is(h2, h3, p, ul, address) {
+  margin: 0;
+}
+
+.legal-copy section h3 {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-lg);
+}
+
+.legal-copy__updated {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm) !important;
+}
+
+.legal-copy address {
+  display: grid;
+  gap: var(--space-1);
+  font-style: normal;
+}
+
+.legal-copy__services {
+  display: grid;
+  gap: var(--space-3);
+  padding-inline-start: var(--space-5);
 }
 
 .profile-page {

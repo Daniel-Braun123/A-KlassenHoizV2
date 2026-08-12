@@ -1,8 +1,10 @@
 "use client";
 
+import type { Route } from "next";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Link } from "@/components/ui/link";
 import { startGoogleSignInAction } from "@/features/auth/actions";
 import { initialAuthActionState } from "@/features/auth/state";
 import type { OAuthEntryPoint } from "@/features/auth/types";
@@ -65,6 +67,11 @@ export function GoogleAuthButton({
           Google-Anmeldung konnte nicht gestartet werden. Bitte versuche es erneut.
         </p>
       ) : null}
+      <p className="google-auth__privacy">
+        Google übermittelt nur die für Anmeldung und Konto erforderlichen Profildaten. Weitere
+        Google-Dienste werden nicht ausgelesen.{" "}
+        <Link href={"/legal/privacy#google-anmeldung" as Route}>Datenschutzerklärung</Link>
+      </p>
     </div>
   );
 }

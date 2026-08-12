@@ -15,6 +15,8 @@ function normalizeSiteUrl(value: string | undefined): string {
 
 export const siteConfig = {
   name: "A-KlassenHoiz",
+  operatorName: "Daniel Braun",
+  supportEmail: "danielbr0802@gmail.com",
   title: "Fußball-Tippspiel mit Freunden – kostenlos | A-KlassenHoiz",
   description:
     "Erstelle kostenlos eine private Fußball-Tipprunde, lade Freunde ein und tippt gemeinsam Spiele. Einfach eingerichtet, privat und bis zum Anpfiff flexibel.",

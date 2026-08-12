@@ -121,8 +121,12 @@ export function HomepageContent() {
 
       <footer className="landing-footer">
         <p>A-KlassenHoiz – das private Fußball-Tippspiel für Freunde.</p>
+        <p>
+          Die optionale Google-Anmeldung verwendet Name und E-Mail-Adresse ausschließlich für
+          Anmeldung, Kontozuordnung und Anzeigename.
+        </p>
         <nav aria-label="Rechtliche Hinweise">
-          <Link href={"/legal/privacy" as Route}>Hinweise zu Datenschutz und privater Nutzung</Link>
+          <Link href={"/legal/privacy" as Route}>Datenschutzerklärung</Link>
         </nav>
       </footer>
     </>
