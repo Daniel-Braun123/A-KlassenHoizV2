@@ -98,8 +98,6 @@ function matchdayLabel(row: AdminScheduleRow): string {
   const phase = row.phase === "second_leg" ? "Rückrunde" : "Hinrunde";
   return formatMatchdayOptionLabel(
     row.display_name || `${phase} · Spieltag ${row.matchday_number ?? "–"}`,
-    row.starts_on,
-    row.ends_on,
   );
 }
 

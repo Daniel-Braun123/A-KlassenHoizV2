@@ -26,14 +26,9 @@ export default async function RankingsPage({
                 row.matchday_id,
                 {
                   id: row.matchday_id,
-                  label:
-                    row.starts_on && row.ends_on
-                      ? formatMatchdayOptionLabel(
-                          row.display_name || `${row.matchday_number}. Spieltag`,
-                          row.starts_on,
-                          row.ends_on,
-                        )
-                      : row.display_name || `${row.matchday_number}. Spieltag`,
+                  label: formatMatchdayOptionLabel(
+                    row.display_name || `${row.matchday_number}. Spieltag`,
+                  ),
                 },
               ] as const,
             ]

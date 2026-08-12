@@ -39,7 +39,7 @@ export default async function PredictionsPage({
           number: rows[0]?.matchday_number ?? 0,
           startsOn,
           endsOn,
-          label: formatMatchdayOptionLabel(displayName, startsOn, endsOn),
+          label: formatMatchdayOptionLabel(displayName),
           incomplete: rows.some((row) => row.is_open && row.predicted_home_goals === null),
         },
       ];

@@ -17,10 +17,6 @@ function dateParts(value: string): Readonly<{ day: string; month: string; year: 
   return { year: match[1]!, month: match[2]!, day: match[3]! };
 }
 
-function dayDistance(left: string, right: string): number {
-  return Math.abs(Date.parse(`${left}T00:00:00Z`) - Date.parse(`${right}T00:00:00Z`)) / 86_400_000;
-}
-
 export function berlinToday(now = new Date()): string {
   return berlinDateFormatter.format(now);
 }
@@ -41,12 +37,8 @@ export function formatMatchdayPeriod(startsOn: string, endsOn: string): string {
   return `${start.day}.${start.month}.${shortStartYear}–${end.day}.${end.month}.${shortEndYear}`;
 }
 
-export function formatMatchdayOptionLabel(
-  displayName: string,
-  startsOn: string,
-  endsOn: string,
-): string {
-  return `${displayName.replace("Spieltag ", "ST ")} · ${formatMatchdayPeriod(startsOn, endsOn)}`;
+export function formatMatchdayOptionLabel(displayName: string): string {
+  return displayName.replace(/\bST\s+(\d+)\b/giu, "Spieltag $1").trim();
 }
 
 export function periodsOverlap(
@@ -68,22 +60,16 @@ export function nearestMatchdayId(
   return matchdays.toSorted((left, right) => {
     const leftContains = left.startsOn <= today && today <= left.endsOn;
     const rightContains = right.startsOn <= today && today <= right.endsOn;
-    const leftDistance = leftContains
-      ? 0
-      : dayDistance(today, today < left.startsOn ? left.startsOn : left.endsOn);
-    const rightDistance = rightContains
-      ? 0
-      : dayDistance(today, today < right.startsOn ? right.startsOn : right.endsOn);
+    if (leftContains !== rightContains) return leftContains ? -1 : 1;
 
-    if (leftDistance !== rightDistance) return leftDistance - rightDistance;
-    if (leftContains && rightContains) {
-      const startDistance = dayDistance(today, left.startsOn) - dayDistance(today, right.startsOn);
-      if (startDistance !== 0) return startDistance;
+    const leftIsPast = left.endsOn < today;
+    const rightIsPast = right.endsOn < today;
+    if (leftIsPast !== rightIsPast) return leftIsPast ? 1 : -1;
+
+    if (leftIsPast && rightIsPast) {
+      return right.endsOn.localeCompare(left.endsOn) || left.id.localeCompare(right.id);
     }
 
-    const leftIsUpcoming = left.startsOn > today;
-    const rightIsUpcoming = right.startsOn > today;
-    if (leftIsUpcoming !== rightIsUpcoming) return leftIsUpcoming ? -1 : 1;
     return left.startsOn.localeCompare(right.startsOn) || left.id.localeCompare(right.id);
   })[0]?.id;
 }

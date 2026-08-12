@@ -14,29 +14,41 @@ const days = [
 ];
 
 describe("matchday periods", () => {
-  it("formats a compact period for matchday dropdowns", () => {
+  it("formats periods separately and keeps dropdown labels explicit", () => {
     expect(formatMatchdayPeriod("2026-07-24", "2026-07-26")).toBe("24.–26.07.26");
-    expect(formatMatchdayOptionLabel("Hinrunde · Spieltag 1", "2026-07-24", "2026-07-26")).toBe(
-      "Hinrunde · ST 1 · 24.–26.07.26",
-    );
+    expect(formatMatchdayOptionLabel("Hinrunde · Spieltag 1")).toBe("Hinrunde · Spieltag 1");
+    expect(formatMatchdayOptionLabel("Rückrunde · ST 2")).toBe("Rückrunde · Spieltag 2");
   });
 
   it("selects a matchday containing today", () => {
     expect(nearestMatchdayId(days, undefined, "2026-07-25")).toBe("current");
   });
 
-  it("selects the nearest period and prefers the upcoming one on equal distance", () => {
+  it("selects the next upcoming period instead of a closer completed one", () => {
     expect(nearestMatchdayId(days, undefined, "2026-07-18")).toBe("current");
     expect(
       nearestMatchdayId(
         [
           { id: "past", startsOn: "2026-07-17", endsOn: "2026-07-17" },
-          { id: "future", startsOn: "2026-07-19", endsOn: "2026-07-19" },
+          { id: "future", startsOn: "2026-07-25", endsOn: "2026-07-26" },
         ],
         undefined,
         "2026-07-18",
       ),
     ).toBe("future");
+  });
+
+  it("falls back to the most recently completed period when no future period exists", () => {
+    expect(
+      nearestMatchdayId(
+        [
+          { id: "older", startsOn: "2026-07-01", endsOn: "2026-07-02" },
+          { id: "latest", startsOn: "2026-07-10", endsOn: "2026-07-12" },
+        ],
+        undefined,
+        "2026-07-18",
+      ),
+    ).toBe("latest");
   });
 
   it("keeps an explicit valid selection", () => {

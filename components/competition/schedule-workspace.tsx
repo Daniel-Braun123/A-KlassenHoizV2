@@ -236,7 +236,7 @@ function PhaseOverview({
         )}
         {days.map((day) => (
           <option key={day.id} value={day.id}>
-            {formatMatchdayOptionLabel(day.displayName, day.startsOn, day.endsOn)}
+            {formatMatchdayOptionLabel(day.displayName)}
           </option>
         ))}
       </Select>
