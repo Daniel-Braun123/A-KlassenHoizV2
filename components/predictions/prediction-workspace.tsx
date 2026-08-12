@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
 
+import { ContextualInstallPrompt } from "@/components/pwa/contextual-install-prompt";
 import { PredictionList, type PredictionDraft } from "@/components/predictions/prediction-list";
 import type { MatchdayOption } from "@/components/predictions/matchday-selector";
 import { ActionMessage, type ActionFeedbackState } from "@/components/ui/action-message";
@@ -70,6 +71,7 @@ export function PredictionWorkspace({
   const [savedDrafts, setSavedDrafts] = useState(() => draftsFromMatches(matches));
   const [state, setState] = useState<ActionFeedbackState>(idleState);
   const [pendingNavigation, setPendingNavigation] = useState<PendingNavigation | null>(null);
+  const [installPromptTrigger, setInstallPromptTrigger] = useState(0);
 
   const changedMatches = matches.filter((match) => {
     if (!match.match_id) return false;
@@ -235,6 +237,7 @@ export function PredictionWorkspace({
             ? "Der Tipp wurde gespeichert."
             : `${result.data.savedCount} Tipps wurden gespeichert.`,
       });
+      setInstallPromptTrigger((current) => current + 1);
       const selectedRoute =
         `/rounds/${roundId}/predictions?matchday=${encodeURIComponent(selectedId)}` as Route;
       const currentMatchday = new URLSearchParams(window.location.search).get("matchday");
@@ -298,6 +301,7 @@ export function PredictionWorkspace({
           </Button>
         </div>
       </Dialog>
+      <ContextualInstallPrompt trigger={installPromptTrigger} />
     </div>
   );
 }

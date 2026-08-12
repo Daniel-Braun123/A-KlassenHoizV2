@@ -38,6 +38,7 @@ afterAll(() => {
 
 afterEach(() => {
   cleanup();
+  window.localStorage.clear();
   vi.clearAllMocks();
 });
 
@@ -143,5 +144,48 @@ describe("PredictionWorkspace", () => {
       "/rounds/20000000-0000-4000-8000-000000000001/predictions?matchday=30000000-0000-4000-8000-000000000001",
     );
     expect(mocks.refresh).not.toHaveBeenCalled();
+  });
+
+  it("bietet die Installation erst nach einem erfolgreich gespeicherten Tipp an", async () => {
+    const prompt = vi.fn().mockResolvedValue(undefined);
+    const installEvent = new Event("beforeinstallprompt", { cancelable: true });
+    Object.assign(installEvent, {
+      prompt,
+      userChoice: Promise.resolve({ outcome: "accepted" }),
+    });
+    mocks.saveBatch.mockResolvedValue({
+      ok: true,
+      data: { savedAt: "2099-07-24T17:00:00.000Z", savedCount: 1 },
+    });
+
+    render(
+      <PredictionWorkspace
+        matches={matches}
+        options={[
+          {
+            id: "30000000-0000-4000-8000-000000000001",
+            incomplete: true,
+            label: "Hinrunde · Spieltag 1",
+            number: 1,
+            startsOn: "2099-07-24",
+            endsOn: "2099-07-26",
+          },
+        ]}
+        roundId="20000000-0000-4000-8000-000000000001"
+        selectedId="30000000-0000-4000-8000-000000000001"
+        visible={[]}
+      />,
+    );
+
+    window.dispatchEvent(installEvent);
+    expect(screen.queryByRole("dialog", { name: "A-KlassenHoiz installieren" })).toBeNull();
+
+    fireEvent.change(screen.getByLabelText("Tore FC Heim"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("Tore SV Auswärts"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: "Tipps speichern" }));
+
+    expect(await screen.findByRole("dialog", { name: "A-KlassenHoiz installieren" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "App installieren" }));
+    await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1));
   });
 });

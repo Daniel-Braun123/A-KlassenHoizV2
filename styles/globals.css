@@ -569,6 +569,72 @@ p {
   font-size: var(--font-size-sm);
 }
 
+.pwa-install-prompt {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.pwa-install-prompt__intro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pwa-install-prompt__intro strong {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.pwa-install-prompt__intro p,
+.pwa-install-prompt__note {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.pwa-install-prompt__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-raised);
+}
+
+.pwa-install-prompt__steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pwa-install-prompt__steps li {
+  display: grid;
+  min-height: var(--target-min);
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.pwa-install-prompt__step-number {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+}
+
+.pwa-install-prompt__note {
+  font-size: var(--font-size-sm);
+}
+
 .launch-shell {
   display: grid;
   min-height: calc(100dvh - var(--header-height));

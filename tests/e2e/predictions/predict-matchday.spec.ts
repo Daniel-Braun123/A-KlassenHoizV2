@@ -10,6 +10,48 @@ const bytea = (bytes: Uint8Array) => `\\x${Buffer.from(bytes).toString("hex")}`;
 
 test.use({ viewport: { width: 375, height: 812 } });
 
+test("offers the contextual installation after the first saved prediction", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    !["mobile-chrome", "mobile-safari"].includes(testInfo.project.name),
+    "The contextual installation is verified on mobile browsers.",
+  );
+
+  const fixture = await createPredictionFixture(1);
+  await loginAsLocalUser(page, "owner@example.test", `/rounds/${fixture.roundId}/predictions`);
+
+  if (testInfo.project.name === "mobile-chrome") {
+    await page.evaluate(() => {
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      Object.assign(event, {
+        prompt: async () => undefined,
+        userChoice: Promise.resolve({ outcome: "accepted" }),
+      });
+      window.dispatchEvent(event);
+    });
+  }
+
+  const card = page.locator(".prediction-card").first();
+  await card.locator("input").nth(0).fill("2");
+  await card.locator("input").nth(1).fill("1");
+  await page.getByRole("button", { name: "Tipps speichern" }).click();
+
+  const dialog = page.getByRole("dialog", { name: "A-KlassenHoiz installieren" });
+  await expect(dialog).toBeVisible();
+  if (testInfo.project.name === "mobile-safari") {
+    await expect(dialog.getByText("Teilen", { exact: true })).toBeVisible();
+    await expect(dialog.getByText("Zum Home-Bildschirm", { exact: true })).toBeVisible();
+  } else {
+    await expect(dialog.getByRole("button", { name: "App installieren" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Nicht jetzt" })).toBeVisible();
+  }
+  await page.screenshot({
+    animations: "disabled",
+    path: testInfo.outputPath(`pwa-install-prompt-${testInfo.project.name}.png`),
+  });
+});
+
 test("mobile user collects eight predictions and saves them together with offline retry", async ({
   page,
   context,
