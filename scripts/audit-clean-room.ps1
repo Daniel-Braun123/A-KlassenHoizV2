@@ -20,7 +20,7 @@ $secretPatterns = @(
     },
     @{
         Name = 'Assigned infrastructure secret'
-        Pattern = '(?im)\b(?:SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY|DATABASE_URL|POSTGRES_PASSWORD)\s*=\s*["'']?(?!\s*(?:$|<|your-|replace-|example|changeme))\S{12,}'
+        Pattern = '(?im)\b(?:SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY|DATABASE_URL|POSTGRES_PASSWORD)[ \t]*=[ \t]*["'']?(?![ \t]*(?:\r?$|<|your-|replace-|example|changeme))[^\s\r\n]{12,}'
     },
     @{
         Name = 'Quoted infrastructure secret'
