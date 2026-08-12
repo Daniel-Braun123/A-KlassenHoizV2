@@ -16,3 +16,14 @@ export function buildAuthCallbackUrl(siteUrl: string, next: string): string {
   callback.searchParams.set("next", normalizeAuthRedirect(next));
   return callback.toString();
 }
+
+export function buildOAuthCallbackUrl(
+  siteUrl: string,
+  next: string,
+  entryPoint: OAuthEntryPoint,
+): string {
+  const callback = new URL(buildAuthCallbackUrl(siteUrl, next));
+  callback.searchParams.set("source", entryPoint);
+  return callback.toString();
+}
+import type { OAuthEntryPoint } from "@/features/auth/types";

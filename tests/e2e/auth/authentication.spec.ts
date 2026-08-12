@@ -8,6 +8,7 @@ test.describe("mobile authentication", () => {
   test("register, login and reset surfaces preserve invitation context", async ({ page }) => {
     await page.goto("/register?next=/invite/example-token");
     await expect(page.getByRole("heading", { name: "Konto erstellen" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Mit Google fortfahren" })).toBeVisible();
     await expect(page.getByLabel("Anzeigename")).toBeVisible();
     await expect(page.getByLabel("E-Mail-Adresse")).toHaveAttribute("autocomplete", "email");
     const password = page.locator('input[name="password"]');
@@ -20,6 +21,7 @@ test.describe("mobile authentication", () => {
 
     await page.goto("/login");
     await expect(page.getByRole("heading", { name: "Willkommen zurück" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Mit Google fortfahren" })).toBeVisible();
     await page.getByRole("link", { name: "Passwort vergessen" }).click();
     await expect(page).toHaveURL(/\/password\/forgot$/);
     await expect(page.getByRole("heading", { name: "Passwort zurücksetzen" })).toBeVisible();

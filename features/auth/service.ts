@@ -3,9 +3,19 @@ import "server-only";
 import { ApplicationError } from "@/lib/actions/errors";
 import { readServerEnvironment } from "@/lib/config/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { buildAuthCallbackUrl, normalizeAuthRedirect } from "@/features/auth/redirects";
-import { passwordResetRequestSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
+import {
+  buildAuthCallbackUrl,
+  buildOAuthCallbackUrl,
+  normalizeAuthRedirect,
+} from "@/features/auth/redirects";
+import {
+  oauthSignInSchema,
+  passwordResetRequestSchema,
+  registerSchema,
+  signInSchema,
+} from "@/features/auth/schemas";
 import type {
+  OAuthSignInInput,
   PasswordResetRequestInput,
   RegistrationInput,
   RegistrationResult,
@@ -54,6 +64,30 @@ export async function signIn(input: SignInInput): Promise<string> {
   }
 
   return normalizeAuthRedirect(parsed.next);
+}
+
+export async function createGoogleAuthorizationUrl(input: OAuthSignInInput): Promise<string> {
+  const parsed = oauthSignInSchema.parse(input);
+  const environment = readServerEnvironment();
+  const destination = normalizeAuthRedirect(parsed.next);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: buildOAuthCallbackUrl(
+        environment.NEXT_PUBLIC_SITE_URL,
+        destination,
+        parsed.entryPoint,
+      ),
+      skipBrowserRedirect: true,
+    },
+  });
+
+  if (error || !data.url) {
+    throw new ApplicationError("UNAVAILABLE", "Google sign-in could not be started");
+  }
+
+  return data.url;
 }
 
 export async function signOut(): Promise<void> {

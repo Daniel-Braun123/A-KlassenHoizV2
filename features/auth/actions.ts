@@ -10,6 +10,7 @@ import { completePasswordResetSchema } from "@/features/auth/schemas";
 import type { AuthActionState } from "@/features/auth/state";
 import {
   completePasswordReset,
+  createGoogleAuthorizationUrl,
   register,
   requestPasswordReset,
   signIn,
@@ -65,6 +66,23 @@ export async function signInAction(
     return failureState(error);
   }
   redirect(destination as Route);
+}
+
+export async function startGoogleSignInAction(
+  _previous: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
+  let authorizationUrl: string;
+  try {
+    authorizationUrl = await createGoogleAuthorizationUrl({
+      entryPoint: formData.get("entryPoint") === "register" ? "register" : "login",
+      next: String(formData.get("next") ?? ""),
+    });
+  } catch (error) {
+    return failureState(error);
+  }
+
+  redirect(authorizationUrl as Route);
 }
 
 export async function passwordResetRequestAction(

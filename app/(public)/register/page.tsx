@@ -4,15 +4,19 @@ import { RegisterForm } from "@/components/auth/register-form";
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { error, next } = await searchParams;
+  const errorNotice =
+    error === "oauth"
+      ? "Die Google-Anmeldung wurde abgebrochen oder konnte nicht abgeschlossen werden. Bitte versuche es erneut."
+      : undefined;
   return (
     <AuthFormShell
-      description="Erstelle dein Konto und bestätige anschließend deine E-Mail-Adresse über den zugesandten Link."
+      description="Erstelle dein Konto mit Google oder E-Mail. Bei der Registrierung per E-Mail bestätigst du anschließend deine Adresse."
       title="Konto erstellen"
     >
-      <RegisterForm next={next} />
+      <RegisterForm errorNotice={errorNotice} next={next} />
     </AuthFormShell>
   );
 }

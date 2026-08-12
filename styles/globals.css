@@ -992,6 +992,40 @@ p {
   background: var(--color-surface);
 }
 
+.auth-form__credentials,
+.google-auth {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.auth-form__divider {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.auth-form__divider::before,
+.auth-form__divider::after {
+  height: 1px;
+  background: var(--color-border);
+  content: "";
+}
+
+.google-auth-button {
+  position: relative;
+  background: var(--color-surface);
+}
+
+.google-auth-button__mark {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+}
+
 .auth-form__message {
   margin: 0;
   padding: var(--space-3) var(--space-4);

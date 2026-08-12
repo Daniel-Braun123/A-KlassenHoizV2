@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { completePasswordResetSchema, registerSchema, signInSchema } from "@/features/auth/schemas";
-import { buildAuthCallbackUrl, normalizeAuthRedirect } from "@/features/auth/redirects";
+import {
+  buildAuthCallbackUrl,
+  buildOAuthCallbackUrl,
+  normalizeAuthRedirect,
+} from "@/features/auth/redirects";
 
 describe("auth validation", () => {
   it("normalizes registration data without weakening passwords", () => {
@@ -49,6 +53,15 @@ describe("auth validation", () => {
     );
     expect(buildAuthCallbackUrl("https://a-klassenhoiz.de", "https://evil.example/phish")).toBe(
       "https://a-klassenhoiz.de/auth/callback?next=%2Fstart",
+    );
+  });
+
+  it("preserves the OAuth entry point without accepting an external destination", () => {
+    expect(buildOAuthCallbackUrl("https://a-klassenhoiz.de", "/invite/abc", "register")).toBe(
+      "https://a-klassenhoiz.de/auth/callback?next=%2Finvite%2Fabc&source=register",
+    );
+    expect(buildOAuthCallbackUrl("https://a-klassenhoiz.de", "https://evil.example", "login")).toBe(
+      "https://a-klassenhoiz.de/auth/callback?next=%2Fstart&source=login",
     );
   });
 });

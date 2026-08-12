@@ -3,6 +3,13 @@ export type AuthDestination =
   | { kind: "onboarding"; href: "/start" }
   | { kind: "round"; href: string };
 
+export type OAuthEntryPoint = "login" | "register";
+
+export type OAuthSignInInput = Readonly<{
+  entryPoint: OAuthEntryPoint;
+  next?: string;
+}>;
+
 export type RegistrationInput = Readonly<{
   displayName: string;
   email: string;

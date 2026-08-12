@@ -23,6 +23,11 @@ export const signInSchema = z.object({
   next: z.string().max(512).optional(),
 });
 
+export const oauthSignInSchema = z.object({
+  entryPoint: z.enum(["login", "register"]),
+  next: z.string().max(512).optional(),
+});
+
 export const passwordResetRequestSchema = z.object({ email: emailSchema });
 
 export const completePasswordResetSchema = z

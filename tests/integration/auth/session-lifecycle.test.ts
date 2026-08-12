@@ -84,4 +84,37 @@ describe("local Supabase auth lifecycle", () => {
     });
     expect(reset.error).toBeNull();
   });
+
+  it("uses the verified provider name for a newly created OAuth-style profile", async () => {
+    const providerEmail = `google-${crypto.randomUUID()}@example.test`;
+    const providerPassword = "GoogleProvider42!";
+    const created = await adminClient.auth.admin.createUser({
+      email: providerEmail,
+      password: providerPassword,
+      email_confirm: true,
+      user_metadata: { full_name: "Google Testperson" },
+    });
+
+    expect(created.error).toBeNull();
+    if (!created.data.user) throw new Error("Expected a created OAuth-style auth user.");
+    createdUserIds.push(created.data.user.id);
+
+    const providerClient = createClient<Database>(url, publishableKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const signIn = await providerClient.auth.signInWithPassword({
+      email: providerEmail,
+      password: providerPassword,
+    });
+    expect(signIn.error).toBeNull();
+
+    const { data: profile, error: profileError } = await providerClient
+      .schema("api")
+      .from("my_profile")
+      .select("display_name")
+      .single();
+
+    expect(profileError).toBeNull();
+    expect(profile?.display_name).toBe("Google Testperson");
+  });
 });
