@@ -3,7 +3,7 @@ import { Link } from "@/components/ui/link";
 import { JoinRoundForm } from "@/components/rounds/join-round-form";
 import { getInvitationPreview } from "@/features/invitations/service";
 import { invitationReturnPath } from "@/features/invitations/auth-return";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getMyProfile } from "@/features/profile/service";
 export default async function InvitationPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   let preview;
@@ -27,8 +27,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ tok
       </section>
     );
   }
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getClaims();
+  const profile = await getMyProfile();
   const next = invitationReturnPath(token);
   return (
     <section className="content-page">
@@ -41,8 +40,8 @@ export default async function InvitationPage({ params }: { params: Promise<{ tok
           gültig.
         </p>
       </div>
-      {data?.claims.sub ? (
-        <JoinRoundForm token={token} />
+      {profile ? (
+        <JoinRoundForm defaultNickname={profile.display_name?.slice(0, 40) ?? ""} token={token} />
       ) : (
         <div className="invitation-auth">
           <h2>Melde dich an, um beizutreten</h2>

@@ -26,7 +26,9 @@ test("owner creates a private round, shares QR/link, and a friend joins", async 
   await member.locator('input[name="password"]').fill("LocalFixture42!");
   await member.getByRole("button", { name: "Anmelden" }).click();
   await expect(member.getByRole("heading", { name: "Der Tipprunde beitreten" })).toBeVisible();
-  await member.getByLabel("Dein Rundennickname").fill("Kumpel");
+  const nickname = member.getByLabel("Dein Rundennickname");
+  await expect(nickname).toHaveValue("Mitglied");
+  await nickname.fill("Kumpel");
   await member.getByRole("button", { name: "Jetzt beitreten" }).click();
   await expect(member.getByText(`Freunde ${suffix}`, { exact: true })).toBeVisible();
   await ownerContext.close();

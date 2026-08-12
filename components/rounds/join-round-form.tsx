@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { joinRoundAction } from "@/features/invitations/actions";
 import { initialInvitationActionState } from "@/features/invitations/types";
-export function JoinRoundForm({ token }: { token: string }) {
+export function JoinRoundForm({
+  defaultNickname,
+  token,
+}: {
+  defaultNickname: string;
+  token: string;
+}) {
   const [key] = useState(() => crypto.randomUUID());
   const [state, action, pending] = useActionState(joinRoundAction, initialInvitationActionState);
   return (
@@ -16,6 +22,7 @@ export function JoinRoundForm({ token }: { token: string }) {
         hint="Der Name muss in dieser Runde eindeutig sein."
         label="Dein Rundennickname"
         name="nickname"
+        defaultValue={defaultNickname}
         required
         maxLength={40}
       />
