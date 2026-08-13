@@ -37,7 +37,9 @@ test("central competition to registration, invitation, prediction, result and ra
   await page.getByLabel("E-Mail-Adresse").fill(email);
   await page.locator('input[name="password"]').fill("LocalFixture42!");
   await page.getByRole("button", { name: "Konto erstellen" }).click();
-  await expect(page.getByText("Prüfe jetzt dein E-Mail-Postfach")).toBeVisible();
+  await expect(
+    page.getByText("Wenn für diese E-Mail-Adresse noch kein Konto besteht", { exact: false }),
+  ).toBeVisible();
   await page.goto(await waitForLocalConfirmationLink(email));
   await expect(page.getByRole("heading", { name: "Der Tipprunde beitreten" })).toBeVisible();
   await page.getByLabel("Dein Rundennickname").fill(nickname);

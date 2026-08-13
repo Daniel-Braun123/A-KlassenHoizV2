@@ -30,7 +30,10 @@ export function RegisterForm({
         <p className="auth-form__hint">
           Die Nachricht kann einen Moment brauchen. Prüfe gegebenenfalls auch deinen Spam-Ordner.
         </p>
-        <Link href={authHrefWithContext("/login", next) as Route}>Zur Anmeldung</Link>
+        <div className="auth-form__links">
+          <Link href={authHrefWithContext("/login", next) as Route}>Zur Anmeldung</Link>
+          <Link href="/password/forgot">Passwort zurücksetzen</Link>
+        </div>
       </div>
     );
   }

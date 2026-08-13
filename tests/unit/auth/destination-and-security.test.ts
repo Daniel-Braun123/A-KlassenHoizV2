@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { resolvePostLoginDestination } from "@/features/auth/post-login-destination";
-import { mapAuthError } from "@/features/auth/security";
+import { isExistingRegistration, mapAuthError } from "@/features/auth/security";
 
 describe("auth destination and neutral security mapping", () => {
   it("prioritizes invitation, then onboarding, one round and last active round", () => {
@@ -20,5 +20,12 @@ describe("auth destination and neutral security mapping", () => {
     expect(mapAuthError({ status: 429 })?.code).toBe("RATE_LIMITED");
     expect(mapAuthError({ status: 400, code: "user_already_exists" })?.code).toBe("UNAVAILABLE");
     expect(mapAuthError(null)).toBeNull();
+  });
+
+  it("recognizes existing registrations without relying on provider messages", () => {
+    expect(isExistingRegistration({ code: "user_already_exists" })).toBe(true);
+    expect(isExistingRegistration({ code: "email_exists" })).toBe(true);
+    expect(isExistingRegistration({ code: "over_request_rate_limit" })).toBe(false);
+    expect(isExistingRegistration(null)).toBe(false);
   });
 });

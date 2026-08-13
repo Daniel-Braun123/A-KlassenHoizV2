@@ -40,11 +40,11 @@ export async function registerAction(
     return failureState(error);
   }
 
-  if (result.kind === "confirmation_required") {
+  if (result.kind === "submitted") {
     return {
       status: "success",
       message:
-        "Prüfe jetzt dein E-Mail-Postfach und bestätige deine Adresse über den Link von A-KlassenHoiz.",
+        "Wenn für diese E-Mail-Adresse noch kein Konto besteht, erhältst du einen Bestätigungslink. Falls du bereits registriert bist, kannst du dich anmelden oder dein Passwort zurücksetzen.",
     };
   }
 

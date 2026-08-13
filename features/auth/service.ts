@@ -21,7 +21,7 @@ import type {
   RegistrationResult,
   SignInInput,
 } from "@/features/auth/types";
-import { mapAuthError } from "@/features/auth/security";
+import { isExistingRegistration, mapAuthError } from "@/features/auth/security";
 
 export async function register(input: RegistrationInput): Promise<RegistrationResult> {
   const parsed = registerSchema.parse(input);
@@ -37,6 +37,10 @@ export async function register(input: RegistrationInput): Promise<RegistrationRe
     },
   });
 
+  if (isExistingRegistration(error)) {
+    return { kind: "submitted" };
+  }
+
   if (error || !data.user) {
     throw (
       mapAuthError(error) ??
@@ -44,7 +48,7 @@ export async function register(input: RegistrationInput): Promise<RegistrationRe
     );
   }
 
-  if (!data.session) return { kind: "confirmation_required" };
+  if (!data.session) return { kind: "submitted" };
   return { kind: "authenticated", destination };
 }
 

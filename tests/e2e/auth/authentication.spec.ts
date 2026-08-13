@@ -26,6 +26,22 @@ test.describe("mobile authentication", () => {
     await expect(page).toHaveURL(/\/password\/forgot$/);
     await expect(page.getByRole("heading", { name: "Passwort zurücksetzen" })).toBeVisible();
   });
+
+  test("an existing email gets the same enumeration-safe registration response", async ({
+    page,
+  }) => {
+    await page.goto("/register");
+    await page.getByLabel("Anzeigename").fill("Bestehendes Konto");
+    await page.getByLabel("E-Mail-Adresse").fill("owner@example.test");
+    await page.locator('input[name="password"]').fill("NichtDasBestehendePasswort42!");
+    await page.getByRole("button", { name: "Konto erstellen" }).click();
+
+    await expect(page.getByRole("status")).toContainText(
+      "Wenn für diese E-Mail-Adresse noch kein Konto besteht",
+    );
+    await expect(page.getByRole("link", { name: "Zur Anmeldung" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Passwort zurücksetzen" })).toBeVisible();
+  });
 });
 
 test("a completed password reset returns to normal sign-in", async ({ page }) => {
