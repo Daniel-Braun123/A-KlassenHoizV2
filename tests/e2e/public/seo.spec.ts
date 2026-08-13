@@ -87,16 +87,18 @@ test("public utility pages are crawlable but noindex", async ({ page }) => {
   }
 });
 
-test("Google sign-in and privacy policy disclose the actual OAuth data flow", async ({ page }) => {
+test("homepage and privacy policy disclose the actual Google OAuth data flow", async ({ page }) => {
   await page.goto("/login");
+  await expect(page.getByRole("button", { name: "Mit Google fortfahren" })).toBeVisible();
+  await expect(page.locator(".google-auth__privacy")).toHaveCount(0);
+
+  await page.goto("/");
   await expect(
-    page.getByText(
-      /Google übermittelt nur die für Anmeldung und Konto erforderlichen Profildaten/u,
-    ),
+    page.getByText(/Die optionale Google-Anmeldung verwendet Name und E-Mail-Adresse/u),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Datenschutzerklärung" })).toHaveAttribute(
     "href",
-    "/legal/privacy#google-anmeldung",
+    "/legal/privacy",
   );
 
   await page.goto("/legal/privacy");

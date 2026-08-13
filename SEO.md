@@ -29,9 +29,9 @@ Die `robots.txt` enthält deshalb keine `Disallow`-Regeln. Geschützte Bereiche 
 Nach dem Deployment:
 
 1. [Google Search Console](https://search.google.com/search-console/) öffnen.
-2. Eine Domain-Property für eine eigene Domain oder zunächst eine URL-Präfix-Property für `https://a-klassenhoiz.vercel.app/` hinzufügen.
+2. Die Domain-Property für `a-klassenhoiz.de` hinzufügen und verifizieren.
 3. Die von Google verlangte Verifizierung durchführen. Für eine Domain-Property ist dafür normalerweise ein DNS-TXT-Eintrag nötig.
-4. Unter „Sitemaps“ `https://a-klassenhoiz.vercel.app/sitemap.xml` einreichen.
+4. Unter „Sitemaps“ `https://a-klassenhoiz.de/sitemap.xml` einreichen.
 5. Die Startseite über die URL-Prüfung live testen.
 6. Für die Startseite die Indexierung beantragen.
 7. Den Bericht zur Seitenindexierung auf Fehler, ausgeschlossene Duplikate und Crawling-Probleme kontrollieren.
@@ -40,7 +40,7 @@ Nach dem Deployment:
 
 ## Domainwechsel
 
-Die kanonische Basis kommt aus `NEXT_PUBLIC_SITE_URL`; der Produktions-Fallback steht einmalig in `lib/config/site.ts`. Bei einem Wechsel auf `https://a-klassenhoiz.de/` muss die Vercel-Umgebungsvariable auf diese URL gesetzt werden. Danach neu deployen, Sitemap und Canonicals prüfen, die neue Search-Console-Property verifizieren und dauerhafte Weiterleitungen von der alten Domain einrichten.
+Die kanonische Basis kommt aus `NEXT_PUBLIC_SITE_URL`; der Produktions-Fallback steht einmalig in `lib/config/site.ts`. Bei einem späteren Domainwechsel müssen beide Werte auf die neue HTTPS-Origin gesetzt werden. Danach neu deployen, Sitemap und Canonicals prüfen, die neue Search-Console-Property verifizieren und dauerhafte Weiterleitungen von den bisherigen Domains einrichten.
 
 ## Performance-Verifikation
 

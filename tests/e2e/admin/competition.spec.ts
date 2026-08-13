@@ -53,7 +53,9 @@ test.describe("mobile global competition administration", () => {
 
     await page.getByRole("link", { name: new RegExp(leagueName) }).click();
     await page.getByRole("button", { name: "Liga veröffentlichen" }).click();
-    await expect(page.getByRole("status")).toContainText("Liga ist jetzt für Tipprunden sichtbar");
+    await expect(
+      page.getByRole("status").filter({ hasText: "Liga ist jetzt für Tipprunden sichtbar" }),
+    ).toBeVisible();
 
     await page.getByRole("link", { name: "Spielplan", exact: true }).click();
     const firstLeg = page.locator(".schedule-phase-picker").filter({ hasText: "Hinrunde" });
@@ -85,6 +87,8 @@ test.describe("mobile global competition administration", () => {
     await page.getByLabel(`Tore ${homeName}`).fill("2");
     await page.getByLabel(`Tore ${awayName}`).fill("1");
     await page.getByRole("button", { name: "Ergebnisse speichern" }).click();
-    await expect(page.getByRole("status")).toContainText("1 Ergebnis gespeichert");
+    await expect(
+      page.getByRole("status").filter({ hasText: "1 Ergebnis gespeichert" }),
+    ).toBeVisible();
   });
 });

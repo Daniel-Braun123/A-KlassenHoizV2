@@ -32,9 +32,12 @@ export default async function ProfilePage() {
         <section className="account-panel">
           <div>
             <h2>Konto & Datenschutz</h2>
-            <p>Hier findest du die unwiderrufliche Kontolöschung und ihre Voraussetzungen.</p>
+            <p>Lies, wie deine Daten verarbeitet werden, oder verwalte die Kontolöschung.</p>
           </div>
-          <Link href={"/profile/delete-account" as Route}>Kontoeinstellungen öffnen</Link>
+          <div className="account-panel__actions">
+            <Link href={"/legal/privacy" as Route}>Datenschutzerklärung</Link>
+            <Link href={"/profile/delete-account" as Route}>Kontolöschung</Link>
+          </div>
         </section>
       </div>
     </section>

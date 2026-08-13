@@ -1026,13 +1026,6 @@ p {
   flex: 0 0 auto;
 }
 
-.google-auth__privacy {
-  margin: calc(-1 * var(--space-2)) 0 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
-  line-height: 1.5;
-}
-
 .auth-form__message {
   margin: 0;
   padding: var(--space-3) var(--space-4);
@@ -1194,6 +1187,14 @@ p {
 .account-panel p {
   margin-top: var(--space-2);
   color: var(--color-text-muted);
+}
+
+.account-panel__actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3) var(--space-5);
 }
 
 .guided-form,
@@ -3874,6 +3875,10 @@ p {
   .account-panel {
     display: grid;
     gap: var(--space-4);
+  }
+
+  .account-panel__actions {
+    justify-content: flex-start;
   }
 
   .round-list__header {

@@ -21,10 +21,23 @@ test("authenticated mobile shell has one header and an account menu", async ({ p
 
   await trigger.click();
   await expect(page.getByRole("dialog", { name: "Profil und Darstellung" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Konto & Datenschutz/ })).toBeVisible();
+  const accountLink = page.getByRole("link", { name: /Konto & Datenschutz/ });
+  await expect(accountLink).toBeVisible();
   await expect(page.getByRole("button", { name: "Abmelden" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Verwaltung/i })).toHaveCount(0);
 
+  await accountLink.click();
+  await expect(page).toHaveURL(/\/profile$/u);
+  await expect(page.getByRole("link", { name: "Datenschutzerklärung" })).toHaveAttribute(
+    "href",
+    "/legal/privacy",
+  );
+  await expect(page.getByRole("link", { name: "Kontolöschung" })).toHaveAttribute(
+    "href",
+    "/profile/delete-account",
+  );
+
+  await page.getByRole("button", { name: "Profilmenü öffnen" }).click();
   await page.getByRole("button", { name: "Dunkel" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(await page.evaluate(() => localStorage.getItem("ak-theme:v1"))).toBe("dark");

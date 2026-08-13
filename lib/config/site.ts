@@ -1,4 +1,4 @@
-const productionSiteUrl = "https://a-klassenhoiz.vercel.app";
+const productionSiteUrl = "https://a-klassenhoiz.de";
 
 function normalizeSiteUrl(value: string | undefined): string {
   const candidate = new URL(value?.trim() || productionSiteUrl);

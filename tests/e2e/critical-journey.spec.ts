@@ -7,6 +7,9 @@ test("central competition to registration, invitation, prediction, result and ra
   page,
 }) => {
   test.setTimeout(120_000);
+  await page.addInitScript(() => {
+    window.localStorage.setItem("ak-pwa-install-prompt:v1", "dismissed");
+  });
   await page.setViewportSize({ width: 375, height: 812 });
   const fixture = await createPredictionFixture(1);
   const match = fixture.matches[0]!;
