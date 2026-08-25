@@ -245,7 +245,11 @@ function PhaseOverview({
   );
 }
 
-function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays: Matchday[] }>) {
+function MatchdayActions({
+  day,
+  leagueId,
+  matchdays,
+}: Readonly<{ day: Matchday; leagueId: string; matchdays: Matchday[] }>) {
   const [periodState, periodAction, periodPending] = useActionState(
     updateMatchdayPeriodAction,
     initialCompetitionActionState,
@@ -278,6 +282,7 @@ function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays
           <strong>Spieltag verwalten</strong>
         </div>
         <form action={periodAction} className="admin-form matchday-period-form">
+          <input name="leagueId" type="hidden" value={leagueId} />
           <input name="id" type="hidden" value={day.id} />
           <input name="expectedVersion" type="hidden" value={day.version} />
           <div className="admin-form-grid admin-form-grid--dates">
@@ -320,6 +325,7 @@ function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays
         ) : (
           <div className="admin-form-grid">
             <form action={moveAction} className="admin-form">
+              <input name="leagueId" type="hidden" value={leagueId} />
               <input name="id" type="hidden" value={day.id} />
               <input name="expectedVersion" type="hidden" value={day.version} />
               <input name="phase" type="hidden" value={targetPhase} />
@@ -335,6 +341,7 @@ function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays
               <ActionMessage state={moveState} />
             </form>
             <form action={deleteAction} className="admin-form">
+              <input name="leagueId" type="hidden" value={leagueId} />
               <input name="id" type="hidden" value={day.id} />
               <input name="expectedVersion" type="hidden" value={day.version} />
               <p>Entfernt den Spieltag einschließlich seiner Spiele dauerhaft.</p>
@@ -350,7 +357,11 @@ function MatchdayActions({ day, matchdays }: Readonly<{ day: Matchday; matchdays
   );
 }
 
-function CreateMatchForm({ clubs, day }: Readonly<{ clubs: ClubOption[]; day: Matchday }>) {
+function CreateMatchForm({
+  clubs,
+  day,
+  leagueId,
+}: Readonly<{ clubs: ClubOption[]; day: Matchday; leagueId: string }>) {
   const [state, action, pending] = useActionState(
     createMatchSimpleAction,
     initialCompetitionActionState,
@@ -373,6 +384,7 @@ function CreateMatchForm({ clubs, day }: Readonly<{ clubs: ClubOption[]; day: Ma
       <div>
         <h3>Spiel hinzufügen</h3>
       </div>
+      <input name="leagueId" type="hidden" value={leagueId} />
       <input name="matchdayId" type="hidden" value={day.id} />
       <ClubSelect
         clubs={clubs}
@@ -430,11 +442,13 @@ function CreateMatchForm({ clubs, day }: Readonly<{ clubs: ClubOption[]; day: Ma
 
 function ExistingMatchForm({
   clubs,
+  leagueId,
   now,
   reservedClubIds,
   row,
 }: Readonly<{
   clubs: ClubOption[];
+  leagueId: string;
   now: number;
   reservedClubIds: Set<string>;
   row: AdminScheduleRow;
@@ -486,6 +500,7 @@ function ExistingMatchForm({
         ) : (
           <>
             <form action={updateAction} className="admin-form-grid match-admin-item__edit">
+              <input name="leagueId" type="hidden" value={leagueId} />
               <input name="id" type="hidden" value={row.match_id} />
               <input name="expectedVersion" type="hidden" value={row.match_version} />
               <ClubSelect
@@ -541,6 +556,7 @@ function ExistingMatchForm({
                 <strong>Spiel löschen</strong>
                 <p>Das Spiel wird dauerhaft aus diesem Spieltag entfernt.</p>
               </div>
+              <input name="leagueId" type="hidden" value={leagueId} />
               <input name="id" type="hidden" value={row.match_id} />
               <input name="expectedVersion" type="hidden" value={row.match_version} />
               <Button disabled={deletePending} type="submit" variant="danger">
@@ -615,9 +631,13 @@ export function ScheduleWorkspace({
                   {selectedDay.matches.length === 1 ? "Spiel" : "Spiele"}
                 </p>
               </div>
-              <MatchdayActions day={selectedDay} matchdays={matchdays} />
+              <MatchdayActions
+                day={selectedDay}
+                leagueId={selectedLeague.id}
+                matchdays={matchdays}
+              />
             </div>
-            <CreateMatchForm clubs={clubs} day={selectedDay} />
+            <CreateMatchForm clubs={clubs} day={selectedDay} leagueId={selectedLeague.id} />
             <div className="editor-list">
               <h3>Angelegte Spiele</h3>
               {matchDateGroups.length ? (
@@ -642,6 +662,7 @@ export function ScheduleWorkspace({
                           <ExistingMatchForm
                             clubs={clubs}
                             key={row.match_id}
+                            leagueId={selectedLeague.id}
                             now={now}
                             reservedClubIds={reservedClubIds}
                             row={row}

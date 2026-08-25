@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
+import { NavigationPendingIndicator } from "@/components/ui/navigation-pending-indicator";
 
 export function RoundNavigation({ roundId }: { roundId: string }) {
   const pathname = usePathname();
@@ -34,6 +35,7 @@ export function RoundNavigation({ roundId }: { roundId: string }) {
             >
               <Icon className="round-navigation__icon" name={item.icon} />
               <span>{item.label}</span>
+              <NavigationPendingIndicator />
             </Link>
           </li>
         ))}

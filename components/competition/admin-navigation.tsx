@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { Link } from "@/components/ui/link";
+import { NavigationPendingIndicator } from "@/components/ui/navigation-pending-indicator";
 
 const items = [
   ["/admin/competitions", "Ligen"],
@@ -33,6 +34,7 @@ export function AdminNavigation() {
                 href={href as Route}
               >
                 {label}
+                <NavigationPendingIndicator />
               </Link>
             </li>
           );

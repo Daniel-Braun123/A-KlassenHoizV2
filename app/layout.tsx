@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { AppShell } from "@/components/patterns/app-shell";
 import { FocusBoundary } from "@/components/patterns/focus-boundary";
 import { ProfileMenu } from "@/components/patterns/profile-menu";
+import { InstallEventCapture } from "@/components/pwa/install-event-capture";
 import { ThemeSync } from "@/components/patterns/theme-sync";
 import { AppSpeedInsights } from "@/components/telemetry/app-speed-insights";
 import { getMyProfile } from "@/features/profile/service";
@@ -111,6 +112,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body>
         <ThemeSync />
+        <InstallEventCapture />
         <AppShell utility={profileMenu}>
           <FocusBoundary>{children}</FocusBoundary>
         </AppShell>

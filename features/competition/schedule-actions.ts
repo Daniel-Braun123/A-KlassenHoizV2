@@ -27,10 +27,15 @@ function kickoffIso(value: FormDataEntryValue | null): string {
   }
 }
 
-function revalidateScheduleAdmin(): void {
-  revalidatePath("/admin/competitions");
-  revalidatePath("/admin/competitions/[leagueId]/schedule", "page");
-  revalidatePath("/admin/competitions/[leagueId]/results", "page");
+function revalidateScheduleAdmin(leagueId: FormDataEntryValue | null): void {
+  const id = String(leagueId ?? "");
+  if (!id) {
+    revalidatePath("/admin/competitions/[leagueId]/schedule", "page");
+    revalidatePath("/admin/competitions/[leagueId]/results", "page");
+    return;
+  }
+  revalidatePath(`/admin/competitions/${id}/schedule`);
+  revalidatePath(`/admin/competitions/${id}/results`);
 }
 
 export async function createMatchdayAutoAction(
@@ -44,7 +49,7 @@ export async function createMatchdayAutoAction(
       startsOn: data.get("startsOn"),
       endsOn: data.get("endsOn"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Der nächste Spieltag wurde angelegt.");
   } catch (error) {
     return competitionFailure(error);
@@ -62,7 +67,7 @@ export async function updateMatchdayPeriodAction(
       startsOn: data.get("startsOn"),
       endsOn: data.get("endsOn"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Der Spieltagszeitraum wurde aktualisiert.");
   } catch (error) {
     return competitionFailure(error);
@@ -79,7 +84,7 @@ export async function moveMatchdayPhaseAction(
       expectedVersion: data.get("expectedVersion"),
       phase: data.get("phase"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess(
       "Der Spieltag wurde in die andere Runde verschoben und neu nummeriert.",
     );
@@ -97,7 +102,7 @@ export async function deleteMatchdaySimpleAction(
       id: data.get("id"),
       expectedVersion: data.get("expectedVersion"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Der Spieltag wurde gelöscht.");
   } catch (error) {
     return competitionFailure(error);
@@ -115,7 +120,7 @@ export async function createMatchSimpleAction(
       awayClubId: data.get("awayClubId"),
       kickoffAt: kickoffIso(data.get("kickoffAt")),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Das Spiel wurde angelegt.");
   } catch (error) {
     return competitionFailure(error);
@@ -135,7 +140,7 @@ export async function updateMatchSimpleAction(
       kickoffAt: kickoffIso(data.get("kickoffAt")),
       status: data.get("status"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Das Spiel wurde aktualisiert.");
   } catch (error) {
     return competitionFailure(error);
@@ -151,7 +156,7 @@ export async function deleteMatchSimpleAction(
       id: data.get("id"),
       expectedVersion: data.get("expectedVersion"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Das Spiel wurde gelöscht.");
   } catch (error) {
     return competitionFailure(error);
@@ -168,7 +173,7 @@ export async function createMatchdayAction(
       number: data.get("number"),
       displayName: data.get("displayName") || undefined,
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Spieltag wurde angelegt.");
   } catch (e) {
     return competitionFailure(e);
@@ -185,7 +190,7 @@ export async function createMatchAction(
       awayClubId: data.get("awayClubId"),
       kickoffAt: kickoffIso(data.get("kickoffAt")),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Spiel wurde angelegt.");
   } catch (e) {
     return competitionFailure(e);
@@ -203,7 +208,7 @@ export async function updateMatchdayAction(
       displayName: data.get("displayName") || undefined,
       status: data.get("status"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Spieltag wurde konfliktgeschützt aktualisiert.");
   } catch (e) {
     return competitionFailure(e);
@@ -223,7 +228,7 @@ export async function updateMatchAction(
       kickoffAt: kickoffIso(data.get("kickoffAt")),
       status: data.get("status"),
     });
-    revalidateScheduleAdmin();
+    revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Spiel wurde konfliktgeschützt aktualisiert.");
   } catch (e) {
     return competitionFailure(e);

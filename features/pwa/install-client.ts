@@ -10,6 +10,23 @@ export type InstallPromptEvent = Event & {
 
 export const INSTALL_PROMPT_DECISION_KEY = "ak-pwa-install-prompt:v1";
 
+let deferredInstallPrompt: InstallPromptEvent | null = null;
+const installPromptListeners = new Set<() => void>();
+
+export function rememberInstallPrompt(event: InstallPromptEvent | null): void {
+  deferredInstallPrompt = event;
+  for (const listener of installPromptListeners) listener();
+}
+
+export function readInstallPrompt(): InstallPromptEvent | null {
+  return deferredInstallPrompt;
+}
+
+export function subscribeToInstallPrompt(listener: () => void): () => void {
+  installPromptListeners.add(listener);
+  return () => installPromptListeners.delete(listener);
+}
+
 type NavigatorWithStandalone = Navigator & {
   standalone?: boolean;
 };

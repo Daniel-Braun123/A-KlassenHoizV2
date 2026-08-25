@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
+import { NavigationPendingIndicator } from "@/components/ui/navigation-pending-indicator";
 import type { MyRound } from "@/features/rounds/types";
 export function RoundSwitcher({ rounds }: { rounds: MyRound[] }) {
   return (
@@ -25,6 +26,7 @@ export function RoundSwitcher({ rounds }: { rounds: MyRound[] }) {
                   </span>
                 </span>
                 <Icon className="round-list__chevron" name="chevron-right" />
+                <NavigationPendingIndicator />
               </Link>
             </li>
           ))}

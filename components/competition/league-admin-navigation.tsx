@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { usePathname } from "next/navigation";
 
 import { Link } from "@/components/ui/link";
+import { NavigationPendingIndicator } from "@/components/ui/navigation-pending-indicator";
 
 const items = [
   ["", "Übersicht"],
@@ -25,6 +26,7 @@ export function LeagueAdminNavigation({ leagueId }: Readonly<{ leagueId: string 
             <li key={suffix || "overview"}>
               <Link aria-current={active ? "page" : undefined} href={href as Route}>
                 {label}
+                <NavigationPendingIndicator />
               </Link>
             </li>
           );

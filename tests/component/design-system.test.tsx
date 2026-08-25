@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { Button } from "@/components/ui/button";
 import { FormStatus } from "@/components/patterns/form-status";
 import { StatusState } from "@/components/patterns/status-state";
+import { ContentLoading } from "@/components/patterns/content-loading";
 describe("design system states", () => {
   it("exposes disabled buttons without removing their name", () => {
     render(<Button disabled>Speichern</Button>);
@@ -20,5 +21,11 @@ describe("design system states", () => {
     );
     expect(screen.getByRole("heading", { name: "Geschlossen" })).toBeVisible();
     expect(screen.queryByText("—")).toHaveAttribute("aria-hidden", "true");
+  });
+  it("announces streamed page loading without exposing decorative placeholders", () => {
+    render(<ContentLoading label="Tipprunde wird geladen" rows={3} />);
+    const status = screen.getByRole("status", { name: "Tipprunde wird geladen" });
+    expect(status).toHaveAttribute("aria-busy", "true");
+    expect(status.querySelectorAll(".content-loading__row")).toHaveLength(3);
   });
 });

@@ -27,10 +27,18 @@ export async function listMyRounds(): Promise<MyRound[]> {
 }
 export async function getMyRound(id: string): Promise<MyRound> {
   const roundId = roundIdSchema.parse(id);
-  const rounds = await listMyRounds();
-  const round = rounds.find((x) => x.id === roundId);
-  if (!round) throw new ApplicationError("NOT_FOUND");
-  return round;
+  const supabase = await createSupabaseServerClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  if (!claims?.claims.sub) throw new ApplicationError("NOT_FOUND");
+  const { data, error } = await supabase
+    .schema("api")
+    .from("my_rounds")
+    .select("*")
+    .eq("id", roundId)
+    .maybeSingle();
+  map(error);
+  if (!data) throw new ApplicationError("NOT_FOUND");
+  return data;
 }
 export async function listRoundMembers(id: string): Promise<RoundMember[]> {
   const roundId = roundIdSchema.parse(id);

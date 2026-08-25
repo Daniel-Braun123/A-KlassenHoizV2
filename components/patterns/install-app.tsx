@@ -1,23 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-type InstallEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};
+import {
+  isPwaInstalled,
+  readInstallPrompt,
+  subscribeToInstallPrompt,
+  type InstallPromptEvent,
+} from "@/features/pwa/install-client";
 export function InstallApp() {
-  const [event, setEvent] = useState<InstallEvent | null>(null);
+  const [event, setEvent] = useState<InstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   useEffect(() => {
-    const before = (value: Event) => {
-      value.preventDefault();
-      setEvent(value as InstallEvent);
+    const update = () => {
+      setEvent(readInstallPrompt());
+      if (isPwaInstalled()) setInstalled(true);
     };
     const complete = () => setInstalled(true);
-    window.addEventListener("beforeinstallprompt", before);
+    update();
+    const unsubscribe = subscribeToInstallPrompt(update);
     window.addEventListener("appinstalled", complete);
     return () => {
-      window.removeEventListener("beforeinstallprompt", before);
+      unsubscribe();
       window.removeEventListener("appinstalled", complete);
     };
   }, []);

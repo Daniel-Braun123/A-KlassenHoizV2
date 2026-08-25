@@ -103,7 +103,7 @@ describe("PushPermissionPrompt", () => {
     await waitFor(() => expect(registerPushSubscriptionAction).toHaveBeenCalledOnce());
     expect(Notification.requestPermission).toHaveBeenCalledOnce();
     expect(window.localStorage.getItem("ak-push-permission-prompt:v1:user-2")).toBe("enabled");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
   it("does not appear again after a saved decision", async () => {

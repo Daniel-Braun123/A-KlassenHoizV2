@@ -8,7 +8,10 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 2,
+  // Browser tests share seeded users and one mutable local database. Running
+  // them concurrently makes otherwise independent specs contend during
+  // Server Action revalidation, so keep the suite deterministic everywhere.
+  workers: 1,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: browserBaseUrl,

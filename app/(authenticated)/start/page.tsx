@@ -1,3 +1,6 @@
+import type { Route } from "next";
+import { redirect } from "next/navigation";
+
 import { PushPermissionPrompt } from "@/components/notifications/push-permission-prompt";
 import { RoundSwitcher } from "@/components/rounds/round-switcher";
 import { Link } from "@/components/ui/link";
@@ -8,7 +11,9 @@ import { readServerEnvironment } from "@/lib/config/env";
 export default async function StartPage() {
   const profile = await getMyProfile();
 
-  if (profile?.app_role === "app_admin") {
+  if (!profile || profile.status !== "active") redirect("/login" as Route);
+
+  if (profile.app_role === "app_admin") {
     return (
       <section className="start-page">
         <div className="start-page__intro">
@@ -51,7 +56,7 @@ export default async function StartPage() {
         <p>Wähle eine Tipprunde oder erstelle eine neue Runde für deine Freunde.</p>
       </div>
       <RoundSwitcher rounds={rounds} />
-      {shouldOfferPush && publicVapidKey && profile?.user_id ? (
+      {shouldOfferPush && publicVapidKey && profile.user_id ? (
         <PushPermissionPrompt publicVapidKey={publicVapidKey} userId={profile.user_id} />
       ) : null}
     </section>

@@ -7,7 +7,7 @@ import type { PublishedLeagueSeason } from "./types";
 export async function listPublishedLeagueSeasons(): Promise<PublishedLeagueSeason[]> {
   const supabase = await createSupabaseServerClient();
   const { data: claims } = await supabase.auth.getClaims();
-  if (!claims?.claims.sub) throw new ApplicationError("UNAUTHENTICATED");
+  if (!claims?.claims.sub) return [];
   const { data, error } = await supabase
     .schema("api")
     .from("published_league_seasons")

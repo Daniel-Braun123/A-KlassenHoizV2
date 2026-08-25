@@ -8,8 +8,11 @@ import { Dialog } from "@/components/ui/dialog";
 import {
   isIosDevice,
   isPwaInstalled,
+  readInstallPrompt,
   readInstallPromptDecision,
+  rememberInstallPrompt,
   saveInstallPromptDecision,
+  subscribeToInstallPrompt,
   type InstallPromptEvent,
 } from "@/features/pwa/install-client";
 
@@ -28,21 +31,17 @@ export function ContextualInstallPrompt({ trigger }: Readonly<{ trigger: number 
       return;
     }
 
-    const rememberInstallEvent = (event: Event) => {
+    const update = () => setInstallEvent(readInstallPrompt());
+    const remember = (event: Event) => {
       event.preventDefault();
-      setInstallEvent(event as InstallPromptEvent);
+      rememberInstallPrompt(event as InstallPromptEvent);
     };
-    const finishInstallation = () => {
-      saveInstallPromptDecision("installed");
-      setInstallEvent(null);
-      setClosed(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", rememberInstallEvent);
-    window.addEventListener("appinstalled", finishInstallation);
+    update();
+    const unsubscribe = subscribeToInstallPrompt(update);
+    window.addEventListener("beforeinstallprompt", remember);
     return () => {
-      window.removeEventListener("beforeinstallprompt", rememberInstallEvent);
-      window.removeEventListener("appinstalled", finishInstallation);
+      unsubscribe();
+      window.removeEventListener("beforeinstallprompt", remember);
     };
   }, []);
 
@@ -59,6 +58,7 @@ export function ContextualInstallPrompt({ trigger }: Readonly<{ trigger: number 
       await installEvent.prompt();
       const choice = await installEvent.userChoice;
       saveInstallPromptDecision(choice.outcome === "accepted" ? "installed" : "dismissed");
+      rememberInstallPrompt(null);
       setInstallEvent(null);
       setClosed(true);
     } finally {
