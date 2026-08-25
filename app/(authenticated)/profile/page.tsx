@@ -14,11 +14,16 @@ export default async function ProfilePage() {
   const environment = readServerEnvironment();
 
   return (
-    <section className="content-page profile-page" aria-labelledby="profile-title">
-      <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
-      <div className="content-page__intro">
-        <p className="product-mark">Dein Konto</p>
-        <h1 id="profile-title">{profile.display_name ?? "Dein Profil"}</h1>
+    <section
+      className="content-page content-page--compact profile-page"
+      aria-labelledby="profile-title"
+    >
+      <div className="content-page__heading">
+        <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
+        <div className="content-page__intro">
+          <p className="product-mark">Dein Konto</p>
+          <h1 id="profile-title">{profile.display_name ?? "Dein Profil"}</h1>
+        </div>
       </div>
       <div className="profile-page__sections">
         <InstallApp />

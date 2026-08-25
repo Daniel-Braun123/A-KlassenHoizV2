@@ -4,7 +4,7 @@ import { loginAsLocalUser } from "../../helpers/admin";
 import { createPublishedCompetition } from "../../helpers/fixtures";
 
 test.describe("mobile subpage navigation", () => {
-  test.use({ viewport: { width: 393, height: 852 } });
+  test.use({ viewport: { width: 393, height: 659 } });
 
   test("round creation has a visible and reliable route back to the overview", async ({ page }) => {
     await createPublishedCompetition();
@@ -14,6 +14,12 @@ test.describe("mobile subpage navigation", () => {
     await expect(backLink).toBeVisible();
     await expect(backLink).toHaveAttribute("href", "/start");
     expect((await backLink.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+
+    const roundName = page.getByLabel("Name der Tipprunde");
+    await expect(roundName).toBeInViewport();
+    expect(
+      await roundName.evaluate((element) => element.getBoundingClientRect().top),
+    ).toBeLessThanOrEqual(360);
 
     await backLink.click();
     await expect(page).toHaveURL(/\/start$/u);
@@ -25,6 +31,11 @@ test.describe("mobile subpage navigation", () => {
     const overviewLink = page.getByRole("link", { name: "Zurück zur Übersicht" });
     await expect(overviewLink).toBeVisible();
     await expect(overviewLink).toHaveAttribute("href", "/start");
+    expect(
+      await page
+        .locator(".profile-page__sections")
+        .evaluate((element) => element.getBoundingClientRect().top),
+    ).toBeLessThanOrEqual(240);
 
     await page.goto("/profile/delete-account");
     const accountLink = page.getByRole("link", { name: "Zurück zu Konto & Datenschutz" });

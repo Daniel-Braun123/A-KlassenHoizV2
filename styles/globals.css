@@ -1460,9 +1460,22 @@ p {
   padding-block: var(--space-8) var(--space-16);
 }
 
+.content-page--compact {
+  gap: var(--space-5);
+  padding-block: var(--space-4) var(--space-12);
+}
+
+.content-page__heading {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.content-page__heading .content-page__intro h1:last-child {
+  margin-bottom: 0;
+}
+
 .page-back-navigation {
   width: fit-content;
-  margin-bottom: calc(var(--space-8) * -0.5);
 }
 
 .page-back-navigation a {
@@ -1627,20 +1640,6 @@ p {
   margin-bottom: 0;
 }
 
-.guided-form__steps {
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.guided-form__steps li {
-  display: grid;
-  gap: var(--space-1);
-}
-
-.guided-form__steps span,
 .round-list__copy > span,
 .invitation-panel p {
   color: var(--color-text-muted);

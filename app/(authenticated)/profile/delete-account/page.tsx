@@ -9,18 +9,20 @@ export default function DeleteAccountPage() {
   const [state, action, pending] = useActionState(deleteAccountAction, initialDeleteAccountState);
   return (
     <section className="content-page">
-      <PageBackLink
-        accessibleLabel="Zurück zu Konto & Datenschutz"
-        href="/profile"
-        label="Konto & Datenschutz"
-      />
-      <div className="content-page__intro">
-        <p className="product-mark">Datenschutz</p>
-        <h1>Konto löschen</h1>
-        <p>
-          Du musst zuerst den Besitz jeder aktiven Tipprunde übertragen oder die Runde endgültig
-          löschen.
-        </p>
+      <div className="content-page__heading">
+        <PageBackLink
+          accessibleLabel="Zurück zu Konto & Datenschutz"
+          href="/profile"
+          label="Konto & Datenschutz"
+        />
+        <div className="content-page__intro">
+          <p className="product-mark">Datenschutz</p>
+          <h1>Konto löschen</h1>
+          <p>
+            Du musst zuerst den Besitz jeder aktiven Tipprunde übertragen oder die Runde endgültig
+            löschen.
+          </p>
+        </div>
       </div>
       <form action={action} className="destructive-state">
         <h2>Unwiderrufliche Kontolöschung</h2>

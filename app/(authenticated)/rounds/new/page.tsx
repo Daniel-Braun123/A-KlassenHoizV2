@@ -4,11 +4,13 @@ import { listPublishedLeagueSeasons } from "@/features/competition/public-servic
 export default async function NewRoundPage() {
   const competitions = await listPublishedLeagueSeasons();
   return (
-    <section className="content-page">
-      <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
-      <div className="content-page__intro">
-        <p className="product-mark">Private Tipprunde</p>
-        <h1>Neue Tipprunde</h1>
+    <section className="content-page content-page--compact">
+      <div className="content-page__heading">
+        <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
+        <div className="content-page__intro">
+          <p className="product-mark">Private Tipprunde</p>
+          <h1>Neue Tipprunde</h1>
+        </div>
       </div>
       {competitions.length ? (
         <CreateRoundFlow competitions={competitions} />
