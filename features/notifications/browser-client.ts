@@ -1,5 +1,47 @@
 export type PushBrowserStatus = "available" | "install-required" | "unsupported";
 
+export const OPEN_TIP_BADGE_REFRESH_EVENT = "aklassenhoiz:open-tip-badge-refresh";
+
+type BadgeNavigator = Navigator & {
+  clearAppBadge?: () => Promise<void>;
+  setAppBadge?: (contents?: number) => Promise<void>;
+};
+
+function badgeNavigator(): BadgeNavigator | null {
+  return typeof navigator === "undefined" ? null : (navigator as BadgeNavigator);
+}
+
+export async function clearOpenTipAppBadge(): Promise<void> {
+  const currentNavigator = badgeNavigator();
+  if (typeof currentNavigator?.clearAppBadge !== "function") return;
+  try {
+    await currentNavigator.clearAppBadge();
+  } catch {
+    // Badge availability and permission are controlled by the operating system.
+  }
+}
+
+export async function setOpenTipAppBadge(count: number): Promise<void> {
+  const normalizedCount = Math.max(0, Math.floor(count));
+  if (normalizedCount === 0) {
+    await clearOpenTipAppBadge();
+    return;
+  }
+
+  const currentNavigator = badgeNavigator();
+  if (typeof currentNavigator?.setAppBadge !== "function") return;
+  try {
+    await currentNavigator.setAppBadge(normalizedCount);
+  } catch {
+    // Badge support may exist while the user has disabled badges for the app.
+  }
+}
+
+export function requestOpenTipBadgeRefresh(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(OPEN_TIP_BADGE_REFRESH_EVENT));
+}
+
 function isIosDevice(): boolean {
   return /iPad|iPhone|iPod/.test(navigator.userAgent);
 }

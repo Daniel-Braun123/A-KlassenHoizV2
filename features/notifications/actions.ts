@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import { ApplicationError } from "@/lib/actions/errors";
 import { actionFailure, actionSuccess, type ActionResult } from "@/lib/actions/result";
 import {
+  getOpenTipCount,
   getOwnedPushSubscription,
   registerPushSubscription,
   removePushSubscription,
@@ -17,11 +18,20 @@ import {
 } from "@/features/notifications/push-server";
 
 type MessageResult = ActionResult<Readonly<{ message: string }>>;
+type BadgeCountResult = ActionResult<Readonly<{ count: number }>>;
 
 function failed(error: unknown): MessageResult {
   return actionFailure(
     error instanceof ZodError ? new ApplicationError("INVALID_INPUT", "Push input invalid") : error,
   );
+}
+
+export async function getOpenTipBadgeCountAction(): Promise<BadgeCountResult> {
+  try {
+    return actionSuccess({ count: await getOpenTipCount() });
+  } catch (error) {
+    return actionFailure(error);
+  }
 }
 
 export async function registerPushSubscriptionAction(input: unknown): Promise<MessageResult> {

@@ -11,6 +11,7 @@ import { ActionMessage, type ActionFeedbackState } from "@/components/ui/action-
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Select } from "@/components/ui/select";
+import { requestOpenTipBadgeRefresh } from "@/features/notifications/browser-client";
 import { savePredictionsBatchAction } from "@/features/predictions/actions";
 import type { PredictionSheetRow, VisiblePrediction } from "@/features/predictions/types";
 
@@ -238,6 +239,7 @@ export function PredictionWorkspace({
             : `${result.data.savedCount} Tipps wurden gespeichert.`,
       });
       setInstallPromptTrigger((current) => current + 1);
+      requestOpenTipBadgeRefresh();
       const selectedRoute =
         `/rounds/${roundId}/predictions?matchday=${encodeURIComponent(selectedId)}` as Route;
       const currentMatchday = new URLSearchParams(window.location.search).get("matchday");

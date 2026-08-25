@@ -6,9 +6,14 @@ import type { PredictionSheetRow } from "@/features/predictions/types";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
+  requestBadgeRefresh: vi.fn(),
   replace: vi.fn(),
   refresh: vi.fn(),
   saveBatch: vi.fn(),
+}));
+
+vi.mock("@/features/notifications/browser-client", () => ({
+  requestOpenTipBadgeRefresh: mocks.requestBadgeRefresh,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -144,6 +149,7 @@ describe("PredictionWorkspace", () => {
       "/rounds/20000000-0000-4000-8000-000000000001/predictions?matchday=30000000-0000-4000-8000-000000000001",
     );
     expect(mocks.refresh).not.toHaveBeenCalled();
+    expect(mocks.requestBadgeRefresh).toHaveBeenCalledTimes(1);
   });
 
   it("bietet die Installation erst nach einem erfolgreich gespeicherten Tipp an", async () => {

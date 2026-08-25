@@ -8,6 +8,30 @@ const isLocalHttpBuild = /^http:\/\/(127\.0\.0\.1|localhost)(?::\d+)?(?:\/|$)/.t
   process.env.NEXT_PUBLIC_SITE_URL ?? "",
 );
 
+function getSupabaseConnectSources() {
+  const sources = ["https://*.supabase.co", "wss://*.supabase.co"];
+  const configuredUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  if (!configuredUrl) return sources;
+
+  try {
+    const url = new URL(configuredUrl);
+    const isLocalSupabase =
+      (url.hostname === "127.0.0.1" || url.hostname === "localhost") &&
+      (url.protocol === "http:" || url.protocol === "https:");
+
+    if (!isLocalSupabase) return sources;
+
+    sources.push(url.origin, `${url.protocol === "https:" ? "wss:" : "ws:"}//${url.host}`);
+  } catch {
+    // Environment validation reports malformed URLs with a more actionable error.
+  }
+
+  return sources;
+}
+
+const supabaseConnectSources = getSupabaseConnectSources().join(" ");
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -18,7 +42,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:54321 ws://127.0.0.1:54321",
+  `connect-src 'self' ${supabaseConnectSources}`,
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   ...(isLocalHttpBuild ? [] : ["upgrade-insecure-requests"]),

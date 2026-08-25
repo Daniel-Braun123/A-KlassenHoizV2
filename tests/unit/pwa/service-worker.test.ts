@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 type FetchListener = (event: {
   request: { method: string; mode: string; url: string };
@@ -28,6 +28,57 @@ describe("Service Worker", () => {
     expect(source).toContain("self.registration.showNotification");
     expect(source).toContain('self.addEventListener("notificationclick"');
     expect(source).toContain("self.clients.openWindow");
+  });
+
+  it("aktualisiert den App-Badge zusammen mit einer Tipp-Erinnerung", async () => {
+    const source = readFileSync("public/sw.js", "utf8");
+    const listeners = new Map<string, (event: never) => void>();
+    const setAppBadge = vi.fn().mockResolvedValue(undefined);
+    const showNotification = vi.fn().mockResolvedValue(undefined);
+    let completion: Promise<unknown> | undefined;
+
+    runInNewContext(source, {
+      URL,
+      caches: {
+        keys: () => Promise.resolve([]),
+        open: () => Promise.resolve({ addAll: () => Promise.resolve() }),
+      },
+      fetch: vi.fn(),
+      self: {
+        addEventListener: (type: string, listener: (event: never) => void) => {
+          listeners.set(type, listener);
+        },
+        clients: { claim: () => Promise.resolve() },
+        location: { origin: "https://app.test" },
+        navigator: { setAppBadge },
+        registration: { showNotification },
+      },
+    });
+
+    const pushListener = listeners.get("push") as
+      | ((event: {
+          data: { json: () => object };
+          waitUntil: (value: Promise<unknown>) => void;
+        }) => void)
+      | undefined;
+    pushListener!({
+      data: {
+        json: () => ({
+          badgeCount: 4,
+          body: "Vier Tipps fehlen.",
+          tag: "missing-tips",
+          title: "Offene Tipps",
+          url: "/start",
+        }),
+      },
+      waitUntil: (value) => {
+        completion = value;
+      },
+    });
+
+    await completion;
+    expect(setAppBadge).toHaveBeenCalledWith(4);
+    expect(showNotification).toHaveBeenCalledTimes(1);
   });
 
   it("lädt versionierte Next-Assets zuerst aus dem Netzwerk", async () => {

@@ -1,4 +1,5 @@
 import { RoundNavigation } from "@/components/patterns/round-navigation";
+import { RoundLiveUpdates } from "@/components/realtime/round-live-updates";
 export default async function RoundLayout({
   children,
   params,
@@ -9,6 +10,7 @@ export default async function RoundLayout({
   const { roundId } = await params;
   return (
     <div className="round-shell">
+      <RoundLiveUpdates roundId={roundId} />
       <RoundNavigation roundId={roundId} />
       {children}
     </div>

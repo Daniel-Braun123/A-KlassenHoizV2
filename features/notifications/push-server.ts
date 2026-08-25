@@ -69,6 +69,7 @@ export function buildReminderPayload(
 ): PushPayload {
   const noun = reminder.missing_count === 1 ? "Tipp fehlt" : "Tipps fehlen";
   return {
+    badgeCount: reminder.missing_count,
     title: `${reminder.missing_count} ${noun} noch`,
     body:
       reminder.kind === "final_60m"

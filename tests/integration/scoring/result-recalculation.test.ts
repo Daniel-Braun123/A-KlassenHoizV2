@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { createClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 import type { Database } from "@/lib/supabase/database.types";
@@ -27,6 +29,24 @@ describe("result scoring and recovery", () => {
         password: "LocalFixture42!",
       }),
     ]);
+    const ownerToken = (await owner.auth.getSession()).data.session?.access_token;
+    expect(ownerToken).toBeTruthy();
+    await owner.realtime.setAuth(ownerToken);
+    let resolveResultUpdate!: (payload: unknown) => void;
+    const resultUpdate = new Promise<unknown>((resolve) => {
+      resolveResultUpdate = resolve;
+    });
+    const resultChannel = owner
+      .channel(`round:${fixture.roundId}`, { config: { private: true } })
+      .on("broadcast", { event: "result_changed" }, resolveResultUpdate);
+    await new Promise<void>((resolve, reject) => {
+      resultChannel.subscribe((status, error) => {
+        if (status === "SUBSCRIBED") resolve();
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          reject(error ?? new Error(`Realtime subscription failed: ${status}`));
+        }
+      });
+    });
     const secondRound = await member.schema("api").rpc("create_round", {
       p_name: `Zweite Runde ${crypto.randomUUID().slice(0, 6)}`,
       p_league_season_id: fixture.competitionId,
@@ -59,6 +79,14 @@ describe("result scoring and recovery", () => {
       p_reason: "Erster Import",
     });
     expect(firstResult.data?.[0]?.recalculated_count).toBe(2);
+    const receivedUpdate = await Promise.race([
+      resultUpdate,
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Realtime result update timed out")), 5_000),
+      ),
+    ]);
+    expect(receivedUpdate).toMatchObject({ payload: { matchId: match.id } });
+    await owner.removeChannel(resultChannel);
     const ownerOutcome = await owner
       .schema("api")
       .from("matchday_prediction_sheet")

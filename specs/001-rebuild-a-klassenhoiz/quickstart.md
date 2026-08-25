@@ -53,7 +53,7 @@ Diese Patchstände sind die am 2026-07-13 fest gewählte Baseline und werden im 
 Vorgesehene lokale Variablen:
 
 ```text
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:56321
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<local publishable key>
 SUPABASE_SECRET_KEY=<nur falls ein server-only Adminablauf lokal getestet wird>
 NEXT_PUBLIC_SITE_URL=http://localhost:3000

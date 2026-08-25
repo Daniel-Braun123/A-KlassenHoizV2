@@ -53,9 +53,16 @@ function siteUrlFromVercelHost(host: string | undefined): string | undefined {
 }
 
 export function readPublicEnvironment(
-  environment: Record<string, string | undefined> = process.env,
+  environment?: Record<string, string | undefined>,
 ): PublicEnvironment {
-  return supabaseBrowserEnvironmentSchema.parse(environment);
+  return supabaseBrowserEnvironmentSchema.parse(
+    environment ?? {
+      // Keep these as direct property accesses so Next.js can inline public
+      // values into client bundles during the production build.
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    },
+  );
 }
 
 export function readServerEnvironment(

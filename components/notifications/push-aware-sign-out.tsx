@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { signOutAction } from "@/features/auth/actions";
 import { removePushSubscriptionAction } from "@/features/notifications/actions";
+import { clearOpenTipAppBadge } from "@/features/notifications/browser-client";
 
 export function PushAwareSignOut() {
   const [pending, setPending] = useState(false);
@@ -25,6 +26,7 @@ export function PushAwareSignOut() {
         }
       }
     } finally {
+      await clearOpenTipAppBadge();
       await signOutAction();
     }
   };

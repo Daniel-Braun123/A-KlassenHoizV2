@@ -7,6 +7,7 @@ export type PushPayload = Readonly<{
   body: string;
   url: string;
   tag: string;
+  badgeCount?: number;
 }>;
 
 export type ClaimedPushReminder =

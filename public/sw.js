@@ -1,4 +1,4 @@
-const VERSION = "aklassenhoiz-public-v4";
+const VERSION = "aklassenhoiz-public-v5";
 const PUBLIC_ASSETS = [
   "/offline",
   "/manifest.webmanifest",
@@ -38,15 +38,23 @@ self.addEventListener("push", (event) => {
   } catch {
     // Keep the safe generic notification when a payload cannot be parsed.
   }
-  event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-192.png",
-      tag: payload.tag,
-      data: { url: payload.url },
-    }),
-  );
+  const badgeCount = Number.isFinite(payload.badgeCount)
+    ? Math.max(0, Math.floor(payload.badgeCount))
+    : null;
+  const badgeUpdate =
+    badgeCount !== null && badgeCount > 0 && typeof self.navigator?.setAppBadge === "function"
+      ? self.navigator.setAppBadge(badgeCount).catch(() => undefined)
+      : badgeCount === 0 && typeof self.navigator?.clearAppBadge === "function"
+        ? self.navigator.clearAppBadge().catch(() => undefined)
+        : Promise.resolve();
+  const notification = self.registration.showNotification(payload.title, {
+    body: payload.body,
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-192.png",
+    tag: payload.tag,
+    data: { url: payload.url },
+  });
+  event.waitUntil(Promise.all([notification, badgeUpdate]));
 });
 
 self.addEventListener("notificationclick", (event) => {

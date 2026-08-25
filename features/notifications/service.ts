@@ -31,6 +31,25 @@ export async function getMissingTipsPreference(): Promise<boolean> {
   return data?.missing_tips_enabled ?? true;
 }
 
+export async function getOpenTipCount(): Promise<number> {
+  const supabase = await createSupabaseServerClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  if (!claims?.claims.sub) throw new ApplicationError("FORBIDDEN", "Authentication required");
+
+  const { data, error } = await supabase
+    .schema("api")
+    .from("round_overview")
+    .select("total_matches,predicted_matches")
+    .eq("status", "active");
+  mapError(error);
+
+  return (data ?? []).reduce(
+    (total, round) =>
+      total + Math.max(0, (round.total_matches ?? 0) - (round.predicted_matches ?? 0)),
+    0,
+  );
+}
+
 export async function registerPushSubscription(input: unknown): Promise<string> {
   const value = pushSubscriptionSchema.parse(input);
   const supabase = await createSupabaseServerClient();

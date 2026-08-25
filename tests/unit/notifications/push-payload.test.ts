@@ -13,6 +13,7 @@ describe("push payloads", () => {
     });
 
     expect(payload.title).toBe("3 Tipps fehlen noch");
+    expect(payload.badgeCount).toBe(3);
     expect(payload.url).toBe(
       "/rounds/10000000-0000-4000-8000-000000000001/predictions?matchday=20000000-0000-4000-8000-000000000002",
     );
