@@ -1,5 +1,5 @@
-import { ContentLoading } from "@/components/patterns/content-loading";
+import { LeagueOverviewSkeleton } from "@/components/patterns/route-loading";
 
 export default function LeagueAdminLoading() {
-  return <ContentLoading label="Ligadaten werden geladen" rows={5} />;
+  return <LeagueOverviewSkeleton />;
 }

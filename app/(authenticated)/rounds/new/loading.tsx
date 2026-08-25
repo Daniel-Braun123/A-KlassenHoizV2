@@ -1,5 +1,5 @@
-import { ContentLoading } from "@/components/patterns/content-loading";
+import { NewRoundSkeleton } from "@/components/patterns/route-loading";
 
 export default function NewRoundLoading() {
-  return <ContentLoading label="Verfügbare Ligen werden geladen" rows={3} />;
+  return <NewRoundSkeleton />;
 }

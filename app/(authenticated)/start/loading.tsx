@@ -1,5 +1,5 @@
-import { ContentLoading } from "@/components/patterns/content-loading";
+import { StartPageSkeleton } from "@/components/patterns/route-loading";
 
 export default function StartLoading() {
-  return <ContentLoading label="Tipprunden werden geladen" rows={3} />;
+  return <StartPageSkeleton />;
 }

@@ -1,5 +1,5 @@
-import { ContentLoading } from "@/components/patterns/content-loading";
+import { RoundOverviewSkeleton } from "@/components/patterns/route-loading";
 
 export default function RoundLoading() {
-  return <ContentLoading label="Tipprunde wird geladen" rows={4} />;
+  return <RoundOverviewSkeleton />;
 }
