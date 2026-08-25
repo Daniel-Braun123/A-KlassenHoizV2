@@ -5,16 +5,12 @@ import { Link } from "@/components/ui/link";
 import { InstallApp } from "@/components/patterns/install-app";
 import { PushNotificationSettings } from "@/components/notifications/push-notification-settings";
 import { readServerEnvironment } from "@/lib/config/env";
-import { getMissingTipsPreference } from "@/features/notifications/service";
 import { getMyProfile } from "@/features/profile/service";
 
 export default async function ProfilePage() {
   const profile = await getMyProfile();
   if (!profile || profile.status !== "active") redirect("/login?next=/profile" as Route);
-  const [missingTipsEnabled, environment] = await Promise.all([
-    getMissingTipsPreference(),
-    Promise.resolve(readServerEnvironment()),
-  ]);
+  const environment = readServerEnvironment();
 
   return (
     <section className="content-page profile-page" aria-labelledby="profile-title">
@@ -26,7 +22,6 @@ export default async function ProfilePage() {
       <div className="profile-page__sections">
         <InstallApp />
         <PushNotificationSettings
-          initialMissingTipsEnabled={missingTipsEnabled}
           publicVapidKey={environment.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null}
         />
         <section className="account-panel">

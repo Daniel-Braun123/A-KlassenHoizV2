@@ -8,7 +8,6 @@ vi.mock("@/features/notifications/actions", () => ({
   registerPushSubscriptionAction: vi.fn(),
   removePushSubscriptionAction: vi.fn(),
   sendTestPushNotificationAction: vi.fn(),
-  setMissingTipsPreferenceAction: vi.fn(),
 }));
 
 describe("PushNotificationSettings", () => {
@@ -53,14 +52,12 @@ describe("PushNotificationSettings", () => {
     });
 
     render(
-      <PushNotificationSettings
-        initialMissingTipsEnabled
-        publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890"
-      />,
+      <PushNotificationSettings publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890" />,
     );
 
     expect(await screen.findByText("Aktiv")).toBeInTheDocument();
-    expect(screen.getByRole("switch", { name: /An offene Tipps erinnern/i })).toBeChecked();
+    expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+    expect(screen.getByText(/24 Stunden und 60 Minuten/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Test senden" })).toBeInTheDocument();
   });
 
@@ -85,10 +82,7 @@ describe("PushNotificationSettings", () => {
     });
 
     render(
-      <PushNotificationSettings
-        initialMissingTipsEnabled
-        publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890"
-      />,
+      <PushNotificationSettings publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890" />,
     );
 
     expect(await screen.findByText("Aktiv")).toBeInTheDocument();
@@ -125,10 +119,7 @@ describe("PushNotificationSettings", () => {
     });
 
     render(
-      <PushNotificationSettings
-        initialMissingTipsEnabled
-        publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890"
-      />,
+      <PushNotificationSettings publicVapidKey="BEl6G4vapidPublicKeyFixture123456789012345678901234567890" />,
     );
 
     await waitFor(() => expect(getSubscription).toHaveBeenCalledOnce());
@@ -139,7 +130,7 @@ describe("PushNotificationSettings", () => {
   });
 
   it("does not prompt when push is not configured", async () => {
-    render(<PushNotificationSettings initialMissingTipsEnabled={false} publicVapidKey={null} />);
+    render(<PushNotificationSettings publicVapidKey={null} />);
     expect(
       await screen.findByText(/unterstützt Push-Benachrichtigungen hier nicht/i),
     ).toBeInTheDocument();

@@ -889,8 +889,7 @@ p {
 
 .push-settings__heading p,
 .push-settings__notice,
-.push-settings__privacy,
-.push-settings__preference small {
+.push-settings__privacy {
   color: var(--color-text-muted);
 }
 
@@ -917,37 +916,6 @@ p {
   padding: var(--space-3);
   border-radius: var(--radius-md);
   background: var(--color-surface-muted);
-}
-
-.push-settings__controls {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.push-settings__preference {
-  display: flex;
-  min-height: 3.5rem;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  cursor: pointer;
-}
-
-.push-settings__preference span {
-  display: grid;
-  gap: var(--space-1);
-}
-
-.push-settings__preference small {
-  line-height: 1.4;
-}
-
-.push-settings__preference input {
-  width: 2.75rem;
-  height: 1.5rem;
-  flex: 0 0 auto;
-  accent-color: var(--color-brand);
-  cursor: pointer;
 }
 
 .push-settings__actions {

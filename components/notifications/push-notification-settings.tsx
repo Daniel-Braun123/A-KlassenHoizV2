@@ -9,7 +9,6 @@ import {
   registerPushSubscriptionAction,
   removePushSubscriptionAction,
   sendTestPushNotificationAction,
-  setMissingTipsPreferenceAction,
 } from "@/features/notifications/actions";
 import {
   getCurrentPushSubscription,
@@ -21,16 +20,13 @@ import {
 type BrowserStatus = "checking" | "available" | "install-required" | "unsupported";
 
 export function PushNotificationSettings({
-  initialMissingTipsEnabled,
   publicVapidKey,
 }: Readonly<{
-  initialMissingTipsEnabled: boolean;
   publicVapidKey: string | null;
 }>) {
   const [status, setStatus] = useState<BrowserStatus>("checking");
   const [active, setActive] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
-  const [missingTipsEnabled, setMissingTipsEnabled] = useState(initialMissingTipsEnabled);
   const [busy, setBusy] = useState(false);
   const [disableDialogOpen, setDisableDialogOpen] = useState(false);
   const [disableError, setDisableError] = useState<string | null>(null);
@@ -129,21 +125,6 @@ export function PushNotificationSettings({
     }
   };
 
-  const updatePreference = async (enabled: boolean) => {
-    const previous = missingTipsEnabled;
-    setMissingTipsEnabled(enabled);
-    setBusy(true);
-    setFeedback({ status: "idle" });
-    const result = await setMissingTipsPreferenceAction({ missingTipsEnabled: enabled });
-    if (result.ok) {
-      setFeedback({ status: "success", message: result.data.message });
-    } else {
-      setMissingTipsEnabled(previous);
-      setFeedback({ status: "error", message: result.error.message });
-    }
-    setBusy(false);
-  };
-
   const sendTest = async () => {
     setBusy(true);
     setFeedback({ status: "idle" });
@@ -168,7 +149,10 @@ export function PushNotificationSettings({
       <div className="push-settings__heading">
         <div>
           <h2 id="push-settings-title">Benachrichtigungen</h2>
-          <p>Erhalte auf diesem Gerät eine Erinnerung, wenn vor dem Anpfiff Tipps fehlen.</p>
+          <p>
+            Erhalte auf diesem Gerät höchstens zwei Erinnerungen: 24 Stunden und 60 Minuten vor dem
+            nächsten Anpfiff, wenn noch Tipps fehlen.
+          </p>
         </div>
         <span className="push-settings__status" data-active={active ? "true" : undefined}>
           {status === "checking" ? "Wird geprüft" : active ? "Aktiv" : "Inaktiv"}
@@ -202,36 +186,21 @@ export function PushNotificationSettings({
       ) : null}
 
       {status === "available" && active ? (
-        <div className="push-settings__controls">
-          <label className="push-settings__preference">
-            <span>
-              <strong>An offene Tipps erinnern</strong>
-              <small>Höchstens 24 Stunden und 60 Minuten vor dem nächsten Anpfiff.</small>
-            </span>
-            <input
-              checked={missingTipsEnabled}
-              disabled={busy}
-              onChange={(event) => void updatePreference(event.target.checked)}
-              role="switch"
-              type="checkbox"
-            />
-          </label>
-          <div className="push-settings__actions">
-            <Button disabled={busy} onClick={() => void sendTest()} variant="secondary">
-              Test senden
-            </Button>
-            <Button
-              disabled={busy}
-              onClick={() => {
-                setDisableError(null);
-                setFeedback({ status: "idle" });
-                setDisableDialogOpen(true);
-              }}
-              variant="ghost"
-            >
-              Auf diesem Gerät deaktivieren
-            </Button>
-          </div>
+        <div className="push-settings__actions">
+          <Button disabled={busy} onClick={() => void sendTest()} variant="secondary">
+            Test senden
+          </Button>
+          <Button
+            disabled={busy}
+            onClick={() => {
+              setDisableError(null);
+              setFeedback({ status: "idle" });
+              setDisableDialogOpen(true);
+            }}
+            variant="ghost"
+          >
+            Auf diesem Gerät deaktivieren
+          </Button>
         </div>
       ) : null}
 
