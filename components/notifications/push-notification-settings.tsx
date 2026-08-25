@@ -150,8 +150,8 @@ export function PushNotificationSettings({
         <div>
           <h2 id="push-settings-title">Benachrichtigungen</h2>
           <p>
-            Erhalte auf diesem Gerät höchstens zwei Erinnerungen: 24 Stunden und 60 Minuten vor dem
-            nächsten Anpfiff, wenn noch Tipps fehlen.
+            Du erhältst 24 Stunden und 60 Minuten vor dem nächsten Anpfiff eine Erinnerung, wenn
+            noch Tipps fehlen.
           </p>
         </div>
         <span className="push-settings__status" data-active={active ? "true" : undefined}>
@@ -205,12 +205,6 @@ export function PushNotificationSettings({
       ) : null}
 
       <ActionMessage state={feedback} />
-      {active ? (
-        <p className="push-settings__privacy">
-          Es werden nur der offene Tippbedarf und der nächste Anpfiff übertragen – keine Namen,
-          E-Mail-Adressen oder Tippinhalte.
-        </p>
-      ) : null}
 
       <Dialog
         description="Diese Änderung betrifft nur die aktuell verwendete App auf diesem Gerät."

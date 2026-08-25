@@ -8,10 +8,7 @@ export default async function NewRoundPage() {
       <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
       <div className="content-page__intro">
         <p className="product-mark">Private Tipprunde</p>
-        <h1>In drei Schritten gemeinsam starten</h1>
-        <p>
-          Du bleibst alleiniger Besitzer. Später lädst du deine Freunde per Link oder QR-Code ein.
-        </p>
+        <h1>Neue Tipprunde</h1>
       </div>
       {competitions.length ? (
         <CreateRoundFlow competitions={competitions} />

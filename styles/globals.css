@@ -882,14 +882,12 @@ p {
 
 .push-settings__heading h2,
 .push-settings__heading p,
-.push-settings__notice,
-.push-settings__privacy {
+.push-settings__notice {
   margin-bottom: 0;
 }
 
 .push-settings__heading p,
-.push-settings__notice,
-.push-settings__privacy {
+.push-settings__notice {
   color: var(--color-text-muted);
 }
 
@@ -922,10 +920,6 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-}
-
-.push-settings__privacy {
-  font-size: var(--font-size-sm);
 }
 
 .push-settings__disable-confirmation {

@@ -19,7 +19,6 @@ export default async function ProfilePage() {
       <div className="content-page__intro">
         <p className="product-mark">Dein Konto</p>
         <h1 id="profile-title">{profile.display_name ?? "Dein Profil"}</h1>
-        <p>Installiere die App auf deinem Gerät oder verwalte deine privaten Kontodaten.</p>
       </div>
       <div className="profile-page__sections">
         <InstallApp />
