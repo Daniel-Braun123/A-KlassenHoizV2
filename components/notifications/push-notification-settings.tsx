@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { ActionMessage, type ActionFeedbackState } from "@/components/ui/action-message";
 import {
   registerPushSubscriptionAction,
@@ -28,8 +29,11 @@ export function PushNotificationSettings({
 }>) {
   const [status, setStatus] = useState<BrowserStatus>("checking");
   const [active, setActive] = useState(false);
+  const [permission, setPermission] = useState<NotificationPermission>("default");
   const [missingTipsEnabled, setMissingTipsEnabled] = useState(initialMissingTipsEnabled);
   const [busy, setBusy] = useState(false);
+  const [disableDialogOpen, setDisableDialogOpen] = useState(false);
+  const [disableError, setDisableError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<ActionFeedbackState>({ status: "idle" });
 
   useEffect(() => {
@@ -40,16 +44,27 @@ export function PushNotificationSettings({
       const nextStatus = publicVapidKey ? getPushBrowserStatus() : "unsupported";
       setStatus(nextStatus);
       if (nextStatus !== "available") return;
+      const nextPermission = Notification.permission;
+      setPermission(nextPermission);
       try {
         const subscription = await getCurrentPushSubscription();
-        if (!cancelled) setActive(Boolean(subscription));
+        if (!cancelled) setActive(nextPermission === "granted" && Boolean(subscription));
       } catch {
         if (!cancelled) setActive(false);
       }
     };
+
+    const inspectWhenVisible = () => {
+      if (document.visibilityState === "visible") void inspectBrowser();
+    };
+
     void inspectBrowser();
+    window.addEventListener("pageshow", inspectBrowser);
+    document.addEventListener("visibilitychange", inspectWhenVisible);
     return () => {
       cancelled = true;
+      window.removeEventListener("pageshow", inspectBrowser);
+      document.removeEventListener("visibilitychange", inspectWhenVisible);
     };
   }, [publicVapidKey]);
 
@@ -60,6 +75,7 @@ export function PushNotificationSettings({
     let subscription: PushSubscription | null = null;
     try {
       const permission = await Notification.requestPermission();
+      setPermission(permission);
       if (permission !== "granted") {
         setFeedback({
           status: "error",
@@ -90,6 +106,7 @@ export function PushNotificationSettings({
 
   const disable = async () => {
     setBusy(true);
+    setDisableError(null);
     setFeedback({ status: "idle" });
     try {
       const subscription = await getCurrentPushSubscription();
@@ -100,14 +117,13 @@ export function PushNotificationSettings({
         setFeedback({ status: "success", message: result.data.message });
       }
       setActive(false);
+      setDisableDialogOpen(false);
     } catch (error) {
-      setFeedback({
-        status: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Benachrichtigungen konnten nicht deaktiviert werden.",
-      });
+      setDisableError(
+        error instanceof Error
+          ? error.message
+          : "Benachrichtigungen konnten nicht deaktiviert werden.",
+      );
     } finally {
       setBusy(false);
     }
@@ -172,7 +188,14 @@ export function PushNotificationSettings({
         </p>
       ) : null}
 
-      {status === "available" && !active ? (
+      {status === "available" && !active && permission === "denied" ? (
+        <p className="push-settings__notice">
+          Benachrichtigungen sind in den Geräte- oder Browser-Einstellungen blockiert. Erlaube sie
+          dort und öffne diese Ansicht anschließend erneut.
+        </p>
+      ) : null}
+
+      {status === "available" && !active && permission !== "denied" ? (
         <Button disabled={busy} onClick={() => void enable()}>
           {busy ? "Wird aktiviert …" : "Benachrichtigungen aktivieren"}
         </Button>
@@ -197,7 +220,15 @@ export function PushNotificationSettings({
             <Button disabled={busy} onClick={() => void sendTest()} variant="secondary">
               Test senden
             </Button>
-            <Button disabled={busy} onClick={() => void disable()} variant="ghost">
+            <Button
+              disabled={busy}
+              onClick={() => {
+                setDisableError(null);
+                setFeedback({ status: "idle" });
+                setDisableDialogOpen(true);
+              }}
+              variant="ghost"
+            >
               Auf diesem Gerät deaktivieren
             </Button>
           </div>
@@ -211,6 +242,40 @@ export function PushNotificationSettings({
           E-Mail-Adressen oder Tippinhalte.
         </p>
       ) : null}
+
+      <Dialog
+        description="Diese Änderung betrifft nur die aktuell verwendete App auf diesem Gerät."
+        onClose={() => {
+          if (!busy) setDisableDialogOpen(false);
+        }}
+        open={disableDialogOpen}
+        title="Benachrichtigungen deaktivieren?"
+      >
+        <div className="push-settings__disable-confirmation">
+          <p>
+            Du erhältst hier danach keine Erinnerungen mehr an offene Tipps. Auf anderen Geräten
+            eingerichtete Benachrichtigungen bleiben aktiv.
+          </p>
+          {disableError ? (
+            <p className="form-error" role="alert">
+              {disableError}
+            </p>
+          ) : null}
+          <div className="dialog-actions">
+            <Button
+              autoFocus
+              disabled={busy}
+              onClick={() => setDisableDialogOpen(false)}
+              variant="secondary"
+            >
+              Abbrechen
+            </Button>
+            <Button disabled={busy} onClick={() => void disable()} variant="danger">
+              {busy ? "Wird deaktiviert …" : "Jetzt deaktivieren"}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </section>
   );
 }

@@ -960,6 +960,15 @@ p {
   font-size: var(--font-size-sm);
 }
 
+.push-settings__disable-confirmation {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.push-settings__disable-confirmation > p {
+  margin: 0;
+}
+
 .push-permission-prompt {
   display: grid;
   gap: var(--space-4);

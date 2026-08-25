@@ -52,12 +52,20 @@ export function pushSubscriptionInput(subscription: PushSubscription) {
 }
 
 export async function getCurrentPushSubscription(): Promise<PushSubscription | null> {
-  const registration = await navigator.serviceWorker.getRegistration();
-  return (await registration?.pushManager.getSubscription()) ?? null;
+  const registration =
+    (await navigator.serviceWorker.getRegistration("/")) ??
+    (await navigator.serviceWorker.register("/sw.js", {
+      scope: "/",
+      updateViaCache: "none",
+    }));
+  return registration.pushManager.getSubscription();
 }
 
 export async function subscribeBrowserToPush(publicVapidKey: string): Promise<PushSubscription> {
-  const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  const registration = await navigator.serviceWorker.register("/sw.js", {
+    scope: "/",
+    updateViaCache: "none",
+  });
   return (
     (await registration.pushManager.getSubscription()) ??
     (await registration.pushManager.subscribe({
