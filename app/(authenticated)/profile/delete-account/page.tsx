@@ -2,12 +2,18 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageBackLink } from "@/components/patterns/page-back-link";
 import { deleteAccountAction } from "@/features/privacy/actions";
 import { initialDeleteAccountState } from "@/features/privacy/state";
 export default function DeleteAccountPage() {
   const [state, action, pending] = useActionState(deleteAccountAction, initialDeleteAccountState);
   return (
     <section className="content-page">
+      <PageBackLink
+        accessibleLabel="Zurück zu Konto & Datenschutz"
+        href="/profile"
+        label="Konto & Datenschutz"
+      />
       <div className="content-page__intro">
         <p className="product-mark">Datenschutz</p>
         <h1>Konto löschen</h1>

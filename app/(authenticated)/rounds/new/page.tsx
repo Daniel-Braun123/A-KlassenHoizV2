@@ -1,9 +1,11 @@
 import { CreateRoundFlow } from "@/components/rounds/create-round-flow";
+import { PageBackLink } from "@/components/patterns/page-back-link";
 import { listPublishedLeagueSeasons } from "@/features/competition/public-service";
 export default async function NewRoundPage() {
   const competitions = await listPublishedLeagueSeasons();
   return (
     <section className="content-page">
+      <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
       <div className="content-page__intro">
         <p className="product-mark">Private Tipprunde</p>
         <h1>In drei Schritten gemeinsam starten</h1>

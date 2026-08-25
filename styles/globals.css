@@ -1466,6 +1466,36 @@ p {
   padding-block: var(--space-8) var(--space-16);
 }
 
+.page-back-navigation {
+  width: fit-content;
+  margin-bottom: calc(var(--space-8) * -0.5);
+}
+
+.page-back-navigation a {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-press) var(--ease-out);
+}
+
+.page-back-navigation svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+}
+
+.page-back-navigation a:active {
+  transform: scale(0.97);
+}
+
 .start-page {
   width: min(100%, 52rem);
   gap: var(--space-8);
@@ -4343,6 +4373,11 @@ p {
 
   .round-navigation a:hover,
   .admin-navigation a:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+  }
+
+  .page-back-navigation a:hover {
     background: var(--color-surface-raised);
     color: var(--color-text);
   }

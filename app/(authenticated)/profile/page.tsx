@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { Link } from "@/components/ui/link";
 import { InstallApp } from "@/components/patterns/install-app";
+import { PageBackLink } from "@/components/patterns/page-back-link";
 import { PushNotificationSettings } from "@/components/notifications/push-notification-settings";
 import { readServerEnvironment } from "@/lib/config/env";
 import { getMyProfile } from "@/features/profile/service";
@@ -14,6 +15,7 @@ export default async function ProfilePage() {
 
   return (
     <section className="content-page profile-page" aria-labelledby="profile-title">
+      <PageBackLink accessibleLabel="Zurück zur Übersicht" href="/start" label="Übersicht" />
       <div className="content-page__intro">
         <p className="product-mark">Dein Konto</p>
         <h1 id="profile-title">{profile.display_name ?? "Dein Profil"}</h1>
