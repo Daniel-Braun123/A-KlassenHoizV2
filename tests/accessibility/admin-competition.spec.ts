@@ -6,6 +6,9 @@ for (const route of ["/admin/competitions", "/admin/clubs", "/admin/schedule", "
   test(`${route} has no detectable WCAG 2.2 AA violation`, async ({ page }) => {
     await loginAsLocalAppAdmin(page);
     await page.goto(route);
+    if (route === "/admin/schedule" || route === "/admin/results") {
+      await page.waitForURL(/\/admin\/competitions$/u);
+    }
     await expect(page.locator("main")).toBeVisible();
     const result = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag22aa"])

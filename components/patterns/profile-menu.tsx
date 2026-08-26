@@ -75,7 +75,7 @@ export function ProfileMenu({
         ref={triggerRef}
         type="button"
       >
-        <Icon className="icon" name="user" />
+        <Icon className="icon" name="account-circle" strokeWidth={1.25} />
       </button>
       {open ? (
         <section

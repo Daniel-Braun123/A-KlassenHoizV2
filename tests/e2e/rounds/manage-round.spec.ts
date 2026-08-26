@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { loginAsLocalUser } from "../../helpers/admin";
 import { createRoundInvitationFixture } from "../../helpers/fixtures";
 import { createLocalActorClient } from "../../helpers/local-actors";
@@ -7,6 +7,34 @@ const hash = async (token: string) =>
   Buffer.from(await crypto.subtle.digest("SHA-256", Buffer.from(token, "base64url"))).toString(
     "hex",
   );
+
+async function submitServerAction(page: Page, buttonName: string) {
+  const responsePromise = page.waitForResponse((response) => {
+    const request = response.request();
+
+    return (
+      request.method() === "POST" &&
+      Boolean(request.headers()["next-action"]) &&
+      new URL(response.url()).pathname.endsWith("/settings")
+    );
+  });
+
+  await page.getByRole("button", { name: buttonName }).click();
+  const response = await responsePromise;
+
+  expect(response.ok()).toBe(true);
+}
+
+async function reopenCurrentPage(page: Page) {
+  const url = page.url();
+  const replacement = await page.context().newPage();
+
+  await replacement.goto(url);
+  await page.close();
+
+  return replacement;
+}
+
 test("ownership transfer, member removal, archive and hard delete remain owner-only", async ({
   browser,
 }) => {
@@ -27,20 +55,21 @@ test("ownership transfer, member removal, archive and hard delete remain owner-o
   await owner.waitForURL("**/rounds/" + fixture.roundId);
   await expect(owner.getByRole("link", { name: "Runde verwalten" })).toHaveCount(0);
   const memberContext = await browser.newContext({ viewport: { width: 375, height: 812 } });
-  const newOwner = await memberContext.newPage();
+  let newOwner = await memberContext.newPage();
   await loginAsLocalUser(
     newOwner,
     "member@example.test",
     "/rounds/" + fixture.roundId + "/settings",
   );
-  await newOwner.getByRole("button", { name: "Entfernen" }).click();
-  await expect(newOwner.getByText("Mitglied wurde entfernt.")).toBeVisible();
-  await newOwner.getByRole("button", { name: "Jetzt archivieren" }).click();
-  await expect(newOwner.getByText("Tipprunde archiviert.")).toBeVisible();
-  await newOwner.reload();
-  await newOwner.getByRole("button", { name: "Reaktivieren" }).click();
-  await expect(newOwner.getByText("Tipprunde reaktiviert.")).toBeVisible();
-  await newOwner.reload();
+  await submitServerAction(newOwner, "Entfernen");
+  newOwner = await reopenCurrentPage(newOwner);
+  await expect(newOwner.locator(".member-list > li")).toHaveCount(1);
+  await submitServerAction(newOwner, "Jetzt archivieren");
+  newOwner = await reopenCurrentPage(newOwner);
+  await expect(newOwner.getByRole("button", { name: "Reaktivieren" })).toBeEnabled();
+  await submitServerAction(newOwner, "Reaktivieren");
+  newOwner = await reopenCurrentPage(newOwner);
+  await expect(newOwner.getByRole("button", { name: "Jetzt archivieren" })).toBeEnabled();
   await newOwner.getByRole("button", { name: "Endgültig löschen" }).click();
   await newOwner.getByLabel(new RegExp(fixture.roundName)).fill(fixture.roundName);
   await newOwner.getByRole("button", { name: "Sofort und endgültig löschen" }).click();

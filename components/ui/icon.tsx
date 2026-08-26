@@ -2,12 +2,15 @@ import type { SVGProps } from "react";
 
 export type IconName =
   | "account"
+  | "account-circle"
   | "arrow-left"
+  | "calendar"
   | "check-circle"
   | "chevron-right"
   | "clock"
   | "lock"
   | "logout"
+  | "list"
   | "moon"
   | "overview"
   | "plus"
@@ -19,6 +22,7 @@ export type IconName =
   | "sun"
   | "system"
   | "table"
+  | "trophy"
   | "user";
 
 const paths: Record<IconName, React.ReactNode> = {
@@ -28,10 +32,24 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M5.75 19.25c.55-3.05 2.63-4.75 6.25-4.75s5.7 1.7 6.25 4.75" />
     </>
   ),
+  "account-circle": (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="9" r="3" />
+      <path d="M6 19.75a6 6 0 0 1 12 0" />
+    </>
+  ),
   "arrow-left": (
     <>
       <path d="m15 18-6-6 6-6" />
       <path d="M9 12h10" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" />
+      <path d="M8 3.5v4m8-4v4M3.5 10h17" />
+      <path d="M8 13.5h.01m4 0h.01m4 0h.01M8 17h.01m4 0h.01" />
     </>
   ),
   "check-circle": (
@@ -59,6 +77,14 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M10 12h10m-3.5-3.5L20 12l-3.5 3.5" />
     </>
   ),
+  list: (
+    <>
+      <path d="M9 6h11M9 12h11M9 18h11" />
+      <circle cx="4.5" cy="6" r=".75" fill="currentColor" stroke="none" />
+      <circle cx="4.5" cy="12" r=".75" fill="currentColor" stroke="none" />
+      <circle cx="4.5" cy="18" r=".75" fill="currentColor" stroke="none" />
+    </>
+  ),
   moon: <path d="M20 15.2A8 8 0 0 1 8.8 4 8.35 8.35 0 1 0 20 15.2Z" />,
   overview: (
     <>
@@ -69,8 +95,9 @@ const paths: Record<IconName, React.ReactNode> = {
   plus: <path d="M12 5v14M5 12h14" />,
   predictions: (
     <>
-      <path d="M4 19.5h4l10.8-10.8a2.12 2.12 0 0 0-3-3L5 16.5l-1 3Z" />
-      <path d="m14.5 7 2.5 2.5" />
+      <circle cx="12" cy="12" r="9" />
+      <path d="m12 7 3 2.2-1.15 3.55h-3.7L9 9.2 12 7Z" />
+      <path d="m9 9.2-3.5-.7M15 9.2l3.5-.7m-4.65 4.25 2.1 3.1m-5.8-3.1-2.1 3.1M8.05 15.85 7.5 19m8.45-3.15.55 3" />
     </>
   ),
   qr: (
@@ -115,6 +142,12 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <rect x="3" y="4" width="18" height="16" rx="2" />
       <path d="M3 9h18M8 9v11m8-11v11M3 14h18" />
+    </>
+  ),
+  trophy: (
+    <>
+      <path d="M8 4h8v4.5a4 4 0 0 1-8 0V4Z" />
+      <path d="M8 6H4.5v1.5A3.5 3.5 0 0 0 8 11m8-5h3.5v1.5A3.5 3.5 0 0 1 16 11M12 12.5V17m-4 3h8m-6-3h4" />
     </>
   ),
   user: (

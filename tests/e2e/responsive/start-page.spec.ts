@@ -55,7 +55,11 @@ test("player receives the contextual push primer only once", async ({ browserNam
     });
     Object.defineProperty(navigator, "serviceWorker", {
       configurable: true,
-      value: { getRegistration: async () => undefined },
+      value: {
+        getRegistration: async () => ({
+          pushManager: { getSubscription: async () => null },
+        }),
+      },
     });
   });
   await createRoundInvitationFixture();

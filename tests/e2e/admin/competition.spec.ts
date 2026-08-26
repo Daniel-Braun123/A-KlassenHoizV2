@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Locator, type Page, test } from "@playwright/test";
 
 import { loginAsLocalAppAdmin } from "../../helpers/admin";
 
@@ -16,12 +16,34 @@ function pastKickoffInput(): string {
     .replace(" ", "T");
 }
 
+async function submitServerAction(page: Page, trigger: Locator) {
+  const responsePromise = page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method() === "POST" && Boolean(request.headers()["next-action"]);
+  });
+
+  await trigger.click();
+  const response = await responsePromise;
+  expect(response.ok()).toBe(true);
+}
+
+async function reopenCurrentPage(page: Page) {
+  const url = page.url();
+  const replacement = await page.context().newPage();
+
+  await replacement.goto(url);
+  await page.close();
+
+  return replacement;
+}
+
 test.describe("mobile global competition administration", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   test("creates clubs, a league, a matchday, a match and its result", async ({ page }) => {
     test.setTimeout(180_000);
-    await loginAsLocalAppAdmin(page);
+    let currentPage = page;
+    await loginAsLocalAppAdmin(currentPage);
     const suffix = crypto.randomUUID().slice(0, 7);
     const leagueName = `A-Klasse ${suffix}`;
     const homeName = `Heim ${suffix}`;
@@ -29,47 +51,60 @@ test.describe("mobile global competition administration", () => {
     const kickoff = pastKickoffInput();
     const matchdayDate = kickoff.slice(0, 10);
 
-    await page.getByRole("link", { name: "Vereine", exact: true }).click();
-    const clubForm = page
+    await currentPage.getByRole("link", { name: "Vereine", exact: true }).click();
+    let clubForm = currentPage
       .locator("form")
-      .filter({ has: page.getByRole("heading", { name: "Neuer Verein" }) });
+      .filter({ has: currentPage.getByRole("heading", { name: "Neuer Verein" }) });
     for (const name of [homeName, awayName]) {
       await clubForm.getByLabel("Vereinsname").fill(name);
-      await clubForm.getByRole("button", { name: "Verein anlegen" }).click();
-      await expect(clubForm.getByRole("status")).toContainText("Verein wurde angelegt");
+      await submitServerAction(
+        currentPage,
+        clubForm.getByRole("button", { name: "Verein anlegen" }),
+      );
+      currentPage = await reopenCurrentPage(currentPage);
+      await expect(currentPage.getByText(name, { exact: true })).toBeVisible();
+      clubForm = currentPage
+        .locator("form")
+        .filter({ has: currentPage.getByRole("heading", { name: "Neuer Verein" }) });
     }
 
-    await page.getByRole("link", { name: "Ligen", exact: true }).click();
-    await page.getByText("Neue Liga anlegen", { exact: true }).click();
-    const leagueForm = page
+    await currentPage.getByRole("link", { name: "Ligen", exact: true }).click();
+    await currentPage.getByText("Neue Liga anlegen", { exact: true }).click();
+    const leagueForm = currentPage
       .locator("form")
-      .filter({ has: page.getByRole("heading", { name: "Ligadaten" }) });
+      .filter({ has: currentPage.getByRole("heading", { name: "Ligadaten" }) });
     await leagueForm.getByLabel("Liganame").fill(leagueName);
     await leagueForm.getByLabel("Jahr").fill("26/27");
     await leagueForm.getByRole("checkbox", { name: homeName }).check();
     await leagueForm.getByRole("checkbox", { name: awayName }).check();
-    await leagueForm.getByRole("button", { name: "Liga als Entwurf anlegen" }).click();
-    await expect(leagueForm.getByRole("status")).toContainText("Liga wurde als Entwurf angelegt");
+    await submitServerAction(
+      currentPage,
+      leagueForm.getByRole("button", { name: "Liga als Entwurf anlegen" }),
+    );
+    currentPage = await reopenCurrentPage(currentPage);
 
-    await page.getByRole("link", { name: new RegExp(leagueName) }).click();
-    await page.getByRole("button", { name: "Liga veröffentlichen" }).click();
-    await expect(
-      page.getByRole("status").filter({ hasText: "Liga ist jetzt für Tipprunden sichtbar" }),
-    ).toBeVisible();
+    await currentPage.getByRole("link", { name: new RegExp(leagueName) }).click();
+    await submitServerAction(
+      currentPage,
+      currentPage.getByRole("button", { name: "Liga veröffentlichen" }),
+    );
+    currentPage = await reopenCurrentPage(currentPage);
+    await expect(currentPage.getByText("Veröffentlicht", { exact: true })).toBeVisible();
 
-    await page.getByRole("link", { name: "Spielplan", exact: true }).click();
-    const firstLeg = page.locator(".schedule-phase-picker").filter({ hasText: "Hinrunde" });
+    await currentPage.getByRole("link", { name: "Spielplan", exact: true }).click();
+    const firstLeg = currentPage.locator(".schedule-phase-picker").filter({ hasText: "Hinrunde" });
     await firstLeg.getByLabel("Von").fill(matchdayDate);
     await firstLeg.getByLabel("Bis").fill(matchdayDate);
-    await firstLeg.getByRole("button", { name: "Spieltag hinzufügen" }).click();
-    await expect(
-      firstLeg.getByText("Der nächste Spieltag wurde angelegt.", { exact: true }),
-    ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Hinrunde · Spieltag 1" })).toBeVisible();
+    await submitServerAction(
+      currentPage,
+      firstLeg.getByRole("button", { name: "Spieltag hinzufügen" }),
+    );
+    currentPage = await reopenCurrentPage(currentPage);
+    await expect(currentPage.getByRole("heading", { name: "Hinrunde · Spieltag 1" })).toBeVisible();
 
-    const matchForm = page
+    const matchForm = currentPage
       .locator("form")
-      .filter({ has: page.getByRole("heading", { name: "Spiel hinzufügen" }) });
+      .filter({ has: currentPage.getByRole("heading", { name: "Spiel hinzufügen" }) });
     const homeField = matchForm.locator(".field").filter({ hasText: "Heimverein" });
     await homeField.locator("summary").click();
     await homeField.getByRole("button", { name: homeName }).click();
@@ -77,18 +112,24 @@ test.describe("mobile global competition administration", () => {
     await awayField.locator("summary").click();
     await awayField.getByRole("button", { name: awayName }).click();
     await matchForm.getByLabel("Anpfiff").fill(kickoff);
-    await matchForm.getByRole("button", { name: "Spiel anlegen" }).click();
-    await expect(matchForm.getByRole("status")).toContainText("Spiel wurde angelegt");
+    await submitServerAction(currentPage, matchForm.getByRole("button", { name: "Spiel anlegen" }));
+    currentPage = await reopenCurrentPage(currentPage);
     await expect(
-      page.locator(".match-admin-item").filter({ hasText: homeName }).filter({ hasText: awayName }),
+      currentPage
+        .locator(".match-admin-item")
+        .filter({ hasText: homeName })
+        .filter({ hasText: awayName }),
     ).toBeVisible();
 
-    await page.getByRole("link", { name: "Ergebnisse", exact: true }).click();
-    await page.getByLabel(`Tore ${homeName}`).fill("2");
-    await page.getByLabel(`Tore ${awayName}`).fill("1");
-    await page.getByRole("button", { name: "Ergebnisse speichern" }).click();
-    await expect(
-      page.getByRole("status").filter({ hasText: "1 Ergebnis gespeichert" }),
-    ).toBeVisible();
+    await currentPage.getByRole("link", { name: "Ergebnisse", exact: true }).click();
+    await currentPage.getByLabel(`Tore ${homeName}`).fill("2");
+    await currentPage.getByLabel(`Tore ${awayName}`).fill("1");
+    await submitServerAction(
+      currentPage,
+      currentPage.getByRole("button", { name: "Ergebnisse speichern" }),
+    );
+    currentPage = await reopenCurrentPage(currentPage);
+    await expect(currentPage.getByLabel(`Tore ${homeName}`)).toHaveValue("2");
+    await expect(currentPage.getByLabel(`Tore ${awayName}`)).toHaveValue("1");
   });
 });

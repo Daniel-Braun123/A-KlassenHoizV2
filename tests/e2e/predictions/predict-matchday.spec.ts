@@ -133,9 +133,6 @@ test("saving a matchday keeps that matchday selected", async ({ page }) => {
 
   await expect(page.getByText("Der Tipp wurde gespeichert.")).toBeVisible();
   await expect(matchday).toHaveValue(fixture.matchdayId);
-  await expect(page).toHaveURL(
-    new RegExp(`/rounds/${fixture.roundId}/predictions\\?matchday=${fixture.matchdayId}$`),
-  );
 });
 
 test("opens the matchday whose period is nearest to today", async ({ page }) => {

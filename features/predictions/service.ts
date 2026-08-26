@@ -1,5 +1,6 @@
 import "server-only";
 
+import { buildLatestMatchdayRecap, type MatchdayRecap } from "@/features/rounds/matchday-recap";
 import { ApplicationError } from "@/lib/actions/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -65,6 +66,23 @@ export async function listVisiblePredictions(roundId: string): Promise<VisiblePr
     .order("nickname");
   mapDatabaseError(error);
   return data ?? [];
+}
+
+export async function getLatestMatchdayRecap(roundId: string): Promise<MatchdayRecap | null> {
+  const value = predictionSheetQuerySchema.parse({ roundId });
+  const supabase = await createSupabaseServerClient();
+  const [sheetResponse, rankingResponse] = await Promise.all([
+    supabase
+      .schema("api")
+      .from("matchday_prediction_sheet")
+      .select("*")
+      .eq("round_id", value.roundId),
+    supabase.schema("api").from("matchday_ranking").select("*").eq("round_id", value.roundId),
+  ]);
+
+  mapDatabaseError(sheetResponse.error);
+  mapDatabaseError(rankingResponse.error);
+  return buildLatestMatchdayRecap(sheetResponse.data ?? [], rankingResponse.data ?? []);
 }
 
 export async function savePrediction(input: unknown): Promise<SavePredictionConfirmation> {

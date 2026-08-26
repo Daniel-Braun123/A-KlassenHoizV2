@@ -13,7 +13,7 @@ export function RoundNavigation({ roundId }: { roundId: string }) {
   const items: ReadonlyArray<{ href: Route; label: string; icon: IconName }> = [
     { href: base as Route, label: "Übersicht", icon: "overview" },
     { href: `${base}/predictions` as Route, label: "Tippen", icon: "predictions" },
-    { href: `${base}/rankings` as Route, label: "Rangliste", icon: "rankings" },
+    { href: `${base}/rankings` as Route, label: "Rangliste", icon: "trophy" },
     { href: `${base}/table` as Route, label: "Tabelle", icon: "table" },
   ];
   return (

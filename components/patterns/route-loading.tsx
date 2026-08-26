@@ -138,10 +138,28 @@ export function RoundOverviewSkeleton() {
     <LoadingRegion label="Tipprunde wird geladen">
       <IntroSkeleton />
       <Panel className="route-loading__action-panel">
-        <Bone className="loading-bone--section-title" />
-        <Bone className="loading-bone--copy-short" />
+        <div className="route-loading__action-heading">
+          <Bone className="loading-bone--action-icon" />
+          <span>
+            <Bone className="loading-bone--section-title" />
+            <Bone className="loading-bone--copy-short" />
+          </span>
+        </div>
         <Bone className="loading-bone--button" />
       </Panel>
+      <div className="route-loading__recap">
+        <Bone className="loading-bone--section-title" />
+        <Bone className="loading-bone--copy-short" />
+        <div className="route-loading__recap-metrics">
+          {Array.from({ length: 3 }, (_, index) => (
+            <span key={index}>
+              <Bone className="loading-bone--recap-value" />
+              <Bone className="loading-bone--meta" />
+            </span>
+          ))}
+        </div>
+        <Bone className="loading-bone--recap-row" />
+      </div>
       <div className="route-loading__inline-actions">
         <Bone className="loading-bone--button-small" />
         <Bone className="loading-bone--link" />

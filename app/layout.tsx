@@ -6,6 +6,7 @@ import { ProfileMenu } from "@/components/patterns/profile-menu";
 import { InstallEventCapture } from "@/components/pwa/install-event-capture";
 import { ThemeSync } from "@/components/patterns/theme-sync";
 import { AppSpeedInsights } from "@/components/telemetry/app-speed-insights";
+import { barlow } from "@/app/fonts";
 import { getMyProfile } from "@/features/profile/service";
 import { siteConfig } from "@/lib/config/site";
 
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light dark",
-  themeColor: "oklch(0.982 0.007 155)",
+  themeColor: "oklch(0.978 0.009 155)",
 };
 
 const themeScript = `
@@ -61,7 +62,7 @@ const themeScript = `
     root.style.colorScheme = theme;
     document.querySelector('meta[name="theme-color"]')?.setAttribute(
       "content",
-      theme === "dark" ? "oklch(0.155 0.018 155)" : "oklch(0.982 0.007 155)"
+      theme === "dark" ? "oklch(0.145 0.024 155)" : "oklch(0.978 0.009 155)"
     );
   })();
 `;
@@ -106,7 +107,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   ) : null;
 
   return (
-    <html data-scroll-behavior="smooth" lang="de" suppressHydrationWarning>
+    <html
+      className={barlow.variable}
+      data-scroll-behavior="smooth"
+      lang="de"
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
