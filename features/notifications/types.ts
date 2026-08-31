@@ -12,3 +12,6 @@ export type PushPayload = Readonly<{
 
 export type ClaimedPushReminder =
   Database["api"]["Functions"]["claim_due_push_reminders"]["Returns"][number];
+
+export type ClaimedPushEvent =
+  Database["api"]["Functions"]["claim_due_push_events"]["Returns"][number];

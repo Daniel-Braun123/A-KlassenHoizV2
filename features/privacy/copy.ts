@@ -1,5 +1,5 @@
 export const privacyCopy = {
-  updatedAt: "13. August 2026",
+  updatedAt: "31. August 2026",
   scope:
     "Diese Datenschutzerklärung beschreibt, welche personenbezogenen Daten A-KlassenHoiz verarbeitet und wofür sie benötigt werden. Die öffentlich erreichbare Website stellt das kostenlose Fußball-Tippspiel vor; Tipprunden und die darin enthaltenen Daten bleiben privat und sind nur für berechtigte Mitglieder sichtbar.",
   accountData:
@@ -13,7 +13,7 @@ export const privacyCopy = {
   technicalData:
     "Beim Aufruf können die eingesetzten Infrastruktur- und Sicherheitsdienste technische Verbindungsdaten wie IP-Adresse, Zeitpunkt, Browser-/Geräteklasse, angeforderte Route und Fehlerstatus verarbeiten. A-KlassenHoiz protokolliert keine Tippinhalte, Passwörter, privaten Rundennamen oder Einladungs-Tokens zu Analysezwecken.",
   pushData:
-    "Push-Benachrichtigungen sind freiwillig. Nach deiner Zustimmung speichert A-KlassenHoiz den Push-Endpunkt deines Browsers, die dafür erforderlichen Verschlüsselungsschlüssel, eine Browserkennung, deine Erinnerungseinstellung und technische Zustellinformationen. Die verschlüsselte Nachricht wird über den Push-Dienst deines Browsers oder Betriebssystems zugestellt. Du kannst Benachrichtigungen jederzeit im Profil oder in den Geräteeinstellungen deaktivieren.",
+    "Push-Benachrichtigungen sind freiwillig. Nach deiner Zustimmung speichert A-KlassenHoiz den Push-Endpunkt deines Browsers, die dafür erforderlichen Verschlüsselungsschlüssel, eine Browserkennung und technische Zustellinformationen. Benachrichtigungen können Erinnerungen an offene Tipps sowie Hinweise zu neuen oder vollständig ausgewerteten Spieltagen enthalten; nach einer Auswertung werden dabei deine Spieltagspunkte und deine aktuelle Platzierung angezeigt. Die verschlüsselte Nachricht wird über den Push-Dienst deines Browsers oder Betriebssystems zugestellt. Du kannst Benachrichtigungen jederzeit im Profil oder in den Geräteeinstellungen deaktivieren.",
   storageData:
     "Für die Anmeldung werden technisch notwendige Sitzungscookies verwendet. Im lokalen Browserspeicher merkt sich die App ausschließlich Bedienentscheidungen wie Farbschema, bereits beantwortete Benachrichtigungs- und Installationshinweise sowie eine einmalige Entwicklungsbereinigung. Die PWA speichert nur öffentliche beziehungsweise statische App-Dateien für Start und Offline-Hinweis; private Tipprundendaten werden nicht dauerhaft im Service-Worker-Cache abgelegt.",
   purposes:

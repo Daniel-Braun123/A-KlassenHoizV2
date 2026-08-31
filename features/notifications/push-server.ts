@@ -4,6 +4,7 @@ import webpush from "web-push";
 
 import { readServerEnvironment } from "@/lib/config/env";
 import type {
+  ClaimedPushEvent,
   ClaimedPushReminder,
   PushPayload,
   PushReminderKind,
@@ -80,10 +81,38 @@ export function buildReminderPayload(
   };
 }
 
+export function buildEventPayload(
+  event: Pick<
+    ClaimedPushEvent,
+    "kind" | "matchday_id" | "matchday_number" | "matchday_points" | "overall_rank" | "round_id"
+  >,
+): PushPayload {
+  const matchdayLabel = `Spieltag ${event.matchday_number}`;
+
+  if (event.kind === "matchday_published") {
+    return {
+      title: `${matchdayLabel} ist offen`,
+      body: "In deiner Tipprunde kannst du jetzt deine Tipps abgeben.",
+      url: `/rounds/${event.round_id}/predictions?matchday=${event.matchday_id}`,
+      tag: `matchday-published-${event.round_id}-${event.matchday_id}`,
+    };
+  }
+
+  const points = event.matchday_points ?? 0;
+  const pointsLabel = points === 1 ? "Punkt" : "Punkte";
+  const rankLabel = event.overall_rank === null ? "" : ` · aktuell Platz ${event.overall_rank}`;
+  return {
+    title: `${matchdayLabel} ist ausgewertet`,
+    body: `${points} ${pointsLabel} für dich${rankLabel} in deiner Tipprunde.`,
+    url: `/rounds/${event.round_id}/rankings?matchday=${event.matchday_id}`,
+    tag: `matchday-evaluated-${event.round_id}-${event.matchday_id}`,
+  };
+}
+
 export function buildTestPayload(): PushPayload {
   return {
     title: "Benachrichtigungen sind aktiv",
-    body: "A-KlassenHoiz kann dich auf diesem Gerät an offene Tipps erinnern.",
+    body: "A-KlassenHoiz hält dich auf diesem Gerät zu deinen Tipprunden auf dem Laufenden.",
     url: "/profile",
     tag: "push-test",
   };
@@ -107,5 +136,14 @@ export function isExpiredPushSubscription(error: unknown): boolean {
 }
 
 export function reminderKindLabel(kind: PushReminderKind): string {
-  return kind === "final_60m" ? "Letzte Erinnerung" : "Frühe Erinnerung";
+  switch (kind) {
+    case "final_60m":
+      return "Letzte Erinnerung";
+    case "advance_24h":
+      return "Frühe Erinnerung";
+    case "matchday_published":
+      return "Neuer Spieltag";
+    case "matchday_evaluated":
+      return "Spieltag ausgewertet";
+  }
 }

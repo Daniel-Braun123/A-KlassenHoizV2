@@ -119,6 +119,7 @@ export async function createPredictionFixture(matchCount = 8, firstKickoffOffset
     roundName: `Tipprunde ${suffix}`,
     matchdayId: matchday.data!,
     matches,
+    clubs,
     competitionId: competition.data!,
   };
 }

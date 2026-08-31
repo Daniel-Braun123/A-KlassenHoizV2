@@ -150,8 +150,8 @@ export function PushNotificationSettings({
         <div>
           <h2 id="push-settings-title">Benachrichtigungen</h2>
           <p>
-            Du erhältst 24 Stunden und 60 Minuten vor dem nächsten Anpfiff eine Erinnerung, wenn
-            noch Tipps fehlen.
+            Du erhältst Erinnerungen an offene Tipps sowie Hinweise zu neuen und vollständig
+            ausgewerteten Spieltagen.
           </p>
         </div>
         <span className="push-settings__status" data-active={active ? "true" : undefined}>
@@ -216,8 +216,8 @@ export function PushNotificationSettings({
       >
         <div className="push-settings__disable-confirmation">
           <p>
-            Du erhältst hier danach keine Erinnerungen mehr an offene Tipps. Auf anderen Geräten
-            eingerichtete Benachrichtigungen bleiben aktiv.
+            Du erhältst hier danach weder Erinnerungen an offene Tipps noch Neuigkeiten zu
+            Spieltagen. Auf anderen Geräten eingerichtete Benachrichtigungen bleiben aktiv.
           </p>
           {disableError ? (
             <p className="form-error" role="alert">

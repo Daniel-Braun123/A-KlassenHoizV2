@@ -18,7 +18,13 @@ export function ProfileMenu({
   accountEnabled,
   accountLabel,
   displayName,
-}: Readonly<{ accountEnabled: boolean; accountLabel: string; displayName: string }>) {
+  userId,
+}: Readonly<{
+  accountEnabled: boolean;
+  accountLabel: string;
+  displayName: string;
+  userId: string | null;
+}>) {
   const [open, setOpen] = useState(false);
   const [preference, setPreference] = useState<ThemePreference>(() => {
     if (typeof document === "undefined") return "system";
@@ -125,7 +131,7 @@ export function ProfileMenu({
                 <Icon className="icon profile-menu__chevron" name="chevron-right" />
               </Link>
             ) : null}
-            <PushAwareSignOut />
+            <PushAwareSignOut userId={userId} />
           </div>
         </section>
       ) : null}

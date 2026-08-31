@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = extensions, public, pg_catalog;
-select plan(17);
+select plan(24);
 
 select has_table('app', 'push_notification_preferences', 'push preferences exist');
 select has_table('app', 'push_subscriptions', 'device subscriptions exist');
@@ -30,6 +30,55 @@ select has_function(
   'claim_due_push_reminders',
   array['timestamp with time zone', 'integer'],
   'scheduler claims due reminders atomically'
+);
+select has_function(
+  'api',
+  'claim_due_push_events',
+  array['timestamp with time zone', 'integer'],
+  'scheduler claims matchday events atomically'
+);
+select has_function(
+  'private',
+  'enqueue_matchday_push_deliveries',
+  array['uuid', 'app.push_reminder_kind'],
+  'matchday events enter the existing delivery outbox'
+);
+select has_trigger(
+  'app',
+  'matchdays',
+  'matchdays_queue_published_push',
+  'publishing a populated matchday queues a push event'
+);
+select has_trigger(
+  'app',
+  'matches',
+  'matches_queue_published_matchday_push',
+  'the first tippable match queues a published matchday event'
+);
+select has_trigger(
+  'app',
+  'matches',
+  'matches_queue_evaluated_matchday_push',
+  'the completed matchday evaluation is checked after score calculation'
+);
+select is(
+  (
+    select array_agg(enum_value.enumlabel order by enum_value.enumsortorder)::text
+    from pg_enum enum_value
+    where enum_value.enumtypid = 'app.push_reminder_kind'::regtype
+  ),
+  '{advance_24h,final_60m,matchday_published,matchday_evaluated}',
+  'push kinds contain both matchday lifecycle events'
+);
+select is(
+  (
+    select count(*)
+    from pg_indexes
+    where schemaname = 'app'
+      and indexname = 'push_deliveries_event_claim_idx'
+  ),
+  1::bigint,
+  'event delivery claims use a partial queue index'
 );
 select col_is_pk('app', 'push_notification_preferences', 'user_id', 'one preference per user');
 select col_is_unique('app', 'push_subscriptions', 'endpoint', 'one owner per browser endpoint');

@@ -57,7 +57,7 @@ describe("PushNotificationSettings", () => {
 
     expect(await screen.findByText("Aktiv")).toBeInTheDocument();
     expect(screen.queryByRole("switch")).not.toBeInTheDocument();
-    expect(screen.getByText(/24 Stunden und 60 Minuten/i)).toBeInTheDocument();
+    expect(screen.getByText(/neuen und vollständig ausgewerteten Spieltagen/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Test senden" })).toBeInTheDocument();
   });
 
@@ -78,7 +78,7 @@ describe("PushNotificationSettings", () => {
     });
     vi.mocked(removePushSubscriptionAction).mockResolvedValue({
       ok: true,
-      data: { message: "Benachrichtigungen sind auf diesem Gerät deaktiviert." },
+      data: { message: "Benachrichtigungen sind auf diesem Gerät deaktiviert.", removed: true },
     });
 
     render(

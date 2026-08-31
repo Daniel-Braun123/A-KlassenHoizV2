@@ -6,13 +6,14 @@ import { readServerEnvironment } from "@/lib/config/env";
 import { writeOperationalLog } from "@/lib/observability/logger";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
+  buildEventPayload,
   buildReminderPayload,
   isExpiredPushSubscription,
   pushConfigurationAvailable,
   pushErrorCode,
   sendWebPush,
 } from "@/features/notifications/push-server";
-import type { ClaimedPushReminder } from "@/features/notifications/types";
+import type { ClaimedPushEvent, ClaimedPushReminder } from "@/features/notifications/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,19 +28,25 @@ function authorized(request: Request, expectedSecret: string): boolean {
   );
 }
 
-async function deliver(reminder: ClaimedPushReminder): Promise<"sent" | "failed" | "expired"> {
+type ClaimedPushDelivery = ClaimedPushReminder | ClaimedPushEvent;
+
+function isMatchdayEvent(delivery: ClaimedPushDelivery): delivery is ClaimedPushEvent {
+  return delivery.kind === "matchday_published" || delivery.kind === "matchday_evaluated";
+}
+
+async function deliver(delivery: ClaimedPushDelivery): Promise<"sent" | "failed" | "expired"> {
   const supabase = createSupabaseAdminClient();
   try {
     await sendWebPush(
       {
-        endpoint: reminder.endpoint,
-        p256dhKey: reminder.p256dh_key,
-        authSecret: reminder.auth_secret,
+        endpoint: delivery.endpoint,
+        p256dhKey: delivery.p256dh_key,
+        authSecret: delivery.auth_secret,
       },
-      buildReminderPayload(reminder),
+      isMatchdayEvent(delivery) ? buildEventPayload(delivery) : buildReminderPayload(delivery),
     );
     const { error } = await supabase.schema("api").rpc("complete_push_delivery", {
-      p_delivery_id: reminder.delivery_id,
+      p_delivery_id: delivery.delivery_id,
       p_succeeded: true,
     });
     if (error) throw error;
@@ -48,12 +55,12 @@ async function deliver(reminder: ClaimedPushReminder): Promise<"sent" | "failed"
     if (isExpiredPushSubscription(error)) {
       const { error: deletionError } = await supabase
         .schema("api")
-        .rpc("delete_push_subscription", { p_subscription_id: reminder.subscription_id });
+        .rpc("delete_push_subscription", { p_subscription_id: delivery.subscription_id });
       if (deletionError) throw deletionError;
       return "expired";
     }
     const { error: completionError } = await supabase.schema("api").rpc("complete_push_delivery", {
-      p_delivery_id: reminder.delivery_id,
+      p_delivery_id: delivery.delivery_id,
       p_succeeded: false,
       p_error_code: pushErrorCode(error),
     });
@@ -75,20 +82,26 @@ export async function POST(request: Request) {
 
   try {
     const supabase = createSupabaseAdminClient();
-    const { data, error } = await supabase
-      .schema("api")
-      .rpc("claim_due_push_reminders", { p_limit: 100 });
-    if (error) throw error;
+    const [reminderClaim, eventClaim] = await Promise.all([
+      supabase.schema("api").rpc("claim_due_push_reminders", { p_limit: 100 }),
+      supabase.schema("api").rpc("claim_due_push_events", { p_limit: 100 }),
+    ]);
+    if (reminderClaim.error) throw reminderClaim.error;
+    if (eventClaim.error) throw eventClaim.error;
 
-    const reminders = data ?? [];
+    const reminders = reminderClaim.data ?? [];
+    const events = eventClaim.data ?? [];
+    const deliveries: ClaimedPushDelivery[] = [...reminders, ...events];
     const results: Array<"sent" | "failed" | "expired"> = [];
-    for (let index = 0; index < reminders.length; index += 10) {
-      const batch = reminders.slice(index, index + 10);
+    for (let index = 0; index < deliveries.length; index += 10) {
+      const batch = deliveries.slice(index, index + 10);
       results.push(...(await Promise.all(batch.map(deliver))));
     }
 
     const counts = {
-      claimed: reminders.length,
+      claimed: deliveries.length,
+      reminders: reminders.length,
+      events: events.length,
       sent: results.filter((value) => value === "sent").length,
       failed: results.filter((value) => value === "failed").length,
       expired: results.filter((value) => value === "expired").length,

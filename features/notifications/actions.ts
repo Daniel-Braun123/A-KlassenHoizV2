@@ -18,9 +18,10 @@ import {
 } from "@/features/notifications/push-server";
 
 type MessageResult = ActionResult<Readonly<{ message: string }>>;
+type RemovalResult = ActionResult<Readonly<{ message: string; removed: boolean }>>;
 type BadgeCountResult = ActionResult<Readonly<{ count: number }>>;
 
-function failed(error: unknown): MessageResult {
+function failed(error: unknown) {
   return actionFailure(
     error instanceof ZodError ? new ApplicationError("INVALID_INPUT", "Push input invalid") : error,
   );
@@ -43,10 +44,13 @@ export async function registerPushSubscriptionAction(input: unknown): Promise<Me
   }
 }
 
-export async function removePushSubscriptionAction(endpoint: unknown): Promise<MessageResult> {
+export async function removePushSubscriptionAction(endpoint: unknown): Promise<RemovalResult> {
   try {
-    await removePushSubscription(endpoint);
-    return actionSuccess({ message: "Benachrichtigungen sind auf diesem Gerät deaktiviert." });
+    const removed = await removePushSubscription(endpoint);
+    return actionSuccess({
+      message: "Benachrichtigungen sind auf diesem Gerät deaktiviert.",
+      removed,
+    });
   } catch (error) {
     return failed(error);
   }

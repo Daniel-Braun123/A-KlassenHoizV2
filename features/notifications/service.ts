@@ -72,13 +72,14 @@ export async function registerPushSubscription(input: unknown): Promise<string> 
   return data;
 }
 
-export async function removePushSubscription(input: unknown): Promise<void> {
+export async function removePushSubscription(input: unknown): Promise<boolean> {
   const endpoint = pushEndpointSchema.parse(input);
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .schema("api")
     .rpc("remove_my_push_subscription", { p_endpoint: endpoint });
   mapError(error);
+  return data ?? false;
 }
 
 export async function setMissingTipsPreference(input: unknown): Promise<boolean> {

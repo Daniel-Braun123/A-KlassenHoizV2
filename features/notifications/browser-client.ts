@@ -2,6 +2,8 @@ export type PushBrowserStatus = "available" | "install-required" | "unsupported"
 
 export const OPEN_TIP_BADGE_REFRESH_EVENT = "aklassenhoiz:open-tip-badge-refresh";
 
+const PUSH_SUBSCRIPTION_SYNC_KEY_PREFIX = "ak-push-subscription-sync:v1:";
+
 type BadgeNavigator = Navigator & {
   clearAppBadge?: () => Promise<void>;
   setAppBadge?: (contents?: number) => Promise<void>;
@@ -40,6 +42,34 @@ export async function setOpenTipAppBadge(count: number): Promise<void> {
 export function requestOpenTipBadgeRefresh(): void {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new Event(OPEN_TIP_BADGE_REFRESH_EVENT));
+}
+
+function pushSubscriptionSyncKey(userId: string): string {
+  return `${PUSH_SUBSCRIPTION_SYNC_KEY_PREFIX}${userId}`;
+}
+
+export function wasPushSubscriptionSynced(userId: string): boolean {
+  try {
+    return window.sessionStorage.getItem(pushSubscriptionSyncKey(userId)) === "synced";
+  } catch {
+    return false;
+  }
+}
+
+export function markPushSubscriptionSynced(userId: string): void {
+  try {
+    window.sessionStorage.setItem(pushSubscriptionSyncKey(userId), "synced");
+  } catch {
+    // Session storage can be unavailable in strict privacy modes; syncing remains functional.
+  }
+}
+
+export function clearPushSubscriptionSync(userId: string): void {
+  try {
+    window.sessionStorage.removeItem(pushSubscriptionSyncKey(userId));
+  } catch {
+    // The next login simply performs the idempotent server sync again.
+  }
 }
 
 function isIosDevice(): boolean {

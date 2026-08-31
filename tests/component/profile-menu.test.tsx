@@ -34,7 +34,14 @@ describe("ProfileMenu", () => {
   });
 
   it("keeps account actions inside one profile disclosure", () => {
-    render(<ProfileMenu accountEnabled accountLabel="Privates Konto" displayName="Daniel" />);
+    render(
+      <ProfileMenu
+        accountEnabled
+        accountLabel="Privates Konto"
+        displayName="Daniel"
+        userId="user-1"
+      />,
+    );
 
     expect(
       screen.queryByRole("dialog", { name: "Profil und Darstellung" }),
@@ -55,7 +62,14 @@ describe("ProfileMenu", () => {
   });
 
   it("applies and persists an explicit color theme", async () => {
-    render(<ProfileMenu accountEnabled accountLabel="Privates Konto" displayName="Daniel" />);
+    render(
+      <ProfileMenu
+        accountEnabled
+        accountLabel="Privates Konto"
+        displayName="Daniel"
+        userId="user-1"
+      />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Profilmenü öffnen" }));
     fireEvent.click(screen.getByRole("button", { name: "Dunkel" }));
 
@@ -66,7 +80,14 @@ describe("ProfileMenu", () => {
   });
 
   it("closes on Escape and restores focus to the trigger", () => {
-    render(<ProfileMenu accountEnabled accountLabel="Privates Konto" displayName="Daniel" />);
+    render(
+      <ProfileMenu
+        accountEnabled
+        accountLabel="Privates Konto"
+        displayName="Daniel"
+        userId="user-1"
+      />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Profilmenü öffnen" }));
     fireEvent.keyDown(document, { key: "Escape" });
 
@@ -83,6 +104,7 @@ describe("ProfileMenu", () => {
         accountEnabled={false}
         accountLabel="Konto nicht aktiv"
         displayName="Dein Konto"
+        userId="user-1"
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Profilmenü öffnen" }));
@@ -95,7 +117,12 @@ describe("ProfileMenu", () => {
   it("closes when focus leaves the profile disclosure", () => {
     render(
       <>
-        <ProfileMenu accountEnabled accountLabel="Privates Konto" displayName="Daniel" />
+        <ProfileMenu
+          accountEnabled
+          accountLabel="Privates Konto"
+          displayName="Daniel"
+          userId="user-1"
+        />
         <button type="button">Außen</button>
       </>,
     );
@@ -110,7 +137,14 @@ describe("ProfileMenu", () => {
   });
 
   it("stays open when mobile WebKit reports no related focus target", () => {
-    render(<ProfileMenu accountEnabled accountLabel="Privates Konto" displayName="Daniel" />);
+    render(
+      <ProfileMenu
+        accountEnabled
+        accountLabel="Privates Konto"
+        displayName="Daniel"
+        userId="user-1"
+      />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Profilmenü öffnen" }));
     fireEvent.blur(screen.getByRole("button", { name: "System" }), { relatedTarget: null });
 

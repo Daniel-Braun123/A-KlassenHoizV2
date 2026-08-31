@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { signOutAction } from "@/features/auth/actions";
 import { removePushSubscriptionAction } from "@/features/notifications/actions";
-import { clearOpenTipAppBadge } from "@/features/notifications/browser-client";
+import {
+  clearOpenTipAppBadge,
+  clearPushSubscriptionSync,
+} from "@/features/notifications/browser-client";
 
-export function PushAwareSignOut() {
+export function PushAwareSignOut({ userId }: Readonly<{ userId: string | null }>) {
   const [pending, setPending] = useState(false);
 
   const signOut = async () => {
@@ -19,13 +22,15 @@ export function PushAwareSignOut() {
         const subscription = await registration?.pushManager.getSubscription();
         if (subscription) {
           try {
-            await removePushSubscriptionAction(subscription.endpoint);
-          } finally {
+            const result = await removePushSubscriptionAction(subscription.endpoint);
+            if (!result.ok || result.data.removed !== true) await subscription.unsubscribe();
+          } catch {
             await subscription.unsubscribe();
           }
         }
       }
     } finally {
+      if (userId) clearPushSubscriptionSync(userId);
       await clearOpenTipAppBadge();
       await signOutAction();
     }

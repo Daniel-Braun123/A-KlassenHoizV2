@@ -874,6 +874,22 @@ export type Database = {
           subscription_id: string
         }[]
       }
+      claim_due_push_events: {
+        Args: { p_limit?: number; p_now?: string }
+        Returns: {
+          auth_secret: string
+          delivery_id: string
+          endpoint: string
+          kind: Database["app"]["Enums"]["push_reminder_kind"]
+          matchday_id: string
+          matchday_number: number
+          matchday_points: number | null
+          overall_rank: number | null
+          p256dh_key: string
+          round_id: string
+          subscription_id: string
+        }[]
+      }
       complete_push_delivery: {
         Args: {
           p_delivery_id: string
@@ -2143,7 +2159,11 @@ export type Database = {
       membership_status: "active" | "left" | "removed" | "anonymized"
       profile_status: "active" | "deletion_pending" | "disabled"
       push_delivery_status: "pending" | "processing" | "sent" | "failed"
-      push_reminder_kind: "advance_24h" | "final_60m"
+      push_reminder_kind:
+        | "advance_24h"
+        | "final_60m"
+        | "matchday_published"
+        | "matchday_evaluated"
       result_decision: "official" | "excluded"
       round_role: "owner" | "member"
       round_status: "active" | "archived"
@@ -2295,7 +2315,12 @@ export const Constants = {
       membership_status: ["active", "left", "removed", "anonymized"],
       profile_status: ["active", "deletion_pending", "disabled"],
       push_delivery_status: ["pending", "processing", "sent", "failed"],
-      push_reminder_kind: ["advance_24h", "final_60m"],
+      push_reminder_kind: [
+        "advance_24h",
+        "final_60m",
+        "matchday_published",
+        "matchday_evaluated",
+      ],
       result_decision: ["official", "excluded"],
       round_role: ["owner", "member"],
       round_status: ["active", "archived"],

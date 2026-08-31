@@ -103,6 +103,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             : "Konto nicht aktiv"
       }
       displayName={profile.display_name?.trim() || "Dein Konto"}
+      userId={profile.user_id}
     />
   ) : null;
 

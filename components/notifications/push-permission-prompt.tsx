@@ -122,7 +122,7 @@ export function PushPermissionPrompt({
 
   return (
     <Dialog
-      description="A-KlassenHoiz kann dich rechtzeitig benachrichtigen, wenn vor einem Anpfiff noch Tipps fehlen."
+      description="A-KlassenHoiz kann dich an offene Tipps erinnern und über neue oder ausgewertete Spieltage informieren."
       onClose={dismiss}
       open={open}
       title="Keine Tippfrist mehr verpassen"
@@ -130,7 +130,8 @@ export function PushPermissionPrompt({
       <div className="push-permission-prompt">
         <p>
           Du erhältst höchstens zwei Erinnerungen: 24 Stunden und 60 Minuten vor dem nächsten
-          Anpfiff. Keine Werbung und keine Tippinhalte in der Nachricht.
+          Anpfiff. Zusätzlich informieren wir dich, wenn ein Spieltag geöffnet oder vollständig
+          ausgewertet wurde. Keine Werbung und keine einzelnen Tippinhalte in der Nachricht.
         </p>
         <ActionMessage state={feedback} />
         <div className="dialog-actions">
