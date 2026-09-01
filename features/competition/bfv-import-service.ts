@@ -10,6 +10,7 @@ import {
   bfvSourceMatchId,
   suggestBfvClubMappings,
 } from "./bfv-import-plan";
+import { bfvImportConstraintMessage } from "./bfv-import-errors";
 import type { BfvClubMapping, BfvImportResult, BfvPreviewActionState } from "./bfv-import-types";
 import { parseBfvSchedulePdf } from "./bfv-pdf";
 import { requireAppAdmin, throwCompetitionError } from "./server";
@@ -172,6 +173,8 @@ export async function executeBfvScheduleImport(
     p_matchdays: matchdays,
     p_season_label: document.seasonLabel,
   });
+  const constraintMessage = bfvImportConstraintMessage(error);
+  if (constraintMessage) throw new ApplicationError("INVALID_INPUT", constraintMessage);
   throwCompetitionError(error);
   const result = data?.[0];
   if (!result) throw new ApplicationError("UNAVAILABLE", "BFV import returned no result");
