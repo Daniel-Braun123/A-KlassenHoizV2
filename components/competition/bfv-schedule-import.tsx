@@ -7,6 +7,7 @@ import {
   useState,
   useTransition,
   type ChangeEvent,
+  type DragEvent,
   type FormEvent,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -37,6 +38,12 @@ const actionLabels: Record<BfvImportMatchAction, string> = {
   unmapped: "Zuordnen",
   update: "Änderung",
 };
+
+const MAX_PDF_SIZE = 5 * 1024 * 1024;
+
+function isPdfFile(file: File): boolean {
+  return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+}
 
 function dateLabel(value: string): string {
   const [year, month, day] = value.split("-");
@@ -111,7 +118,10 @@ export function BfvScheduleImport({
   const router = useRouter();
   const fileInputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [preview, setPreview] = useState<BfvPreviewActionState | null>(null);
   const [mappings, setMappings] = useState<BfvClubMapping>({});
   const [importState, setImportState] = useState<BfvImportActionState | null>(null);
@@ -144,16 +154,72 @@ export function BfvScheduleImport({
     setImportState(null);
   }
 
+  function applySelectedFile(selectedFile: File | null) {
+    if (!selectedFile) return;
+
+    if (!isPdfFile(selectedFile)) {
+      setFileError("Bitte wähle eine PDF-Datei aus.");
+      return;
+    }
+    if (selectedFile.size > MAX_PDF_SIZE) {
+      setFileError("Die BFV-PDF darf höchstens 5 MB groß sein.");
+      return;
+    }
+
+    setFile(selectedFile);
+    setFileError(null);
+    resetPreview();
+  }
+
   function selectFile(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.currentTarget.files?.[0] ?? null;
-    setFile(selectedFile);
-    resetPreview();
+    applySelectedFile(selectedFile);
   }
 
   function removeFile() {
     if (fileInputRef.current) fileInputRef.current.value = "";
     setFile(null);
+    setFileError(null);
+    setIsDraggingFile(false);
+    dragDepthRef.current = 0;
     resetPreview();
+  }
+
+  function includesFiles(event: DragEvent<HTMLDivElement>): boolean {
+    return Array.from(event.dataTransfer.types).includes("Files");
+  }
+
+  function enterDropzone(event: DragEvent<HTMLDivElement>) {
+    if (previewPending || !includesFiles(event)) return;
+    event.preventDefault();
+    dragDepthRef.current += 1;
+    setIsDraggingFile(true);
+  }
+
+  function moveOverDropzone(event: DragEvent<HTMLDivElement>) {
+    if (previewPending || !includesFiles(event)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+  }
+
+  function leaveDropzone(event: DragEvent<HTMLDivElement>) {
+    if (!includesFiles(event)) return;
+    event.preventDefault();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setIsDraggingFile(false);
+  }
+
+  function dropFile(event: DragEvent<HTMLDivElement>) {
+    if (previewPending) return;
+    event.preventDefault();
+    dragDepthRef.current = 0;
+    setIsDraggingFile(false);
+
+    if (event.dataTransfer.files.length !== 1) {
+      setFileError("Bitte lege genau eine PDF-Datei ab.");
+      return;
+    }
+    applySelectedFile(event.dataTransfer.files[0] ?? null);
   }
 
   function previewFile(formData: FormData) {
@@ -220,55 +286,77 @@ export function BfvScheduleImport({
               <input
                 ref={fileInputRef}
                 accept="application/pdf,.pdf"
-                aria-describedby={`${fileInputId}-hint`}
+                aria-describedby={`${fileInputId}-hint${fileError ? ` ${fileInputId}-error` : ""}`}
                 aria-labelledby={`${fileInputId}-label`}
+                aria-required="true"
                 className="visually-hidden"
                 disabled={previewPending}
                 id={fileInputId}
                 name="file"
                 onChange={selectFile}
-                required
                 type="file"
               />
-              {file ? (
-                <div className="bfv-import-file-selected">
-                  <span className="bfv-import-file-selected__type" aria-hidden="true">
-                    PDF
-                  </span>
-                  <span className="bfv-import-file-selected__details">
-                    <strong title={file.name}>{file.name}</strong>
-                    <small>{fileSizeLabel(file.size)} · bereit zur Prüfung</small>
-                  </span>
-                  <span className="bfv-import-file-selected__actions">
+              <div
+                className="bfv-import-dropzone"
+                data-disabled={previewPending || undefined}
+                data-dragging={isDraggingFile || undefined}
+                data-has-file={Boolean(file) || undefined}
+                onDragEnter={enterDropzone}
+                onDragLeave={leaveDropzone}
+                onDragOver={moveOverDropzone}
+                onDrop={dropFile}
+              >
+                {file ? (
+                  <div className="bfv-import-file-selected">
+                    <span className="bfv-import-file-selected__type" aria-hidden="true">
+                      PDF
+                    </span>
+                    <span className="bfv-import-file-selected__details">
+                      <strong title={file.name}>{file.name}</strong>
+                      <small>{fileSizeLabel(file.size)} · bereit zur Prüfung</small>
+                    </span>
+                    <span className="bfv-import-file-selected__actions">
+                      <Button
+                        disabled={previewPending}
+                        onClick={() => fileInputRef.current?.click()}
+                        type="button"
+                        variant="ghost"
+                      >
+                        Ändern
+                      </Button>
+                      <Button
+                        disabled={previewPending}
+                        onClick={removeFile}
+                        type="button"
+                        variant="ghost"
+                      >
+                        Entfernen
+                      </Button>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="bfv-import-dropzone__empty">
+                    <span className="bfv-import-dropzone__copy">
+                      <strong>PDF hier ablegen</strong>
+                      <small>oder über die Dateiauswahl hinzufügen</small>
+                    </span>
                     <Button
+                      className="bfv-import-file-picker"
                       disabled={previewPending}
                       onClick={() => fileInputRef.current?.click()}
                       type="button"
-                      variant="ghost"
+                      variant="secondary"
                     >
-                      Ändern
+                      PDF auswählen
                     </Button>
-                    <Button
-                      disabled={previewPending}
-                      onClick={removeFile}
-                      type="button"
-                      variant="ghost"
-                    >
-                      Entfernen
-                    </Button>
-                  </span>
-                </div>
-              ) : (
-                <Button
-                  className="bfv-import-file-picker"
-                  disabled={previewPending}
-                  onClick={() => fileInputRef.current?.click()}
-                  type="button"
-                  variant="secondary"
-                >
-                  PDF auswählen
-                </Button>
-              )}
+                  </div>
+                )}
+              </div>
+              {fileError ? (
+                <p className="field__error" id={`${fileInputId}-error`} role="alert">
+                  {fileError}
+                </p>
+              ) : null}
             </div>
             <input name="leagueId" type="hidden" value={leagueId} />
             <Button disabled={previewPending || !file} type="submit" variant="secondary">

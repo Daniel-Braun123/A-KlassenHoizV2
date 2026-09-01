@@ -63,6 +63,46 @@ describe("BFV schedule import", () => {
     expect(screen.queryByRole("button", { name: "Spielplan jetzt importieren" })).toBeNull();
   });
 
+  it("accepts one PDF by drag and drop and rejects unsupported files", () => {
+    const { container } = render(
+      <BfvScheduleImport
+        clubs={[]}
+        leagueId="00000000-0000-4000-8000-000000000001"
+        schedule={[]}
+        yearLabel="26/27"
+      />,
+    );
+
+    fireEvent.click(container.querySelector("summary")!);
+    const dropzone = container.querySelector<HTMLElement>(".bfv-import-dropzone")!;
+    const previewButton = screen.getByRole("button", {
+      name: "PDF prüfen und Vorschau erstellen",
+    });
+
+    fireEvent.drop(dropzone, {
+      dataTransfer: {
+        files: [new File(["text"], "spielplan.txt", { type: "text/plain" })],
+        types: ["Files"],
+      },
+    });
+    expect(screen.getByRole("alert")).toHaveTextContent("Bitte wähle eine PDF-Datei aus.");
+    expect(previewButton).toBeDisabled();
+
+    const pdf = new File(["pdf"], "bfv-spielplan.pdf", { type: "application/pdf" });
+    fireEvent.dragEnter(dropzone, {
+      dataTransfer: { files: [pdf], types: ["Files"] },
+    });
+    expect(dropzone).toHaveAttribute("data-dragging", "true");
+
+    fireEvent.drop(dropzone, {
+      dataTransfer: { files: [pdf], types: ["Files"] },
+    });
+    expect(dropzone).not.toHaveAttribute("data-dragging");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByText("bfv-spielplan.pdf")).toBeInTheDocument();
+    expect(previewButton).toBeEnabled();
+  });
+
   it("groups the preview by date, shows club logos and confirms a completed import", async () => {
     vi.mocked(previewBfvScheduleAction).mockResolvedValue({
       status: "success",
