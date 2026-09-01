@@ -53,7 +53,7 @@ export default async function PredictionsPage({
     <section className="content-page prediction-page">
       <div className="content-page__intro">
         <p className="product-mark">{round.name}</p>
-        <h1>Tipps abgeben</h1>
+        {!selectedId ? <h1>Tipps abgeben</h1> : null}
       </div>
       {selectedId ? (
         <PredictionWorkspace

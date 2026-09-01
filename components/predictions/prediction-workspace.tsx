@@ -252,12 +252,15 @@ export function PredictionWorkspace({
 
   return (
     <div className="prediction-workspace">
-      <MatchdaySelector
-        disabled={pending}
-        onSelect={(id) => requestNavigation({ kind: "matchday", id })}
-        options={options}
-        selectedId={selectedId}
-      />
+      <div className="prediction-workspace__navigation">
+        <h1>Tipps abgeben</h1>
+        <MatchdaySelector
+          disabled={pending}
+          onSelect={(id) => requestNavigation({ kind: "matchday", id })}
+          options={options}
+          selectedId={selectedId}
+        />
+      </div>
 
       <form className="prediction-form" onSubmit={savePredictions}>
         <PredictionList
