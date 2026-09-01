@@ -2072,57 +2072,102 @@ html[data-theme="dark"] .profile-menu__trigger {
   gap: var(--space-5);
 }
 
-.prediction-workspace > .field {
-  width: min(100%, 20rem);
+.matchday-switcher {
+  display: grid;
+  width: min(100%, 36rem);
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(15rem, 1.8fr);
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.matchday-switcher--single {
+  width: min(100%, 24rem);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.matchday-switcher__phase,
+.matchday-switcher__matchday {
+  min-width: 0;
+}
+
+.matchday-switcher__matchday {
+  display: grid;
   gap: var(--space-1);
 }
 
-.prediction-workspace > .field .field__control {
-  min-height: var(--target-min);
-  padding-block: var(--space-2);
+.matchday-switcher__label {
+  width: fit-content;
+  font-weight: 760;
 }
 
-.matchday-selector__select {
+.matchday-switcher__controls {
+  display: grid;
+  grid-template-columns: var(--target-min) minmax(0, 1fr) var(--target-min);
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.matchday-switcher__controls button {
+  min-height: var(--target-min);
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-press) var(--ease-out);
+}
+
+.matchday-switcher__controls button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline-offset: -3px;
+}
+
+.matchday-switcher__controls button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.matchday-switcher__controls button:disabled {
+  color: var(--color-border-strong);
+  cursor: default;
+}
+
+.matchday-switcher__controls .matchday-switcher__step {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-left: 1px solid var(--color-border);
+}
+
+.matchday-switcher__controls .matchday-switcher__step--previous {
+  border-right: 1px solid var(--color-border);
+  border-left: 0;
+}
+
+.matchday-switcher__step--previous .icon {
+  transform: rotate(180deg);
+}
+
+.matchday-switcher__select {
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
   font-weight: 720;
 }
 
-.matchday-selector {
-  overflow-x: auto;
-  margin-inline: calc(-1 * var(--space-4));
-  padding-inline: var(--space-4);
-}
-
-.matchday-selector ul {
-  display: flex;
-  width: max-content;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0 0 var(--space-2);
-  list-style: none;
-}
-
-.matchday-selector a {
-  display: inline-flex;
-  min-height: var(--target-min);
-  align-items: center;
-  gap: var(--space-2);
-  padding-inline: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.matchday-selector a[aria-current="page"] {
-  border-color: var(--color-brand);
-  background: var(--color-accent-soft);
-}
-
-.matchday-selector__open {
-  color: var(--color-brand);
-  font-size: var(--font-size-xs);
-  font-weight: 800;
+.matchday-switcher__select:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline-offset: -3px;
 }
 
 .prediction-list {
@@ -5031,6 +5076,12 @@ html[data-theme="dark"] .profile-menu__trigger {
 }
 
 @media (max-width: 40rem) {
+  .matchday-switcher {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
   .round-overview-page {
     gap: var(--space-4);
     padding-block: var(--space-4) var(--space-5);
@@ -5075,6 +5126,10 @@ html[data-theme="dark"] .profile-menu__trigger {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .matchday-switcher__controls button:hover:not(:disabled) {
+    background: var(--color-surface-raised);
+  }
+
   .profile-menu__action:hover,
   .theme-picker__option:hover {
     background: var(--color-surface-raised);

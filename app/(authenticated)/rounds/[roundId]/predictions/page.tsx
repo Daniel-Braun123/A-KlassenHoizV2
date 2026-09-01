@@ -41,6 +41,7 @@ export default async function PredictionsPage({
           endsOn,
           label: formatMatchdayOptionLabel(displayName),
           incomplete: rows.some((row) => row.is_open && row.predicted_home_goals === null),
+          phase: rows[0]?.phase ?? "first_leg",
         },
       ];
     })

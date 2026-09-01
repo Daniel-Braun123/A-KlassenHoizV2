@@ -6,11 +6,10 @@ import { useEffect, useRef, useState, useTransition, type FormEvent } from "reac
 
 import { ContextualInstallPrompt } from "@/components/pwa/contextual-install-prompt";
 import { PredictionList, type PredictionDraft } from "@/components/predictions/prediction-list";
-import type { MatchdayOption } from "@/components/predictions/matchday-selector";
+import { MatchdaySelector, type MatchdayOption } from "@/components/predictions/matchday-selector";
 import { ActionMessage, type ActionFeedbackState } from "@/components/ui/action-message";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { Select } from "@/components/ui/select";
 import { requestOpenTipBadgeRefresh } from "@/features/notifications/browser-client";
 import { savePredictionsBatchAction } from "@/features/predictions/actions";
 import type { PredictionSheetRow, VisiblePrediction } from "@/features/predictions/types";
@@ -253,19 +252,12 @@ export function PredictionWorkspace({
 
   return (
     <div className="prediction-workspace">
-      <Select
-        className="matchday-selector__select"
-        label="Spieltag"
-        onChange={(event) => requestNavigation({ kind: "matchday", id: event.currentTarget.value })}
-        value={selectedId}
-      >
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.label}
-            {option.incomplete ? " · offen" : ""}
-          </option>
-        ))}
-      </Select>
+      <MatchdaySelector
+        disabled={pending}
+        onSelect={(id) => requestNavigation({ kind: "matchday", id })}
+        options={options}
+        selectedId={selectedId}
+      />
 
       <form className="prediction-form" onSubmit={savePredictions}>
         <PredictionList
