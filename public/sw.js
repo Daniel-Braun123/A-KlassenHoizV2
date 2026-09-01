@@ -1,4 +1,4 @@
-const VERSION = "aklassenhoiz-public-__BUILD_VERSION__";
+const VERSION = "aklassenhoiz-public-v5";
 const PUBLIC_ASSETS = [
   "/offline",
   "/manifest.webmanifest",

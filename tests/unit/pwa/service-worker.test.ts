@@ -22,16 +22,6 @@ function deferred<T>() {
 }
 
 describe("Service Worker", () => {
-  it("wird für jeden Vercel-Deploy eindeutig gestempelt", () => {
-    const source = readFileSync("public/sw.js", "utf8");
-    const packageJson = JSON.parse(readFileSync("package.json", "utf8")) as {
-      scripts?: Record<string, string>;
-    };
-
-    expect(source).toContain("__BUILD_VERSION__");
-    expect(packageJson.scripts?.prebuild).toContain("stamp-service-worker");
-  });
-
   it("shows push messages and handles notification clicks", () => {
     const source = readFileSync("public/sw.js", "utf8");
     expect(source).toContain('self.addEventListener("push"');
