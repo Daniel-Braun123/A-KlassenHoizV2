@@ -37,6 +37,8 @@ export type Database = {
           display_name: string | null
           display_status: string | null
           ends_on: string | null
+          external_match_id: string | null
+          external_source: string | null
           home_club_id: string | null
           home_club_logo_url: string | null
           home_club_name: string | null
@@ -55,6 +57,7 @@ export type Database = {
           matchday_version: number | null
           phase: Database["app"]["Enums"]["matchday_phase"] | null
           revision_no: number | null
+          source_marked_changed: boolean | null
           starts_on: string | null
           year_label: string | null
         }
@@ -859,21 +862,6 @@ export type Database = {
         }
         Returns: undefined
       }
-      claim_due_push_reminders: {
-        Args: { p_limit?: number; p_now?: string }
-        Returns: {
-          auth_secret: string
-          delivery_id: string
-          endpoint: string
-          kind: Database["app"]["Enums"]["push_reminder_kind"]
-          matchday_id: string
-          missing_count: number
-          next_kickoff_at: string
-          p256dh_key: string
-          round_id: string
-          subscription_id: string
-        }[]
-      }
       claim_due_push_events: {
         Args: { p_limit?: number; p_now?: string }
         Returns: {
@@ -885,6 +873,21 @@ export type Database = {
           matchday_number: number
           matchday_points: number | null
           overall_rank: number | null
+          p256dh_key: string
+          round_id: string
+          subscription_id: string
+        }[]
+      }
+      claim_due_push_reminders: {
+        Args: { p_limit?: number; p_now?: string }
+        Returns: {
+          auth_secret: string
+          delivery_id: string
+          endpoint: string
+          kind: Database["app"]["Enums"]["push_reminder_kind"]
+          matchday_id: string
+          missing_count: number
+          next_kickoff_at: string
           p256dh_key: string
           round_id: string
           subscription_id: string
@@ -1020,6 +1023,23 @@ export type Database = {
           p_round_id: string
         }
         Returns: undefined
+      }
+      import_bfv_schedule: {
+        Args: {
+          p_document_date: string
+          p_league_id: string
+          p_league_number: string
+          p_matchdays: Json
+          p_matches: Json
+          p_season_label: string
+        }
+        Returns: {
+          created_matchdays: number
+          created_matches: number
+          unchanged_matches: number
+          updated_matchdays: number
+          updated_matches: number
+        }[]
       }
       join_round: {
         Args: {
@@ -1390,6 +1410,11 @@ export type Database = {
           archived_at: string | null
           completed_at: string | null
           created_at: string
+          external_competition_id: string | null
+          external_document_date: string | null
+          external_season_label: string | null
+          external_source: string | null
+          external_synced_at: string | null
           id: string
           league_id: string
           published_at: string | null
@@ -1402,6 +1427,11 @@ export type Database = {
           archived_at?: string | null
           completed_at?: string | null
           created_at?: string
+          external_competition_id?: string | null
+          external_document_date?: string | null
+          external_season_label?: string | null
+          external_source?: string | null
+          external_synced_at?: string | null
           id?: string
           league_id: string
           published_at?: string | null
@@ -1414,6 +1444,11 @@ export type Database = {
           archived_at?: string | null
           completed_at?: string | null
           created_at?: string
+          external_competition_id?: string | null
+          external_document_date?: string | null
+          external_season_label?: string | null
+          external_source?: string | null
+          external_synced_at?: string | null
           id?: string
           league_id?: string
           published_at?: string | null
@@ -1519,6 +1554,8 @@ export type Database = {
           created_at: string
           display_name: string | null
           ends_on: string
+          external_matchday_id: string | null
+          external_source: string | null
           id: string
           league_season_id: string
           number: number
@@ -1532,6 +1569,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           ends_on?: string
+          external_matchday_id?: string | null
+          external_source?: string | null
           id?: string
           league_season_id: string
           number: number
@@ -1545,6 +1584,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           ends_on?: string
+          external_matchday_id?: string | null
+          external_source?: string | null
           id?: string
           league_season_id?: string
           number?: number
@@ -1568,10 +1609,13 @@ export type Database = {
         Row: {
           away_club_id: string
           created_at: string
+          external_match_id: string | null
+          external_source: string | null
           home_club_id: string
           id: string
           kickoff_at: string
           matchday_id: string
+          source_marked_changed: boolean
           status: Database["app"]["Enums"]["match_status"]
           updated_at: string
           version: number
@@ -1579,10 +1623,13 @@ export type Database = {
         Insert: {
           away_club_id: string
           created_at?: string
+          external_match_id?: string | null
+          external_source?: string | null
           home_club_id: string
           id?: string
           kickoff_at: string
           matchday_id: string
+          source_marked_changed?: boolean
           status?: Database["app"]["Enums"]["match_status"]
           updated_at?: string
           version?: number
@@ -1590,10 +1637,13 @@ export type Database = {
         Update: {
           away_club_id?: string
           created_at?: string
+          external_match_id?: string | null
+          external_source?: string | null
           home_club_id?: string
           id?: string
           kickoff_at?: string
           matchday_id?: string
+          source_marked_changed?: boolean
           status?: Database["app"]["Enums"]["match_status"]
           updated_at?: string
           version?: number

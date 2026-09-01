@@ -3596,6 +3596,421 @@ html[data-theme="dark"] .profile-menu__trigger {
   gap: var(--space-5);
 }
 
+.bfv-import-panel {
+  overflow: clip;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.bfv-import-panel > summary {
+  display: grid;
+  min-height: var(--target-comfortable);
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  list-style: none;
+}
+
+.bfv-import-panel > summary::-webkit-details-marker,
+.bfv-import-matchday > summary::-webkit-details-marker {
+  display: none;
+}
+
+.bfv-import-panel > summary:hover {
+  background: var(--color-surface-muted);
+}
+
+.bfv-import-panel > summary small,
+.bfv-import-matchday > summary small {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 620;
+}
+
+.bfv-import-panel__icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+}
+
+.bfv-import-panel__icon svg,
+.bfv-import-panel__chevron,
+.bfv-import-status svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.bfv-import-panel__chevron {
+  transition: transform 180ms ease;
+}
+
+.bfv-import-panel[open] > summary .bfv-import-panel__chevron {
+  transform: rotate(90deg);
+}
+
+.bfv-import-panel__content,
+.bfv-import-preview,
+.bfv-import-mapping,
+.bfv-import-matchdays {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.bfv-import-panel__content {
+  padding: 0 var(--space-5) var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.bfv-import-upload {
+  display: grid;
+  align-items: end;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+}
+
+.bfv-import-file-picker {
+  width: 100%;
+  min-height: 3.5rem;
+  justify-content: flex-start;
+  border-style: dashed;
+  background: var(--color-surface-muted);
+  color: var(--color-brand);
+}
+
+.bfv-import-file-selected {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.bfv-import-file-selected__type {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+}
+
+.bfv-import-file-selected__details {
+  display: grid;
+  flex: 1 1 9rem;
+  min-width: 0;
+  gap: 0.125rem;
+}
+
+.bfv-import-file-selected__details strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bfv-import-file-selected__details small {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.bfv-import-file-selected__actions {
+  display: flex;
+  flex: 0 0 auto;
+  margin-left: auto;
+  gap: var(--space-1);
+}
+
+.bfv-import-file-selected__actions .ui-button {
+  padding-inline: var(--space-3);
+}
+
+.bfv-import-preview__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.bfv-import-preview__header h4,
+.bfv-import-preview__header p,
+.bfv-import-mapping h4,
+.bfv-import-mapping p,
+.bfv-import-matchdays h4,
+.bfv-import-matchdays p,
+.bfv-import-actions p {
+  margin-bottom: 0;
+}
+
+.bfv-import-preview__header p,
+.bfv-import-mapping p,
+.bfv-import-matchdays p,
+.bfv-import-actions p,
+.bfv-import-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.bfv-import-preview__eyebrow {
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bfv-import-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.bfv-import-summary-card {
+  display: grid;
+  gap: 0.1rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.bfv-import-summary-card strong {
+  color: var(--color-text);
+  font-size: var(--font-size-xl);
+  line-height: 1;
+}
+
+.bfv-import-summary-card span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.bfv-import-status {
+  display: inline-flex;
+  min-height: 1.65rem;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.2rem var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.bfv-import-status[data-status="ready"],
+.bfv-import-status[data-status="create"] {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.bfv-import-status[data-status="update"],
+.bfv-import-status[data-status="source-changed"] {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.bfv-import-status[data-status="blocked"],
+.bfv-import-status[data-status="unmapped"] {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.bfv-import-mapping {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.bfv-import-mapping__grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bfv-import-mapping__grid .field {
+  min-width: 0;
+}
+
+.bfv-import-matchdays {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.bfv-import-matchday {
+  overflow: clip;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 4rem;
+}
+
+.bfv-import-matchday > summary {
+  display: flex;
+  min-height: var(--target-min);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.bfv-import-matchday__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bfv-import-matchday__chevron {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  transition: transform 180ms ease;
+}
+
+.bfv-import-matchday[open] > summary .bfv-import-matchday__chevron {
+  transform: rotate(90deg);
+}
+
+.bfv-import-match-list {
+  display: grid;
+}
+
+.bfv-import-match-date-groups {
+  display: grid;
+}
+
+.bfv-import-match-date-group + .bfv-import-match-date-group {
+  border-top: 1px solid var(--color-border);
+}
+
+.bfv-import-match-date-group > h5 {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 760;
+}
+
+.bfv-import-match {
+  display: grid;
+  min-width: 0;
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.bfv-import-match:first-child {
+  border-top: 0;
+}
+
+.bfv-import-match time {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+.bfv-import-match__teams {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.bfv-import-match__teams strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bfv-import-match__team {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bfv-import-match__team--home {
+  justify-content: flex-end;
+}
+
+.bfv-import-match__team--away {
+  justify-content: flex-start;
+}
+
+.bfv-import-match__logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-basis: 1.75rem;
+}
+
+.bfv-import-match__badges {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 2;
+  gap: var(--space-1);
+}
+
+.bfv-import-match > small {
+  grid-column: 2;
+  color: var(--color-text-muted);
+}
+
+.bfv-import-actions {
+  display: grid;
+  align-items: start;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.bfv-import-actions .ui-button {
+  min-height: 2.5rem;
+  justify-self: start;
+  padding: var(--space-2) var(--space-3);
+}
+
+.bfv-import-actions__complete:disabled {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  opacity: 1;
+}
+
+.bfv-import-actions__complete > svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 1.1rem;
+}
+
 .schedule-matchday-navigation .admin-form {
   gap: var(--space-3);
   padding: var(--space-4);
@@ -4326,6 +4741,36 @@ html[data-theme="dark"] .profile-menu__trigger {
 
   .admin-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bfv-import-upload {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bfv-import-summary-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .bfv-import-mapping__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bfv-import-match {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  }
+
+  .bfv-import-match__badges {
+    grid-column: 3;
+    justify-content: flex-end;
+  }
+
+  .bfv-import-match > small {
+    grid-column: 2 / 4;
+  }
+
+  .bfv-import-actions {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
 
   .prediction-card {

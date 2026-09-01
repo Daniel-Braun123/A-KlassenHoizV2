@@ -66,6 +66,11 @@ export const securityHeaders = [
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
+  },
   poweredByHeader: false,
   reactStrictMode: true,
   typedRoutes: true,

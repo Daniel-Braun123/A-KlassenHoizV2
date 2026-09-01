@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
 import { ActionMessage } from "@/components/competition/action-message";
+import { BfvScheduleImport } from "@/components/competition/bfv-schedule-import";
 import { ClubLogo } from "@/components/competition/club-logo";
 import { ClubSelect, type ClubSelectOption } from "@/components/competition/club-select";
 import { MatchCenterDisplay } from "@/components/competition/match-center-display";
@@ -598,6 +599,12 @@ export function ScheduleWorkspace({
 
   return (
     <>
+      <BfvScheduleImport
+        clubs={clubs}
+        leagueId={selectedLeague.id}
+        schedule={schedule}
+        yearLabel={selectedLeague.year_label}
+      />
       <DismissibleSettingsScope className="schedule-admin-layout">
         <aside className="schedule-matchday-navigation" aria-label="Spieltage">
           <PhaseOverview
