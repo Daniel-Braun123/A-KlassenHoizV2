@@ -11,6 +11,7 @@ import { getMyProfile } from "@/features/profile/service";
 import { siteConfig } from "@/lib/config/site";
 
 import "@/styles/globals.css";
+import "@/styles/club-logo-field.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
