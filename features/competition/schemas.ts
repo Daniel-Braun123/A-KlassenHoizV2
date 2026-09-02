@@ -26,7 +26,8 @@ const leagueYear = z
   }, "Die Jahreszahlen müssen direkt aufeinanderfolgen.");
 
 const optionalHttpsUrl = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  (value) =>
+    value === null || (typeof value === "string" && value.trim() === "") ? undefined : value,
   z
     .url("Gib eine gültige Bild-URL ein.")
     .max(2048)
@@ -65,6 +66,29 @@ export const clubSchema = z.object({
 });
 
 export const updateClubSchema = clubSchema.extend({ id: uuid, expectedVersion: version });
+
+export const clubLogoModeSchema = z.enum(["none", "url", "upload"]);
+
+export const clubWithMediaSchema = z
+  .object({
+    name: trimmed(1, 120),
+    logoMode: clubLogoModeSchema,
+    logoUrl: optionalHttpsUrl,
+  })
+  .superRefine((value, context) => {
+    if (value.logoMode === "url" && !value.logoUrl) {
+      context.addIssue({
+        code: "custom",
+        path: ["logoUrl"],
+        message: "Gib eine HTTPS-Adresse für das Logo ein.",
+      });
+    }
+  });
+
+export const updateClubWithMediaSchema = clubWithMediaSchema.extend({
+  id: uuid,
+  expectedVersion: version,
+});
 
 export const matchdaySchema = z.object({
   leagueSeasonId: uuid,

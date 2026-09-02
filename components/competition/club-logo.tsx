@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { clubLogoUrl } from "@/features/competition/club-logo-url";
 import { cn } from "@/lib/ui/cn";
 
 function clubInitials(name: string | null): string {
@@ -15,18 +16,21 @@ function clubInitials(name: string | null): string {
 
 export function ClubLogo({
   className,
+  logoPath,
   logoUrl,
   name,
   size = 32,
 }: Readonly<{
   className?: string;
+  logoPath?: string | null;
   logoUrl: string | null;
   name: string | null;
   size?: number;
 }>) {
-  const [failed, setFailed] = useState(false);
+  const [failedSource, setFailedSource] = useState<string | null>(null);
+  const source = clubLogoUrl(logoPath, logoUrl);
 
-  if (!logoUrl || failed) {
+  if (!source || failedSource === source) {
     return (
       <span className={cn("club-logo", "club-logo--fallback", className)} aria-hidden="true">
         {clubInitials(name)}
@@ -42,8 +46,8 @@ export function ClubLogo({
       className={cn("club-logo", className)}
       height={size}
       loading="lazy"
-      onError={() => setFailed(true)}
-      src={logoUrl}
+      onError={() => setFailedSource(source)}
+      src={source}
       width={size}
     />
   );

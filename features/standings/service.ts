@@ -2,6 +2,7 @@ import "server-only";
 
 import { ApplicationError } from "@/lib/actions/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { clubLogoUrl } from "@/features/competition/club-logo-url";
 import { calculateLeagueTable } from "./calculate";
 import type { LeagueTableClub, LeagueTableRow } from "./types";
 
@@ -29,7 +30,11 @@ export async function listLeagueTable(
   const clubNames = league.club_names ?? [];
   const [clubResponse, resultResponse] = await Promise.all([
     clubIds.length
-      ? supabase.schema("api").from("club_catalog").select("id,name,logo_url").in("id", clubIds)
+      ? supabase
+          .schema("api")
+          .from("club_catalog")
+          .select("id,name,logo_path,logo_url")
+          .in("id", clubIds)
       : Promise.resolve({ data: [], error: null }),
     supabase
       .schema("api")
@@ -46,7 +51,15 @@ export async function listLeagueTable(
   const clubs: LeagueTableClub[] = clubIds.flatMap((clubId, index) => {
     const catalogClub = catalogById.get(clubId);
     const name = catalogClub?.name ?? clubNames[index];
-    return name ? [{ id: clubId, name, logoUrl: catalogClub?.logo_url ?? null }] : [];
+    return name
+      ? [
+          {
+            id: clubId,
+            name,
+            logoUrl: clubLogoUrl(catalogClub?.logo_path, catalogClub?.logo_url),
+          },
+        ]
+      : [];
   });
 
   return calculateLeagueTable(clubs, resultResponse.data ?? []);

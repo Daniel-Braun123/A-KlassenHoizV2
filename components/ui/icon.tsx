@@ -11,6 +11,7 @@ export type IconName =
   | "lock"
   | "logout"
   | "list"
+  | "image"
   | "moon"
   | "overview"
   | "plus"
@@ -83,6 +84,13 @@ const paths: Record<IconName, React.ReactNode> = {
       <circle cx="4.5" cy="6" r=".75" fill="currentColor" stroke="none" />
       <circle cx="4.5" cy="12" r=".75" fill="currentColor" stroke="none" />
       <circle cx="4.5" cy="18" r=".75" fill="currentColor" stroke="none" />
+    </>
+  ),
+  image: (
+    <>
+      <rect x="3.5" y="4" width="17" height="16" rx="2.5" />
+      <circle cx="9" cy="9" r="1.5" />
+      <path d="m5.5 17 4-4 3 3 2.5-2.5 3.5 3.5" />
     </>
   ),
   moon: <path d="M20 15.2A8 8 0 0 1 8.8 4 8.35 8.35 0 1 0 20 15.2Z" />,

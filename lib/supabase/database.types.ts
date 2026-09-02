@@ -913,6 +913,15 @@ export type Database = {
         Args: { p_logo_url?: string; p_name: string }
         Returns: string
       }
+      create_club_with_media: {
+        Args: {
+          p_id: string
+          p_logo_path?: string
+          p_logo_url?: string
+          p_name: string
+        }
+        Returns: string
+      }
       create_league: {
         Args: { p_name: string; p_short_name?: string }
         Returns: string
@@ -1185,6 +1194,16 @@ export type Database = {
         Args: {
           p_expected_version: number
           p_id: string
+          p_logo_url?: string
+          p_name: string
+        }
+        Returns: number
+      }
+      update_club_with_media: {
+        Args: {
+          p_expected_version: number
+          p_id: string
+          p_logo_path?: string
           p_logo_url?: string
           p_name: string
         }

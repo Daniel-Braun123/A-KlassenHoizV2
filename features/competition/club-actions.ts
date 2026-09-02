@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { competitionFailure, competitionSuccess } from "./action-state";
-import { createClub, updateClub } from "./club-service";
+import { createClubWithMedia, updateClubWithMedia } from "./logo-service";
 import type { CompetitionActionState } from "./types";
 
 function revalidateClubAdmin(): void {
@@ -17,7 +17,14 @@ export async function createClubAction(
   data: FormData,
 ): Promise<CompetitionActionState> {
   try {
-    await createClub({ name: data.get("name"), logoUrl: data.get("logoUrl") });
+    await createClubWithMedia(
+      {
+        name: data.get("name"),
+        logoMode: data.get("logoMode"),
+        logoUrl: data.get("logoUrl"),
+      },
+      data.get("logo"),
+    );
     revalidateClubAdmin();
     return competitionSuccess("Verein wurde angelegt.");
   } catch (error) {
@@ -30,12 +37,16 @@ export async function updateClubAction(
   data: FormData,
 ): Promise<CompetitionActionState> {
   try {
-    await updateClub({
-      id: data.get("id"),
-      expectedVersion: data.get("expectedVersion"),
-      name: data.get("name"),
-      logoUrl: data.get("logoUrl"),
-    });
+    await updateClubWithMedia(
+      {
+        id: data.get("id"),
+        expectedVersion: data.get("expectedVersion"),
+        name: data.get("name"),
+        logoMode: data.get("logoMode"),
+        logoUrl: data.get("logoUrl"),
+      },
+      data.get("logo"),
+    );
     revalidateClubAdmin();
     return competitionSuccess("Verein wurde aktualisiert.");
   } catch (error) {

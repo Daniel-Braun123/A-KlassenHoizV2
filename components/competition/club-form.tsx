@@ -1,32 +1,39 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClubAction, updateClubAction } from "@/features/competition/club-actions";
 import { initialCompetitionActionState, type ClubCatalogRow } from "@/features/competition/types";
 import { ActionMessage } from "./action-message";
+import { ClubLogo } from "./club-logo";
+import { ClubLogoField } from "./club-logo-field";
 
 function CreateClubForm() {
   const [state, action, pending] = useActionState(createClubAction, initialCompetitionActionState);
+  const [name, setName] = useState("");
+  const [logoBusy, setLogoBusy] = useState(false);
 
   return (
     <form action={action} className="admin-form admin-form--wide">
       <div>
         <h2>Neuer Verein</h2>
       </div>
-      <Input autoComplete="off" label="Vereinsname" maxLength={120} name="name" required />
       <Input
-        autoComplete="url"
-        hint="Optional: direkte HTTPS-Adresse zu einem Bild."
-        label="Logo-URL"
-        maxLength={2048}
-        name="logoUrl"
-        placeholder="https://…"
-        type="url"
+        autoComplete="off"
+        label="Vereinsname"
+        maxLength={120}
+        name="name"
+        onChange={(event) => setName(event.currentTarget.value)}
+        required
       />
-      <Button disabled={pending} type="submit">
-        {pending ? "Verein wird angelegt …" : "Verein anlegen"}
+      <ClubLogoField name={name || "Neuer Verein"} onBusyChange={setLogoBusy} />
+      <Button disabled={pending || logoBusy} type="submit">
+        {logoBusy
+          ? "Bild wird vorbereitet …"
+          : pending
+            ? "Verein wird angelegt …"
+            : "Verein anlegen"}
       </Button>
       <ActionMessage state={state} />
     </form>
@@ -35,23 +42,24 @@ function CreateClubForm() {
 
 export function ClubEditor({ club }: Readonly<{ club: ClubCatalogRow }>) {
   const [state, action, pending] = useActionState(updateClubAction, initialCompetitionActionState);
+  const [name, setName] = useState(club.name ?? "");
+  const [logoBusy, setLogoBusy] = useState(false);
+  const hasLogo = Boolean(club.logo_path || club.logo_url);
 
   return (
     <form action={action} className="admin-form">
       <div className="admin-card-header">
         <div>
           <h2>{club.name}</h2>
-          <p>{club.logo_url ? "Logo hinterlegt" : "Ohne Logo"}</p>
+          <p>{hasLogo ? "Logo hinterlegt" : "Ohne Logo"}</p>
         </div>
-        {club.logo_url ? (
-          // Externe Vereinslogos sind reine Präsentation; der Vereinsname steht direkt daneben.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="club-logo-preview" src={club.logo_url} alt="" width="48" height="48" />
-        ) : (
-          <span className="club-logo-preview club-logo-preview--fallback" aria-hidden="true">
-            {club.name?.slice(0, 2).toUpperCase()}
-          </span>
-        )}
+        <ClubLogo
+          className="club-logo-preview"
+          logoPath={club.logo_path}
+          logoUrl={club.logo_url}
+          name={club.name}
+          size={48}
+        />
       </div>
       <input name="id" type="hidden" value={club.id!} />
       <input name="expectedVersion" type="hidden" value={club.version!} />
@@ -60,20 +68,21 @@ export function ClubEditor({ club }: Readonly<{ club: ClubCatalogRow }>) {
         label="Vereinsname"
         maxLength={120}
         name="name"
+        onChange={(event) => setName(event.currentTarget.value)}
         required
       />
-      <Input
-        autoComplete="url"
-        defaultValue={club.logo_url ?? ""}
-        hint="Leer lassen, um das Logo zu entfernen."
-        label="Logo-URL"
-        maxLength={2048}
-        name="logoUrl"
-        placeholder="https://…"
-        type="url"
+      <ClubLogoField
+        initialLogoPath={club.logo_path}
+        initialLogoUrl={club.logo_url}
+        name={name || club.name || "Verein"}
+        onBusyChange={setLogoBusy}
       />
-      <Button disabled={pending} type="submit" variant="secondary">
-        {pending ? "Wird gespeichert …" : "Änderungen speichern"}
+      <Button disabled={pending || logoBusy} type="submit" variant="secondary">
+        {logoBusy
+          ? "Bild wird vorbereitet …"
+          : pending
+            ? "Wird gespeichert …"
+            : "Änderungen speichern"}
       </Button>
       <ActionMessage state={state} />
     </form>

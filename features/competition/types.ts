@@ -16,3 +16,5 @@ export type CompetitionActionState = Readonly<{
 }>;
 
 export const initialCompetitionActionState: CompetitionActionState = { status: "idle" };
+
+export type ClubLogoMode = "none" | "url" | "upload";

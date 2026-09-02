@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ScheduleWorkspace } from "@/components/competition/schedule-workspace";
+import { clubLogoUrl } from "@/features/competition/club-logo-url";
 import { listClubs } from "@/features/competition/club-service";
 import { getAdminLeague } from "@/features/competition/league-service";
 import { listAdminSchedule } from "@/features/competition/schedule-service";
@@ -44,7 +45,7 @@ export default async function LeagueSchedulePage({
     const club = clubCatalogById.get(id);
     return {
       id,
-      logoUrl: club?.logo_url ?? null,
+      logoUrl: clubLogoUrl(club?.logo_path, club?.logo_url),
       name: club?.name ?? selectedLeague.club_names[index] ?? "Unbekannter Verein",
     };
   });

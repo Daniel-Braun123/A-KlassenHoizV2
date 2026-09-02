@@ -8,11 +8,6 @@ import { VisiblePredictions } from "@/components/predictions/visible-predictions
 import { berlinTimeLabel } from "@/features/competition/schedule-display";
 import type { PredictionSheetRow, VisiblePrediction } from "@/features/predictions/types";
 
-function storedLogoUrl(path: string | null): string | null {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return path && base ? `${base}/storage/v1/object/public/club-logos/${path}` : null;
-}
-
 function Club({
   name,
   logoPath,
@@ -22,10 +17,15 @@ function Club({
   logoPath: string | null;
   logoUrl: string | null;
 }) {
-  const src = logoUrl?.trim() || storedLogoUrl(logoPath);
   return (
     <span className="prediction-club">
-      <ClubLogo className="prediction-club__logo" logoUrl={src} name={name} size={32} />
+      <ClubLogo
+        className="prediction-club__logo"
+        logoPath={logoPath}
+        logoUrl={logoUrl}
+        name={name}
+        size={32}
+      />
       <span>{name}</span>
     </span>
   );

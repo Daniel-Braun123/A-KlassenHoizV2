@@ -12,6 +12,7 @@ import {
 import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
 import type { ScheduleRow } from "./types";
 import type { Database } from "@/lib/supabase/database.types";
+import { clubLogoUrl } from "./club-logo-url";
 
 type RawAdminLeagueRow = Database["api"]["Views"]["admin_leagues"]["Row"];
 type RawAdminScheduleRow = Database["api"]["Views"]["admin_schedule"]["Row"];
@@ -96,7 +97,7 @@ export async function listAdminSchedule(leagueId: string): Promise<AdminSchedule
     .order("matchday_number")
     .order("kickoff_at");
   throwCompetitionError(error);
-  return (data ?? [])
+  const rows = (data ?? [])
     .filter(
       (
         row,
@@ -131,6 +132,35 @@ export async function listAdminSchedule(leagueId: string): Promise<AdminSchedule
         row.display_name ??
         `${row.phase === "first_leg" ? "Hinrunde" : "Rückrunde"} · Spieltag ${row.matchday_number}`,
     }));
+
+  const clubIds = Array.from(
+    new Set(
+      rows
+        .flatMap((row) => [row.home_club_id, row.away_club_id])
+        .filter((id): id is string => Boolean(id)),
+    ),
+  );
+  if (!clubIds.length) return rows;
+
+  const { data: clubs, error: clubError } = await supabase
+    .schema("api")
+    .from("club_catalog")
+    .select("id,logo_path,logo_url")
+    .in("id", clubIds);
+  throwCompetitionError(clubError);
+  const logosByClubId = new Map(
+    (clubs ?? []).flatMap((club) =>
+      club.id ? [[club.id, clubLogoUrl(club.logo_path, club.logo_url)] as const] : [],
+    ),
+  );
+
+  return rows.map((row) => ({
+    ...row,
+    away_club_logo_url:
+      (row.away_club_id ? logosByClubId.get(row.away_club_id) : null) ?? row.away_club_logo_url,
+    home_club_logo_url:
+      (row.home_club_id ? logosByClubId.get(row.home_club_id) : null) ?? row.home_club_logo_url,
+  }));
 }
 
 export async function createMatchdayAuto(input: unknown): Promise<string> {
