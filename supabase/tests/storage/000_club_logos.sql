@@ -60,13 +60,13 @@ select ok(
   'insert policy checks the database-backed app-admin role'
 );
 select ok(
-  (select with_check like '%2097152%' from pg_policies where policyname = 'club_logos_admin_insert'),
-  'insert policy enforces the file-size ceiling'
+  (select with_check not like '%metadata%' from pg_policies where policyname = 'club_logos_admin_insert'),
+  'insert policy does not require metadata before Storage has populated it'
 );
 select ok(
-  (select with_check like '%image/png%' and with_check like '%image/jpeg%' and with_check like '%image/webp%'
+  (select with_check like '%png%' and with_check like '%jpe?g%' and with_check like '%webp%'
    from pg_policies where policyname = 'club_logos_admin_insert'),
-  'insert policy enforces the MIME allowlist'
+  'insert policy restricts versioned paths to supported image extensions'
 );
 select ok(
   (select with_check like '%clubs/%' and with_check like '%/v%'
