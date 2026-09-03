@@ -141,6 +141,15 @@
   width: 3.5rem;
   height: 3.5rem;
   flex-basis: 3.5rem;
+  background-color: var(--color-surface);
+  background-image: conic-gradient(
+    var(--color-surface-raised) 25%,
+    var(--color-surface) 0 50%,
+    var(--color-surface-raised) 0 75%,
+    var(--color-surface) 0
+  );
+  background-position: 0 0;
+  background-size: 0.75rem 0.75rem;
 }
 
 .club-logo-dropzone__selected strong {
@@ -162,6 +171,31 @@
   display: grid;
   min-width: 0;
   gap: var(--space-1);
+}
+
+.club-logo.club-logo-field__preview-image--processed {
+  background-color: var(--color-surface);
+  background-image: conic-gradient(
+    var(--color-surface-raised) 25%,
+    var(--color-surface) 0 50%,
+    var(--color-surface-raised) 0 75%,
+    var(--color-surface) 0
+  );
+  background-position: 0 0;
+  background-size: 0.75rem 0.75rem;
+}
+
+.club-logo-field__warning {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-1);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+  font-size: var(--font-size-sm);
+  line-height: var(--leading-copy);
 }
 
 @media (max-width: 32rem) {

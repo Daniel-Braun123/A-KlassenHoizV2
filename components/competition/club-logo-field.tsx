@@ -13,6 +13,10 @@ import {
 import { ClubLogo } from "@/components/competition/club-logo";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import {
+  removeLogoBackground,
+  type LogoBackgroundResult,
+} from "@/features/competition/logo-background";
 import type { ClubLogoMode } from "@/features/competition/types";
 
 const ACCEPTED_LOGO_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
@@ -69,7 +73,12 @@ function canvasBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.86));
 }
 
-async function optimizeLogo(file: File): Promise<File> {
+type PreparedLogo = Readonly<{
+  background: LogoBackgroundResult;
+  file: File;
+}>;
+
+async function optimizeLogo(file: File): Promise<PreparedLogo> {
   if (!acceptsLogo(file)) throw new Error("Verwende ein PNG-, JPEG- oder WebP-Bild.");
   if (file.size > MAX_SOURCE_BYTES)
     throw new Error("Das Ausgangsbild darf maximal 5 MB groß sein.");
@@ -84,16 +93,27 @@ async function optimizeLogo(file: File): Promise<File> {
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) throw new Error("Das Bild konnte nicht vorbereitet werden.");
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
     context.drawImage(decoded.source, 0, 0, width, height);
+    let background: LogoBackgroundResult = "uncertain";
+    try {
+      const pixels = context.getImageData(0, 0, width, height);
+      background = removeLogoBackground(pixels);
+      if (background === "removed") context.putImageData(pixels, 0, 0);
+    } catch {
+      // A browser may deny pixel access. The unchanged image remains a safe fallback.
+    }
     const blob = await canvasBlob(canvas);
     if (!blob) throw new Error("Das Bild konnte nicht als WebP gespeichert werden.");
     if (blob.size > MAX_STORED_BYTES) throw new Error("Das optimierte Bild ist größer als 2 MB.");
     const baseName = file.name.replace(/\.[^.]+$/, "").trim() || "vereinslogo";
-    return new File([blob], `${baseName}.webp`, { type: "image/webp" });
+    return {
+      background,
+      file: new File([blob], `${baseName}.webp`, { type: "image/webp" }),
+    };
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("Das ")) throw error;
     throw new Error("Das Bild konnte nicht gelesen werden.");
@@ -129,6 +149,7 @@ export function ClubLogoField({
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [backgroundResult, setBackgroundResult] = useState<LogoBackgroundResult | null>(null);
   const [processing, setProcessing] = useState(false);
   const fieldId = `club-logo-${generatedId.replace(/:/g, "")}`;
 
@@ -143,15 +164,17 @@ export function ClubLogoField({
     const processingId = processingIdRef.current + 1;
     processingIdRef.current = processingId;
     setError(null);
+    setBackgroundResult(null);
     setProcessing(true);
     onBusyChange?.(true);
     try {
-      const optimized = await optimizeLogo(file);
+      const prepared = await optimizeLogo(file);
       if (processingId !== processingIdRef.current) return;
-      if (fileInputRef.current) assignInputFile(fileInputRef.current, optimized);
+      if (fileInputRef.current) assignInputFile(fileInputRef.current, prepared.file);
       if (selectedPreview) URL.revokeObjectURL(selectedPreview);
-      setSelectedFile(optimized);
-      setSelectedPreview(URL.createObjectURL(optimized));
+      setSelectedFile(prepared.file);
+      setSelectedPreview(URL.createObjectURL(prepared.file));
+      setBackgroundResult(prepared.background);
       setMode("upload");
     } catch (caught) {
       if (processingId === processingIdRef.current) {
@@ -196,6 +219,7 @@ export function ClubLogoField({
     setSelectedFile(null);
     setSelectedPreview(null);
     setError(null);
+    setBackgroundResult(null);
     setProcessing(false);
     onBusyChange?.(false);
   }
@@ -240,12 +264,12 @@ export function ClubLogoField({
           </span>
           <p className="field__hint" id={`${fieldId}-hint`}>
             PNG, JPEG oder WebP bis 5 MB. Das Bild wird auf maximal 512 Pixel verkleinert und als
-            WebP gespeichert.
+            WebP gespeichert. Ein einfarbiger Hintergrund wird automatisch entfernt.
           </p>
           <input
             ref={fileInputRef}
             accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp"
-            aria-describedby={`${fieldId}-hint${error ? ` ${fieldId}-error` : ""}`}
+            aria-describedby={`${fieldId}-hint${error ? ` ${fieldId}-error` : ""}${backgroundResult === "uncertain" ? ` ${fieldId}-background-warning` : ""}`}
             aria-labelledby={`${fieldId}-label`}
             className="visually-hidden"
             name="logo"
@@ -283,7 +307,14 @@ export function ClubLogoField({
                 />
                 <span>
                   <strong>{selectedFile.name}</strong>
-                  <small>{formatFileSize(selectedFile.size)} · für den Upload vorbereitet</small>
+                  <small>
+                    {formatFileSize(selectedFile.size)} ·{" "}
+                    {backgroundResult === "removed"
+                      ? "Hintergrund entfernt"
+                      : backgroundResult === "already-transparent"
+                        ? "Transparenz erkannt"
+                        : "Original wird verwendet"}
+                  </small>
                 </span>
                 <Button onClick={clearSelectedFile} type="button" variant="ghost">
                   Entfernen
@@ -312,6 +343,16 @@ export function ClubLogoField({
           {error ? (
             <p className="field__error" id={`${fieldId}-error`} role="alert">
               {error}
+            </p>
+          ) : null}
+          {backgroundResult === "uncertain" ? (
+            <p
+              className="club-logo-field__warning"
+              id={`${fieldId}-background-warning`}
+              role="status"
+            >
+              <strong>Hintergrund beibehalten.</strong> Er konnte nicht sicher entfernt werden. Das
+              Original wird verwendet.
             </p>
           ) : null}
         </div>
@@ -343,7 +384,7 @@ export function ClubLogoField({
 
       <div className="club-logo-field__preview" aria-live="polite">
         <ClubLogo
-          className="club-logo-field__preview-image"
+          className={`club-logo-field__preview-image${selectedPreview ? " club-logo-field__preview-image--processed" : ""}`}
           logoPath={mode === "upload" && !selectedPreview ? initialLogoPath : null}
           logoUrl={previewUrl}
           name={name}
@@ -352,9 +393,14 @@ export function ClubLogoField({
         <span>
           <strong>Vorschau</strong>
           <small>
-            {previewUrl || (mode === "upload" && initialLogoPath)
-              ? "Logo ausgewählt"
-              : "Initialen werden als Platzhalter angezeigt"}
+            {selectedPreview &&
+            (backgroundResult === "removed" || backgroundResult === "already-transparent")
+              ? "Transparenter Hintergrund wird gespeichert"
+              : selectedPreview && backgroundResult === "uncertain"
+                ? "Originalbild wird gespeichert"
+                : previewUrl || (mode === "upload" && initialLogoPath)
+                  ? "Logo ausgewählt"
+                  : "Initialen werden als Platzhalter angezeigt"}
           </small>
         </span>
       </div>
