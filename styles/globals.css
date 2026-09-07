@@ -3393,9 +3393,9 @@ html[data-theme="dark"] .profile-menu__trigger {
   width: 3rem;
   height: 3rem;
   flex: 0 0 auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   object-fit: contain;
 }
 
@@ -4309,12 +4309,15 @@ html[data-theme="dark"] .profile-menu__trigger {
   height: 2rem;
   flex: 0 0 2rem;
   object-fit: contain;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .club-logo--fallback {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
   display: grid;
   place-items: center;
   color: var(--color-brand);

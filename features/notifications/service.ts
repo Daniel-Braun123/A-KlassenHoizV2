@@ -2,6 +2,7 @@ import "server-only";
 
 import { ApplicationError } from "@/lib/actions/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { countCurrentMatchdayOpenTips, type BadgePredictionRow } from "./open-tip-count";
 import {
   pushEndpointSchema,
   pushPreferenceSchema,
@@ -39,15 +40,32 @@ export async function getOpenTipCount(): Promise<number> {
   const { data, error } = await supabase
     .schema("api")
     .from("round_overview")
-    .select("total_matches,predicted_matches")
+    .select("round_id")
     .eq("status", "active");
   mapError(error);
 
-  return (data ?? []).reduce(
-    (total, round) =>
-      total + Math.max(0, (round.total_matches ?? 0) - (round.predicted_matches ?? 0)),
-    0,
-  );
+  const roundIds = (data ?? []).flatMap((round) => (round.round_id ? [round.round_id] : []));
+  if (!roundIds.length) return 0;
+
+  const rows: BadgePredictionRow[] = [];
+  const pageSize = 1000;
+  for (let offset = 0; ; offset += pageSize) {
+    const { data: page, error: sheetError } = await supabase
+      .schema("api")
+      .from("matchday_prediction_sheet")
+      .select(
+        "round_id,matchday_id,match_id,starts_on,ends_on,is_open,predicted_home_goals,predicted_away_goals",
+      )
+      .in("round_id", roundIds)
+      .order("round_id")
+      .order("matchday_id")
+      .order("match_id")
+      .range(offset, offset + pageSize - 1);
+    mapError(sheetError);
+    rows.push(...(page ?? []));
+    if (!page || page.length < pageSize) break;
+  }
+  return countCurrentMatchdayOpenTips(rows);
 }
 
 export async function registerPushSubscription(input: unknown): Promise<string> {
