@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { parseBfvSchedulePages } from "@/features/competition/bfv-parser-core";
+import { suggestBfvClubMappings } from "@/features/competition/bfv-import-plan";
 
 const header = `
 AKTUELLE TERMINLISTE
@@ -11,6 +12,53 @@ Stand: Montag, 31. August 2026
 `;
 
 describe("BFV schedule parser", () => {
+  it("separates the Abse. result marker from club names without creating duplicate clubs", () => {
+    const document = parseBfvSchedulePages([
+      `${header}
+4 . SPIELTAG
+020 26.09.2026 15:45 FC Ergolding 1 - (SG) Unteres Inntal Abse.\u00a0
+021 26.09.2026 16:00 (SG) Unteres Inntal - FC Ergolding 1
+18 . SPIELTAG
+103 24.04.2027 16:00 FSV Landau/Isar 1 - JFG Straubing-Bogen Stadt und Land e.V. Abse.
+104 24.04.2027 16:00 JFG Straubing-Bogen Stadt und Land e.V. - FSV Landau/Isar 1 2:1
+`,
+    ]);
+    expect(document.sourceClubNames).toEqual([
+      "(SG) Unteres Inntal",
+      "FC Ergolding 1",
+      "FSV Landau/Isar 1",
+      "JFG Straubing-Bogen Stadt und Land e.V.",
+    ]);
+    expect(document.matchdays.flatMap((day) => day.matches)).toHaveLength(4);
+    expect(document.matchdays[0]?.matches[0]).toMatchObject({
+      awayClubName: "(SG) Unteres Inntal",
+      result: null,
+      sourceMatchNumber: "020",
+    });
+    expect(document.sourceResultCount).toBe(1);
+    expect(document.warnings).toHaveLength(2);
+    expect(document.warnings[0]).toContain("020");
+    expect(document.warnings[0]).toContain("Abse.");
+    const clubs = document.sourceClubNames.map((name, index) => ({ id: `club-${index}`, name }));
+    expect(Object.values(suggestBfvClubMappings(document.sourceClubNames, clubs))).toEqual([
+      "club-0",
+      "club-1",
+      "club-2",
+      "club-3",
+    ]);
+  });
+
+  it("preserves team numbers, age groups and similar words inside club names", () => {
+    const document = parseBfvSchedulePages([
+      `${header}
+1. SPIELTAG
+001 12.09.2026 11:00 SV Abse. Beispiel 2 - FC Dingolfing 2 (U18)
+`,
+    ]);
+    expect(document.sourceClubNames).toEqual(["FC Dingolfing 2 (U18)", "SV Abse. Beispiel 2"]);
+    expect(document.warnings).toEqual([]);
+  });
+
   it("parses matchdays, kickoff times, results and changed source rows", () => {
     const document = parseBfvSchedulePages(
       [

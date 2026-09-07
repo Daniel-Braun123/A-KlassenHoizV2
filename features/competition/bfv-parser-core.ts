@@ -9,6 +9,8 @@ import type {
 const MATCHDAY_PATTERN = /^(\d+)\s*\.\s*SPIELTAG$/i;
 const MATCH_PATTERN = /^(\d{3,})\s+(\d{2}\.\d{2}\.\d{4})\s+(?:(\d{2}:\d{2})\s+)?(.+)$/;
 const RESULT_PATTERN = /\s+(\d+):(\d+)$/;
+// BFV writes this status in the result column, after the away club in extracted text.
+const ABSE_RESULT_PATTERN = /\s+Abse\.$/i;
 const LEAGUE_NUMBER_PATTERN = /\bLIGANUMMER\s+(\d+)\b/i;
 const SEASON_PATTERN = /\bSAISON\s+(\d{2}\/\d{2})\b/i;
 
@@ -98,7 +100,8 @@ export function parseBfvSchedulePages(
     const sourceDate = match[2]!;
     const sourceTime = match[3];
     const rawParty = match[4]!;
-    const { party, result } = parseResult(rawParty);
+    const hasAbseMarker = ABSE_RESULT_PATTERN.test(rawParty);
+    const { party, result } = parseResult(rawParty.replace(ABSE_RESULT_PATTERN, ""));
     const separatorIndex = party.indexOf(" - ");
     if (separatorIndex < 0) {
       warnings.push(`Spiel ${sourceMatchNumber} konnte nicht eindeutig getrennt werden.`);
@@ -110,6 +113,11 @@ export function parseBfvSchedulePages(
     if (!sourceTime) {
       warnings.push(`Spiel ${sourceMatchNumber} hat keine Uhrzeit und wurde übersprungen.`);
       continue;
+    }
+    if (hasAbseMarker) {
+      warnings.push(
+        `Spiel ${sourceMatchNumber} ist im BFV-Spielplan mit „Abse.“ markiert. Bitte prüfe den aktuellen Termin vor dem Import.`,
+      );
     }
     const date = isoDate(sourceDate);
     currentMatchday.matches.push({
