@@ -121,15 +121,26 @@ export function ProfileMenu({
 
           <div className="profile-menu__actions">
             {accountEnabled ? (
-              <Link
-                className="profile-menu__action"
-                href={"/profile" as Route}
-                onClick={() => setOpen(false)}
-              >
-                <Icon className="icon" name="account" />
-                <span>Konto & Datenschutz</span>
-                <Icon className="icon profile-menu__chevron" name="chevron-right" />
-              </Link>
+              <>
+                <Link
+                  className="profile-menu__action"
+                  href={"/profile" as Route}
+                  onClick={() => setOpen(false)}
+                >
+                  <Icon className="icon" name="account" />
+                  <span>Konto</span>
+                  <Icon className="icon profile-menu__chevron" name="chevron-right" />
+                </Link>
+                <Link
+                  className="profile-menu__action"
+                  href={"/settings" as Route}
+                  onClick={() => setOpen(false)}
+                >
+                  <Icon className="icon" name="settings" />
+                  <span>Einstellungen</span>
+                  <Icon className="icon profile-menu__chevron" name="chevron-right" />
+                </Link>
+              </>
             ) : null}
             <PushAwareSignOut userId={userId} />
           </div>

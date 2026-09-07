@@ -9,7 +9,44 @@ vi.mock("@/lib/supabase/server", () => ({
   createSupabaseServerClient: mocks.createSupabaseServerClient,
 }));
 
-import { getMyProfile } from "@/features/profile/service";
+import { getMyProfile, getMyAccountDetails } from "@/features/profile/service";
+
+describe("getMyAccountDetails", () => {
+  it("returns only the signed-in user's displayable account details", async () => {
+    mocks.createSupabaseServerClient.mockResolvedValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: {
+            user: {
+              email: "test@example.test",
+              created_at: "2026-07-13T12:00:00Z",
+              email_confirmed_at: "2026-07-13T12:01:00Z",
+              identities: [{ provider: "google" }, { provider: "email" }, { provider: "google" }],
+              user_metadata: { private: "hidden" },
+            },
+          },
+          error: null,
+        }),
+      },
+    });
+    await expect(getMyAccountDetails()).resolves.toEqual({
+      email: "test@example.test",
+      createdAt: "2026-07-13T12:00:00Z",
+      emailConfirmed: true,
+      providers: ["google", "email"],
+    });
+  });
+  it("does not show account details for an invalid session", async () => {
+    mocks.createSupabaseServerClient.mockResolvedValue({
+      auth: {
+        getUser: vi
+          .fn()
+          .mockResolvedValue({ data: { user: null }, error: new AuthInvalidJwtError("expired") }),
+      },
+    });
+    await expect(getMyAccountDetails()).resolves.toBeNull();
+  });
+});
 
 describe("getMyProfile", () => {
   beforeEach(() => {

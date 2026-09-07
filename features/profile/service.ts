@@ -10,6 +10,22 @@ type MyProfileRow = Database["api"]["Views"]["my_profile"]["Row"];
 
 export type MyProfile = Pick<MyProfileRow, "app_role" | "display_name" | "status" | "user_id">;
 
+export async function getMyAccountDetails() {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) {
+    if (isInvalidSession(error)) return null;
+    throw error;
+  }
+  if (!data.user) return null;
+  return {
+    email: data.user.email ?? null,
+    createdAt: data.user.created_at,
+    emailConfirmed: Boolean(data.user.email_confirmed_at),
+    providers: [...new Set((data.user.identities ?? []).map((identity) => identity.provider))],
+  };
+}
+
 function isInvalidSession(error: AuthError) {
   return (
     isAuthSessionMissingError(error) ||

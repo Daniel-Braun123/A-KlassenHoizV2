@@ -10,11 +10,7 @@ export default function DeleteAccountPage() {
   return (
     <section className="content-page">
       <div className="content-page__heading">
-        <PageBackLink
-          accessibleLabel="Zurück zu Konto & Datenschutz"
-          href="/profile"
-          label="Konto & Datenschutz"
-        />
+        <PageBackLink accessibleLabel="Zurück zum Konto" href="/profile" label="Konto" />
         <div className="content-page__intro">
           <p className="product-mark">Datenschutz</p>
           <h1>Konto löschen</h1>

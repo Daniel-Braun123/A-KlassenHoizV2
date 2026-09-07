@@ -53,9 +53,10 @@ describe("ProfileMenu", () => {
     expect(screen.getByRole("dialog", { name: "Profil und Darstellung" })).toBeVisible();
     expect(screen.getByRole("button", { name: "System" })).toHaveFocus();
     expect(screen.getByText("Daniel")).toBeVisible();
-    expect(screen.getByRole("link", { name: /Konto & Datenschutz/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Konto" })).toHaveAttribute("href", "/profile");
+    expect(screen.getByRole("link", { name: "Einstellungen" })).toHaveAttribute(
       "href",
-      "/profile",
+      "/settings",
     );
     expect(screen.getByRole("button", { name: "Abmelden" })).toBeVisible();
     expect(screen.queryByRole("link", { name: /Verwaltung/i })).not.toBeInTheDocument();
@@ -110,7 +111,8 @@ describe("ProfileMenu", () => {
     fireEvent.click(screen.getByRole("button", { name: "Profilmenü öffnen" }));
 
     expect(screen.getByText("Konto nicht aktiv")).toBeVisible();
-    expect(screen.queryByRole("link", { name: /Konto & Datenschutz/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Konto" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Einstellungen" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Abmelden" })).toBeVisible();
   });
 
