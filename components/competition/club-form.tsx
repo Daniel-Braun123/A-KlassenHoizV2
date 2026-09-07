@@ -27,7 +27,11 @@ function CreateClubForm() {
         onChange={(event) => setName(event.currentTarget.value)}
         required
       />
-      <ClubLogoField name={name || "Neuer Verein"} onBusyChange={setLogoBusy} />
+      <ClubLogoField
+        allowBackgroundRemoval
+        name={name || "Neuer Verein"}
+        onBusyChange={setLogoBusy}
+      />
       <Button disabled={pending || logoBusy} type="submit">
         {logoBusy
           ? "Bild wird vorbereitet …"
