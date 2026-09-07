@@ -1,5 +1,6 @@
 import { Link } from "@/components/ui/link";
 import { PageBackLink } from "@/components/patterns/page-back-link";
+import "@/styles/account-details.css";
 
 export type AccountDetails = Readonly<{
   displayName: string;
