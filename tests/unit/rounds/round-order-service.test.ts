@@ -5,12 +5,10 @@ import { getRoundOrder, saveRoundOrder } from "@/features/rounds/order-service";
 const a = "10000000-0000-4000-8000-000000000001";
 const b = "10000000-0000-4000-8000-000000000002";
 function setup() {
-  const getUser = vi
-    .fn()
-    .mockResolvedValue({
-      data: { user: { id: "user", user_metadata: { round_order: [b, a], name: "Test" } } },
-      error: null,
-    });
+  const getUser = vi.fn().mockResolvedValue({
+    data: { user: { id: "user", user_metadata: { round_order: [b, a], name: "Test" } } },
+    error: null,
+  });
   const updateUser = vi.fn().mockResolvedValue({ error: null });
   const select = vi.fn().mockResolvedValue({ data: [{ id: a }, { id: b }], error: null });
   const from = vi.fn().mockReturnValue({ select });
