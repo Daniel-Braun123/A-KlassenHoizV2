@@ -1,0 +1,96 @@
+.sortable-rounds .sortable-round,
+.sortable-round--overlay {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.round-list .sortable-round a.sortable-round__link,
+.sortable-round--overlay .sortable-round__link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+}
+
+.sortable-round .round-list__copy > strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sortable-round .round-list__meta {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sortable-round .round-list__meta-primary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sortable-round .round-list__meta-separator,
+.sortable-round .round-list__meta-role {
+  flex: none;
+}
+
+.sortable-round .round-list__meta-separator {
+  margin-inline: 0.3em;
+}
+
+.sortable-round__link[data-sortable="true"] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.sortable-rounds .sortable-round--dragging {
+  opacity: 0.25;
+}
+.sortable-rounds .sortable-round--overlay {
+  border-color: var(--color-brand);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 18%);
+  cursor: grabbing;
+  font-weight: 720;
+}
+.sortable-rounds .sortable-round--dragging .sortable-round__link:active {
+  transform: none;
+}
+.sortable-rounds__error {
+  margin: var(--space-3) 0 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sortable-rounds .sortable-round {
+    transition: none !important;
+  }
+}
+.sortable-rounds .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

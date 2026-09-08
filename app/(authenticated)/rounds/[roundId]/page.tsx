@@ -2,21 +2,20 @@ import type { Route } from "next";
 import { MatchdayRecap } from "@/components/rounds/matchday-recap";
 import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
-import { getLatestMatchdayRecap, getRoundOverview } from "@/features/predictions/service";
+import {
+  currentMatchdayStatusText,
+  summarizeCurrentMatchday,
+} from "@/features/predictions/current-matchday-summary";
+import { getRoundHomeData } from "@/features/predictions/service";
 import { getMyRound, listRoundMembers } from "@/features/rounds/service";
 export default async function RoundPage({ params }: { params: Promise<{ roundId: string }> }) {
   const { roundId } = await params;
-  const [round, members, overview, recap] = await Promise.all([
+  const [round, members, home] = await Promise.all([
     getMyRound(roundId),
     listRoundMembers(roundId),
-    getRoundOverview(roundId),
-    getLatestMatchdayRecap(roundId),
+    getRoundHomeData(roundId),
   ]);
-  const hasMatches = (overview?.total_matches ?? 0) > 0;
-  const remaining = Math.max(
-    0,
-    (overview?.total_matches ?? 0) - (overview?.predicted_matches ?? 0),
-  );
+  const currentMatchday = summarizeCurrentMatchday(home.sheet);
   return (
     <section className="content-page round-overview-page">
       <div className="content-page__intro">
@@ -34,29 +33,25 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
             <Icon name="calendar" />
           </span>
           <div>
-            <h2>Nächste Tippaktion</h2>
-            {hasMatches ? (
-              <p>
-                {remaining
-                  ? `Noch ${remaining} Spiele ohne Tipp.`
-                  : "Alle offenen Spiele sind getippt."}
-              </p>
+            <h2>Aktueller Spieltag</h2>
+            {currentMatchday ? (
+              <p>{currentMatchdayStatusText(currentMatchday)}</p>
             ) : (
-              <p>Noch ist kein veröffentlichter Spieltag offen.</p>
+              <p>Noch ist kein veröffentlichter Spieltag verfügbar.</p>
             )}
           </div>
         </div>
-        {hasMatches ? (
+        {currentMatchday ? (
           <Link
             className="next-action-card__button"
-            href={`/rounds/${roundId}/predictions` as Route}
+            href={`/rounds/${roundId}/predictions?matchday=${currentMatchday.id}` as Route}
             variant="button"
           >
-            {remaining ? "Jetzt tippen" : "Tipps ansehen"}
+            {currentMatchday.missingOpenTips ? "Jetzt tippen" : "Tipps ansehen"}
           </Link>
         ) : null}
       </div>
-      {recap ? <MatchdayRecap recap={recap} roundId={roundId} /> : null}
+      {home.recap ? <MatchdayRecap recap={home.recap} roundId={roundId} /> : null}
       <div className="page-actions round-overview-actions">
         {round.role === "owner" ? (
           <Link

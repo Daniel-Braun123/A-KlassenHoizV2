@@ -85,6 +85,31 @@ export async function getLatestMatchdayRecap(roundId: string): Promise<MatchdayR
   return buildLatestMatchdayRecap(sheetResponse.data ?? [], rankingResponse.data ?? []);
 }
 
+export async function getRoundHomeData(
+  roundId: string,
+): Promise<Readonly<{ sheet: PredictionSheetRow[]; recap: MatchdayRecap | null }>> {
+  const value = predictionSheetQuerySchema.parse({ roundId });
+  const supabase = await createSupabaseServerClient();
+  const [sheetResponse, rankingResponse] = await Promise.all([
+    supabase
+      .schema("api")
+      .from("matchday_prediction_sheet")
+      .select("*")
+      .eq("round_id", value.roundId)
+      .order("matchday_number")
+      .order("kickoff_at"),
+    supabase.schema("api").from("matchday_ranking").select("*").eq("round_id", value.roundId),
+  ]);
+
+  mapDatabaseError(sheetResponse.error);
+  mapDatabaseError(rankingResponse.error);
+  const sheet = sheetResponse.data ?? [];
+  return {
+    sheet,
+    recap: buildLatestMatchdayRecap(sheet, rankingResponse.data ?? []),
+  };
+}
+
 export async function savePrediction(input: unknown): Promise<SavePredictionConfirmation> {
   const value = savePredictionSchema.parse(input);
   const supabase = await createSupabaseServerClient();

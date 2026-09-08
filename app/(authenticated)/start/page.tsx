@@ -7,6 +7,8 @@ import { Link } from "@/components/ui/link";
 import { getMissingTipsPreference } from "@/features/notifications/service";
 import { getMyProfile } from "@/features/profile/service";
 import { listMyRounds } from "@/features/rounds/service";
+import { applyRoundOrder } from "@/features/rounds/order";
+import { getRoundOrder } from "@/features/rounds/order-service";
 import { readServerEnvironment } from "@/lib/config/env";
 export default async function StartPage() {
   const profile = await getMyProfile();
@@ -38,9 +40,10 @@ export default async function StartPage() {
     );
   }
 
-  const [rounds, missingTipsEnabled] = await Promise.all([
+  const [rounds, missingTipsEnabled, roundOrder] = await Promise.all([
     listMyRounds(),
     getMissingTipsPreference(),
+    getRoundOrder(),
   ]);
   const publicVapidKey = readServerEnvironment().NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   const shouldOfferPush =
@@ -55,7 +58,7 @@ export default async function StartPage() {
         <h1>Willkommen zurück</h1>
         <p>Wähle eine Tipprunde oder erstelle eine neue Runde für deine Freunde.</p>
       </div>
-      <RoundSwitcher rounds={rounds} />
+      <RoundSwitcher rounds={applyRoundOrder(rounds, roundOrder)} />
       {shouldOfferPush && publicVapidKey && profile.user_id ? (
         <PushPermissionPrompt publicVapidKey={publicVapidKey} userId={profile.user_id} />
       ) : null}
