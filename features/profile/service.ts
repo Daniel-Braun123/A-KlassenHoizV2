@@ -20,6 +20,8 @@ export async function getMyAccountDetails() {
   if (!data.user) return null;
   return {
     email: data.user.email ?? null,
+    pendingEmail:
+      data.user.new_email && data.user.new_email !== data.user.email ? data.user.new_email : null,
     createdAt: data.user.created_at,
     emailConfirmed: Boolean(data.user.email_confirmed_at),
     providers: [...new Set((data.user.identities ?? []).map((identity) => identity.provider))],

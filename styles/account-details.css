@@ -28,6 +28,50 @@
   color: var(--color-danger);
 }
 
+.account-details__value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.account-details__value > span {
+  min-width: 0;
+}
+.account-details__edit {
+  flex: none;
+}
+.account-details__editor[hidden] {
+  display: none;
+}
+.account-edit-form {
+  margin-top: var(--space-4);
+  font-weight: 400;
+}
+.account-edit-form fieldset {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.account-edit-form p {
+  margin: 0;
+}
+.account-edit-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.account-details__hint {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
 @media (max-width: 32rem) {
   .account-details__list > div {
     grid-template-columns: 1fr;

@@ -99,7 +99,7 @@ describe("sortable rounds", () => {
     await moveFirstDown();
     await waitFor(() => expect(save).toHaveBeenCalledWith(["1", "0", "2"]));
     expect(names()[0]).toContain("Familie");
-    expect(screen.getByText("Reihenfolge gespeichert.")).toBeInTheDocument();
+    expect(await screen.findByText("Reihenfolge gespeichert.")).toBeInTheDocument();
   });
   it("rolls back failed saves and shows an actionable error", async () => {
     const save = vi.fn().mockResolvedValue({

@@ -31,6 +31,7 @@ describe("getMyAccountDetails", () => {
     });
     await expect(getMyAccountDetails()).resolves.toEqual({
       email: "test@example.test",
+      pendingEmail: null,
       createdAt: "2026-07-13T12:00:00Z",
       emailConfirmed: true,
       providers: ["google", "email"],

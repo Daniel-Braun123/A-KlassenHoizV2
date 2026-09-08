@@ -38,7 +38,7 @@ export function finishMatchForLocalTest(matchId: string): void {
  */
 export async function waitForLocalConfirmationLink(
   email: string,
-  type: "signup" | "recovery" = "signup",
+  type: "signup" | "recovery" | "email_change" = "signup",
 ): Promise<string> {
   const inboxUrl = process.env.SUPABASE_TEST_INBOX_URL;
   if (!inboxUrl) throw new Error("Local Mailpit URL is required for confirmation tests.");
