@@ -25,7 +25,8 @@ function localActorToken(email: LocalActorEmail) {
     aud: "authenticated",
     email,
     exp: now + 3_600,
-    iat: now,
+    // Windows and Docker Desktop can briefly drift after the local stack restarts.
+    iat: now - 60,
     iss: "supabase",
     role: "authenticated",
     sub: actorIds[email],
@@ -40,6 +41,8 @@ export function createLocalActorClient(email: LocalActorEmail) {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_TEST_PUBLISHABLE_KEY;
   if (!url || !key)
     throw new Error("Local actor clients require local Supabase environment variables.");
+  if (!["localhost", "127.0.0.1"].includes(new URL(url).hostname))
+    throw new Error("Synthetic actor tokens may only be used with local Supabase.");
   return createClient<Database>(url, key, {
     auth: { persistSession: false },
     global: { headers: { Authorization: `Bearer ${localActorToken(email)}` } },

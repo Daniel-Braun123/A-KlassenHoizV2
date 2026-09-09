@@ -1,5 +1,7 @@
 import type { Route } from "next";
 import { MatchdayRecap } from "@/components/rounds/matchday-recap";
+import { SeasonReviewView } from "@/components/rounds/season-review";
+import { getSeasonReview } from "@/features/rounds/season-review-service";
 import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
 import {
@@ -10,10 +12,11 @@ import { getRoundHomeData } from "@/features/predictions/service";
 import { getMyRound, listRoundMembers } from "@/features/rounds/service";
 export default async function RoundPage({ params }: { params: Promise<{ roundId: string }> }) {
   const { roundId } = await params;
-  const [round, members, home] = await Promise.all([
+  const [round, members, home, review] = await Promise.all([
     getMyRound(roundId),
     listRoundMembers(roundId),
     getRoundHomeData(roundId),
+    getSeasonReview(roundId),
   ]);
   const currentMatchday = summarizeCurrentMatchday(home.sheet);
   return (
@@ -27,31 +30,37 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
           {members.length} {members.length === 1 ? "Mitglied" : "Mitglieder"}.
         </p>
       </div>
-      <div className="next-action-card">
-        <div className="next-action-card__heading">
-          <span className="next-action-card__icon" aria-hidden="true">
-            <Icon name="calendar" />
-          </span>
-          <div>
-            <h2>Aktueller Spieltag</h2>
+      {review ? (
+        <SeasonReviewView review={review} roundId={roundId} />
+      ) : (
+        <>
+          <div className="next-action-card">
+            <div className="next-action-card__heading">
+              <span className="next-action-card__icon" aria-hidden="true">
+                <Icon name="calendar" />
+              </span>
+              <div>
+                <h2>Aktueller Spieltag</h2>
+                {currentMatchday ? (
+                  <p>{currentMatchdayStatusText(currentMatchday)}</p>
+                ) : (
+                  <p>Noch ist kein veröffentlichter Spieltag verfügbar.</p>
+                )}
+              </div>
+            </div>
             {currentMatchday ? (
-              <p>{currentMatchdayStatusText(currentMatchday)}</p>
-            ) : (
-              <p>Noch ist kein veröffentlichter Spieltag verfügbar.</p>
-            )}
+              <Link
+                className="next-action-card__button"
+                href={`/rounds/${roundId}/predictions?matchday=${currentMatchday.id}` as Route}
+                variant="button"
+              >
+                {currentMatchday.missingOpenTips ? "Jetzt tippen" : "Tipps ansehen"}
+              </Link>
+            ) : null}
           </div>
-        </div>
-        {currentMatchday ? (
-          <Link
-            className="next-action-card__button"
-            href={`/rounds/${roundId}/predictions?matchday=${currentMatchday.id}` as Route}
-            variant="button"
-          >
-            {currentMatchday.missingOpenTips ? "Jetzt tippen" : "Tipps ansehen"}
-          </Link>
-        ) : null}
-      </div>
-      {home.recap ? <MatchdayRecap recap={home.recap} roundId={roundId} /> : null}
+          {home.recap ? <MatchdayRecap recap={home.recap} roundId={roundId} /> : null}
+        </>
+      )}
       <div className="page-actions round-overview-actions">
         {round.role === "owner" ? (
           <Link

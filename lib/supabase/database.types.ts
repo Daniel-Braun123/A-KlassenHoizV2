@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -73,6 +73,13 @@ export type Database = {
             foreignKeyName: "matchdays_league_season_id_fkey"
             columns: ["league_id"]
             isOneToOne: false
+            referencedRelation: "admin_season_completion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
             referencedRelation: "competition_catalog"
             referencedColumns: ["league_season_id"]
           },
@@ -126,6 +133,19 @@ export type Database = {
             referencedColumns: ["home_club_id"]
           },
         ]
+      }
+      admin_season_completion: {
+        Row: {
+          id: string | null
+          missing_results: number | null
+          status: Database["app"]["Enums"]["league_season_status"] | null
+          total_matches: number | null
+          unfinished_matches: number | null
+          unpublished_matchdays: number | null
+          unresolved_matches: number | null
+          version: number | null
+        }
+        Relationships: []
       }
       club_catalog: {
         Row: {
@@ -286,6 +306,13 @@ export type Database = {
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
           },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
+            referencedColumns: ["round_id"]
+          },
         ]
       }
       my_profile: {
@@ -343,6 +370,13 @@ export type Database = {
             columns: ["last_active_round_id"]
             isOneToOne: false
             referencedRelation: "round_results"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "profiles_last_active_round_fk"
+            columns: ["last_active_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
             referencedColumns: ["round_id"]
           },
         ]
@@ -429,6 +463,13 @@ export type Database = {
             foreignKeyName: "prediction_rounds_league_season_id_fkey"
             columns: ["league_season_id"]
             isOneToOne: false
+            referencedRelation: "admin_season_completion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
             referencedRelation: "competition_catalog"
             referencedColumns: ["league_season_id"]
           },
@@ -500,6 +541,13 @@ export type Database = {
             columns: ["round_id"]
             isOneToOne: false
             referencedRelation: "round_results"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
             referencedColumns: ["round_id"]
           },
         ]
@@ -574,6 +622,13 @@ export type Database = {
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
           },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
+            referencedColumns: ["round_id"]
+          },
         ]
       }
       round_overview: {
@@ -593,6 +648,13 @@ export type Database = {
             columns: ["league_season_id"]
             isOneToOne: false
             referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "admin_season_completion"
             referencedColumns: ["id"]
           },
           {
@@ -635,6 +697,14 @@ export type Database = {
         }
         Relationships: []
       }
+      round_season_state: {
+        Row: {
+          completed_at: string | null
+          round_id: string | null
+          status: Database["app"]["Enums"]["league_season_status"] | null
+        }
+        Relationships: []
+      }
       schedule: {
         Row: {
           away_club_id: string | null
@@ -662,6 +732,13 @@ export type Database = {
             columns: ["league_season_id"]
             isOneToOne: false
             referencedRelation: "admin_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "admin_season_completion"
             referencedColumns: ["id"]
           },
           {
@@ -844,6 +921,13 @@ export type Database = {
             columns: ["round_id"]
             isOneToOne: false
             referencedRelation: "round_results"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "predictions_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
             referencedColumns: ["round_id"]
           },
         ]

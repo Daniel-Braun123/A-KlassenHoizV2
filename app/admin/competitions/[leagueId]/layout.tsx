@@ -29,7 +29,13 @@ export default async function LeagueManagementLayout({
           <span
             className={`publication-status publication-status--${league.status === "draft" ? "draft" : "published"}`}
           >
-            {league.status === "draft" ? "Entwurf" : "Veröffentlicht"}
+            {league.status === "completed"
+              ? "Abgeschlossen"
+              : league.status === "archived"
+                ? "Archiviert"
+                : league.status === "draft"
+                  ? "Entwurf"
+                  : "Veröffentlicht"}
           </span>
         </div>
       </header>
