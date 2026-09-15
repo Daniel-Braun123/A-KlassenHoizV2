@@ -39,8 +39,12 @@ test.describe("mobile authentication", () => {
     await expect(page.getByRole("status")).toContainText(
       "Wenn für diese E-Mail-Adresse noch kein Konto besteht",
     );
-    await expect(page.getByRole("link", { name: "Zur Anmeldung" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Passwort zurücksetzen" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Bestätige deine E-Mail-Adresse" }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Gmail öffnen" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Outlook öffnen" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "E-Mail-Adresse korrigieren" })).toBeVisible();
   });
 });
 
