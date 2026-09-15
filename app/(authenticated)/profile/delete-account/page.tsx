@@ -1,12 +1,22 @@
-"use client";
-import { useActionState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { redirect } from "next/navigation";
 import { PageBackLink } from "@/components/patterns/page-back-link";
-import { deleteAccountAction } from "@/features/privacy/actions";
-import { initialDeleteAccountState } from "@/features/privacy/state";
-export default function DeleteAccountPage() {
-  const [state, action, pending] = useActionState(deleteAccountAction, initialDeleteAccountState);
+import { DeleteAccountForm } from "@/components/profile/delete-account-form";
+import { hasGoogleDeletionVerification } from "@/features/privacy/reauthentication";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export default async function DeleteAccountPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ verification?: string }>;
+}) {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user?.email) redirect("/login?next=%2Fprofile%2Fdelete-account");
+  const google = Boolean(data.user.identities?.some((identity) => identity.provider === "google"));
+  const [verified, params] = await Promise.all([
+    google ? hasGoogleDeletionVerification(supabase, data.user.id) : false,
+    searchParams,
+  ]);
   return (
     <section className="content-page">
       <div className="content-page__heading">
@@ -20,30 +30,12 @@ export default function DeleteAccountPage() {
           </p>
         </div>
       </div>
-      <form action={action} className="destructive-state">
-        <h2>Unwiderrufliche Kontolöschung</h2>
-        <p>
-          Deine Mitgliedschaften werden anonymisiert und anschließend weder in Mitgliederlisten noch
-          in Ranglisten oder den Tipps der Runde angezeigt. Danach wird dein Login gelöscht.
-        </p>
-        <Input
-          label="Aktuelles Passwort"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-        />
-        <Input
-          label="Zur Bestätigung KONTO LÖSCHEN eingeben"
-          name="confirmation"
-          autoComplete="off"
-          required
-        />
-        <Button disabled={pending} type="submit" variant="danger">
-          Konto endgültig löschen
-        </Button>
-        {state.status === "error" ? <p role="alert">{state.message}</p> : null}
-      </form>
+      <DeleteAccountForm
+        google={google}
+        verified={verified}
+        email={data.user.email}
+        verificationError={params.verification === "error"}
+      />
     </section>
   );
 }
