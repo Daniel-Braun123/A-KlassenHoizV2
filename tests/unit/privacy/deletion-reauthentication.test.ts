@@ -32,12 +32,10 @@ function setup() {
   const session = { userId: user.id, id: "original-session" };
   const auth = {
     getUser: vi.fn().mockResolvedValue({ data: { user }, error: null }),
-    getClaims: vi
-      .fn()
-      .mockImplementation(async () => ({
-        data: { claims: { sub: session.userId, session_id: session.id } },
-        error: null,
-      })),
+    getClaims: vi.fn().mockImplementation(async () => ({
+      data: { claims: { sub: session.userId, session_id: session.id } },
+      error: null,
+    })),
     signInWithOAuth: vi
       .fn()
       .mockResolvedValue({ data: { url: "https://accounts.google.com/test" }, error: null }),
