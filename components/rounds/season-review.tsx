@@ -2,9 +2,27 @@ import type { Route } from "next";
 import { Icon } from "@/components/ui/icon";
 import { Link } from "@/components/ui/link";
 import type { SeasonReview } from "@/features/rounds/season-review";
+import type { RoundRolloverOption } from "@/features/rounds/types";
+import { SeasonRollover } from "@/components/rounds/season-rollover";
 import "@/styles/season-completion.css";
 
-export function SeasonReviewView({ review, roundId }: { review: SeasonReview; roundId: string }) {
+export function SeasonReviewView({
+  isOwner,
+  hasSuccessor,
+  options,
+  review,
+  roundId,
+  roundVersion,
+  successorRoundId,
+}: Readonly<{
+  isOwner: boolean;
+  hasSuccessor: boolean;
+  options: readonly RoundRolloverOption[];
+  review: SeasonReview;
+  roundId: string;
+  roundVersion: number;
+  successorRoundId: string | null;
+}>) {
   return (
     <section className="season-review" aria-labelledby="season-review-title">
       <header className="season-review__heading">
@@ -68,6 +86,15 @@ export function SeasonReviewView({ review, roundId }: { review: SeasonReview; ro
       >
         Gesamte Endrangliste ansehen
       </Link>
+      {isOwner || hasSuccessor ? (
+        <SeasonRollover
+          hasSuccessor={hasSuccessor}
+          options={options}
+          roundId={roundId}
+          roundVersion={roundVersion}
+          successorRoundId={successorRoundId}
+        />
+      ) : null}
     </section>
   );
 }

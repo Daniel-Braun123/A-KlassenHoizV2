@@ -9,25 +9,48 @@ import { Input } from "@/components/ui/input";
 import { registrationDestinationAction, resendRegistrationAction } from "@/features/auth/actions";
 import { authHrefWithContext } from "@/features/auth/invitation-context";
 import { initialAuthActionState } from "@/features/auth/state";
+import "@/styles/registration-confirmation.css";
 
 function MailProviderLinks() {
   return (
     <div className="registration-confirmation__providers" aria-label="E-Mail-Postfach öffnen">
       <a
-        className="ui-button ui-button--primary"
+        className="registration-confirmation__provider registration-confirmation__provider--gmail"
         href="https://mail.google.com/mail/u/0/#inbox"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Gmail öffnen
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path fill="#4285F4" d="M2 20h3V9L1 6v13a1 1 0 0 0 1 1Z" />
+          <path fill="#34A853" d="M19 20h3a1 1 0 0 0 1-1V6l-4 3Z" />
+          <path fill="#FBBC04" d="M19 9V4.5l1.6-1.2A1.5 1.5 0 0 1 23 4.5V6Z" />
+          <path fill="#EA4335" d="M5 9v-4.5L12 9.75 19 4.5V9l-7 5.25Z" />
+          <path fill="#C5221F" d="M1 6V4.5a1.5 1.5 0 0 1 2.4-1.2L5 4.5V9Z" />
+        </svg>
+        <span>Gmail öffnen</span>
       </a>
       <a
-        className="ui-button ui-button--secondary"
+        className="registration-confirmation__provider registration-confirmation__provider--outlook"
         href="https://outlook.live.com/mail/0/inbox"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Outlook öffnen
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="8" y="2" width="13" height="18" rx="1.5" fill="#0364B8" />
+          <path fill="#28A8EA" d="M9 6h6v5H9Z" />
+          <path fill="#50D9FF" d="M15 6h6v5h-6Z" />
+          <path fill="#0078D4" d="M9 11h6v5H9Z" />
+          <path fill="#28A8EA" d="M15 11h6v5h-6Z" />
+          <path fill="#0078D4" d="m8 11 7 5 8-5v10a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z" />
+          <path fill="#1490DF" d="m8 22 15-11v10a1 1 0 0 1-1 1Z" />
+          <rect x="1" y="6" width="12" height="14" rx="1.5" fill="#0A4F9C" />
+          <path
+            fill="#FFF"
+            fillRule="evenodd"
+            d="M7 9c-2.1 0-3.3 1.5-3.3 4S4.9 17 7 17s3.3-1.5 3.3-4S9.1 9 7 9Zm0 1.6c1.1 0 1.6.9 1.6 2.4s-.5 2.4-1.6 2.4-1.6-.9-1.6-2.4.5-2.4 1.6-2.4Z"
+          />
+        </svg>
+        <span>Outlook öffnen</span>
       </a>
     </div>
   );
@@ -131,7 +154,14 @@ export function RegistrationConfirmation({
     <section className="auth-form registration-confirmation" aria-labelledby="confirmation-heading">
       <div className="registration-confirmation__intro">
         <span className="registration-confirmation__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+          >
             <rect x="3" y="5" width="18" height="14" rx="3" />
             <path d="m4 7 8 6 8-6" />
           </svg>
