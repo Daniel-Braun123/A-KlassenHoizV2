@@ -1,8 +1,8 @@
 # Saisonwechsel
 
-Die lokale Umsetzung besteht aus den Migrationen `20260909125902_round_season_rollover.sql`
-und `20260915124538_harden_round_rollover.sql`. Beide müssen vor der Anwendung veröffentlicht
-werden. Diese Arbeit führt keine Remote-Migration oder Veröffentlichung aus.
+Die Umsetzung besteht aus den Migrationen `20260909125902_round_season_rollover.sql`
+und `20260915124538_harden_round_rollover.sql`. Beide wurden am 16.09.2026 vor der Anwendung
+in Produktion veröffentlicht.
 
 ## Verhalten
 
@@ -31,6 +31,9 @@ werden. Diese Arbeit führt keine Remote-Migration oder Veröffentlichung aus.
 - Browser: `tests/e2e/rounds/season-rollover.spec.ts` prüft Besitzer, übernommene Mitglieder
   und neu hinzugekommene Mitglieder sowie das Einladungsformular der alten Runde.
 
-Die Datenbank-, Parallel- und Browserläufe sowie die erneute Typgenerierung benötigen den
-lokalen Supabase-Stack. Dieser war bei der Umsetzung am 16.09.2026 nicht erreichbar.
-Die neue API-Spalte wurde vorläufig im vorhandenen TypeScript-Datenbanktyp ergänzt.
+Der lokale Supabase-Stack war am 16.09.2026 nicht erreichbar. Beim Release wurden die
+27 Datenbankprüfungen mit neu erzeugten synthetischen Benutzern und isolierten Ligen sowie
+die acht RLS-Prüfungen auf dem Produktionsschema ausgeführt. Jede Prüfung lief innerhalb
+einer zurückgerollten Transaktion; es blieben keine Testbenutzer oder Testligen zurück.
+Die neue API-Spalte wurde gegen frisch aus Produktion generierte Typen geprüft.
+Die lokalen Parallel- und vollständigen Saisonwechsel-Browsertests stehen weiterhin aus.

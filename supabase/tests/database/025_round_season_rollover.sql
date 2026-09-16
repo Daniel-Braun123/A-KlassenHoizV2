@@ -230,9 +230,9 @@ select is(
   'new members never receive a predecessor link they cannot open'
 );
 select is(
-  private.round_has_successor((select source_round_id from rollover_fixture)),
-  false,
-  'the successor flag does not disclose inaccessible rounds'
+  (select count(*) from api.my_rounds where id = (select source_round_id from rollover_fixture)),
+  0::bigint,
+  'the API does not disclose rollover state for inaccessible rounds'
 );
 select set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000003', true);
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000003","role":"authenticated"}', true);
