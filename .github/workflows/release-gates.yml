@@ -50,7 +50,7 @@ jobs:
         if: always()
         with:
           name: release-performance-evidence
-          path: artifacts/lighthouse-*
+          path: docs/quality/artifacts/lighthouse-*.json
           if-no-files-found: ignore
           retention-days: 7
       - name: Stop local Supabase

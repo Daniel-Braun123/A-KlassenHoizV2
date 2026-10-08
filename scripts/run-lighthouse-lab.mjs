@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import lighthouse from "lighthouse";
 import * as chromeLauncher from "chrome-launcher";
@@ -192,7 +192,9 @@ try {
   const runTimeoutMs = Number(process.env.LH_TIMEOUT_MS ?? 90_000);
   const evidence = {
     generatedAt: new Date().toISOString(),
-    lighthouse: "13.4.0",
+    lighthouse: JSON.parse(
+      await readFile(join(root, "node_modules", "lighthouse", "package.json"), "utf8"),
+    ).version,
     chromium: chromium.executablePath(),
     lab: lighthouseLab,
     routes: [],
@@ -264,6 +266,7 @@ try {
         medians.cls <= lighthouseLab.budgets.cls &&
         medians.tbtMs <= lighthouseLab.budgets.tbtMs,
     });
+    console.log(JSON.stringify(evidence.routes.at(-1)));
   }
   await mkdir(join(root, "docs", "quality", "artifacts"), { recursive: true });
   const artifactName =
