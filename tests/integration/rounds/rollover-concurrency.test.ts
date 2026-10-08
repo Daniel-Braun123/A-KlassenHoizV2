@@ -110,7 +110,10 @@ it.each(["join", "rotate"] as const)(
       );
     })();
     const results = await Promise.allSettled([rollover, invitation]);
-    expect(results[0].status).toBe("fulfilled");
+    expect(
+      results[0].status,
+      results[0].status === "rejected" ? String(results[0].reason) : "",
+    ).toBe("fulfilled");
     expect(results[1].status).toBe("rejected");
     if (results[1].status === "rejected") {
       expect(String(results[1].reason)).toMatch(
@@ -161,7 +164,13 @@ it("copies a member whose join acquired the round lock before rollover", async (
     );
   })();
   const results = await Promise.allSettled([join, rollover]);
-  expect(results.map((result) => result.status)).toEqual(["fulfilled", "fulfilled"]);
+  expect(
+    results.map((result) => result.status),
+    results
+      .filter((result) => result.status === "rejected")
+      .map((result) => String(result.reason))
+      .join("\n"),
+  ).toEqual(["fulfilled", "fulfilled"]);
   const old = await f.owner
     .schema("api")
     .from("my_rounds")
