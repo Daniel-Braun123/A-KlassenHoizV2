@@ -275,9 +275,11 @@ test("three podium places render on mobile and desktop in both themes", async ({
     page.getByRole("list", { name: "Podest der Saison" }).getByRole("listitem"),
   ).toHaveCount(3);
   await expect(page.getByText("Platz 2", { exact: true })).toBeVisible();
+  await expect(page.locator(".season-podium")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("podium-light.png"), fullPage: true });
   await page.emulateMedia({ colorScheme: "dark" });
   await page.reload();
+  await expect(page.locator(".season-podium")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("podium-dark.png"), fullPage: true });
   expect(
     (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze())

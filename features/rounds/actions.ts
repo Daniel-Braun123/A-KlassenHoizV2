@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import { actionFailure } from "@/lib/actions/result";
 import { ApplicationError } from "@/lib/actions/errors";
-import { createRound, updateRound } from "./service";
+import { createRound, rolloverRound, updateRound } from "./service";
 import type { RoundActionState } from "./types";
 const failure = (error: unknown): RoundActionState => {
   const result = actionFailure(
@@ -46,4 +46,23 @@ export async function updateRoundAction(
   } catch (e) {
     return failure(e);
   }
+}
+export async function rolloverRoundAction(
+  _: RoundActionState,
+  data: FormData,
+): Promise<RoundActionState> {
+  const sourceRoundId = String(data.get("sourceRoundId"));
+  let successorRoundId: string;
+  try {
+    successorRoundId = await rolloverRound({
+      sourceRoundId,
+      targetLeagueSeasonId: data.get("targetLeagueSeasonId"),
+      expectedVersion: data.get("expectedVersion"),
+    });
+  } catch (e) {
+    return failure(e);
+  }
+  revalidatePath("/start");
+  revalidatePath(`/rounds/${sourceRoundId}`);
+  redirect(`/rounds/${successorRoundId}` as Route);
 }

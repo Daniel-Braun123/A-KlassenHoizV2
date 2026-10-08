@@ -30,6 +30,11 @@ export const oauthSignInSchema = z.object({
 
 export const passwordResetRequestSchema = z.object({ email: emailSchema });
 
+export const resendRegistrationSchema = z.object({
+  email: emailSchema,
+  next: z.string().max(512).optional(),
+});
+
 export const completePasswordResetSchema = z
   .object({
     password: passwordSchema,

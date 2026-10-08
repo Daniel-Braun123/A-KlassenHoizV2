@@ -14,7 +14,9 @@ export default async function LoginPage({
   const errorNotice =
     error === "oauth"
       ? "Die Google-Anmeldung wurde abgebrochen oder konnte nicht abgeschlossen werden. Bitte versuche es erneut."
-      : undefined;
+      : error === "delete-account-mismatch"
+        ? "Du hast ein anderes Google-Konto gewählt. Es wurde nichts gelöscht. Melde dich mit dem Konto an, das du löschen möchtest."
+        : undefined;
   return (
     <AuthFormShell
       description="Melde dich an und mach dort weiter, wo deine Freunde schon tippen."

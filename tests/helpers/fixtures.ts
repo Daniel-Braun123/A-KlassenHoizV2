@@ -1,7 +1,7 @@
 import { berlinDateKey } from "@/features/competition/schedule-display";
 import { createLocalActorClient } from "./local-actors";
 
-export async function createPublishedCompetition() {
+export async function createPublishedCompetition(yearLabel = "26/27") {
   const admin = createLocalActorClient("app-admin@example.test");
   const suffix = crypto.randomUUID().slice(0, 8);
   const clubs = await Promise.all(
@@ -13,7 +13,7 @@ export async function createPublishedCompetition() {
 
   const competition = await admin.schema("api").rpc("create_admin_league", {
     p_name: `Fixture Liga ${suffix}`,
-    p_year_label: "26/27",
+    p_year_label: yearLabel,
     p_club_ids: clubs.map((club) => club.data!),
   });
   if (competition.error) throw competition.error;
@@ -22,7 +22,7 @@ export async function createPublishedCompetition() {
     p_expected_version: 1,
   });
   if (publication.error) throw publication.error;
-  return { id: competition.data!, label: `Fixture Liga ${suffix} · 26/27` };
+  return { id: competition.data!, label: `Fixture Liga ${suffix} · ${yearLabel}` };
 }
 
 export async function createRoundInvitationFixture() {

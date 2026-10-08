@@ -27,5 +27,5 @@ export const hardDeleteRoundSchema = z
   });
 export const deleteAccountSchema = z.object({
   confirmation: z.literal("KONTO LÖSCHEN"),
-  password: z.string().min(8).max(200),
+  password: z.string().max(200).optional(),
 });

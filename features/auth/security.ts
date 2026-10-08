@@ -20,7 +20,10 @@ export function isExistingRegistration(error: AuthLikeError | null): boolean {
 
 export function mapAuthError(error: AuthLikeError | null): ApplicationError | null {
   if (!error) return null;
-  if (error.status === 429 || error.code === "over_request_rate_limit") {
+  if (
+    error.status === 429 ||
+    ["over_request_rate_limit", "over_email_send_rate_limit"].includes(error.code ?? "")
+  ) {
     return new ApplicationError("RATE_LIMITED", "Supabase Auth rate limit reached");
   }
   return new ApplicationError("UNAVAILABLE", "Supabase Auth request failed");

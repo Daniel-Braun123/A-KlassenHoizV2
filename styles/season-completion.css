@@ -168,9 +168,71 @@
 .season-review__ranking {
   width: 100%;
 }
+.season-rollover {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+.season-rollover h3,
+.season-rollover p {
+  margin: 0;
+}
+.season-rollover p,
+.season-rollover small {
+  color: var(--color-text-muted);
+}
+.season-rollover--linked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.season-rollover--linked p,
+.season-rollover--empty p {
+  margin-top: var(--space-1);
+}
+.season-rollover--linked > a {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.season-rollover--action > summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  cursor: pointer;
+  list-style: none;
+  color: var(--color-brand);
+}
+.season-rollover--action > summary::-webkit-details-marker {
+  display: none;
+}
+.season-rollover--action > summary span,
+.season-rollover--action > summary small {
+  display: block;
+}
+.season-rollover--action > summary small {
+  margin-top: var(--space-1);
+  font-weight: 400;
+}
+.season-rollover--action > summary svg {
+  flex: 0 0 auto;
+  transition: transform 180ms ease-out;
+}
+.season-rollover--action[open] > summary svg {
+  transform: rotate(90deg);
+}
+.season-rollover__form {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
 @keyframes season-podium-arrive {
   from {
-    opacity: 0.65;
+    opacity: 0.85;
     transform: translateY(6px);
   }
   to {
@@ -180,7 +242,7 @@
 }
 @keyframes season-podium-arrive-reduced {
   from {
-    opacity: 0.8;
+    opacity: 0.85;
   }
   to {
     opacity: 1;
@@ -224,5 +286,9 @@
   }
   .season-review__own {
     flex-wrap: wrap;
+  }
+  .season-rollover--linked {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

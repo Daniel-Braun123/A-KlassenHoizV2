@@ -9,7 +9,7 @@ import {
   summarizeCurrentMatchday,
 } from "@/features/predictions/current-matchday-summary";
 import { getRoundHomeData } from "@/features/predictions/service";
-import { getMyRound, listRoundMembers } from "@/features/rounds/service";
+import { getMyRound, listRoundMembers, listRoundRolloverOptions } from "@/features/rounds/service";
 export default async function RoundPage({ params }: { params: Promise<{ roundId: string }> }) {
   const { roundId } = await params;
   const [round, members, home, review] = await Promise.all([
@@ -18,6 +18,10 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
     getRoundHomeData(roundId),
     getSeasonReview(roundId),
   ]);
+  const rolloverOptions =
+    review && round.role === "owner" && !round.has_successor
+      ? await listRoundRolloverOptions(roundId)
+      : [];
   const currentMatchday = summarizeCurrentMatchday(home.sheet);
   return (
     <section className="content-page round-overview-page">
@@ -31,7 +35,15 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
         </p>
       </div>
       {review ? (
-        <SeasonReviewView review={review} roundId={roundId} />
+        <SeasonReviewView
+          isOwner={round.role === "owner"}
+          hasSuccessor={Boolean(round.has_successor)}
+          options={rolloverOptions}
+          review={review}
+          roundId={roundId}
+          roundVersion={round.version!}
+          successorRoundId={round.successor_round_id}
+        />
       ) : (
         <>
           <div className="next-action-card">
@@ -62,6 +74,14 @@ export default async function RoundPage({ params }: { params: Promise<{ roundId:
         </>
       )}
       <div className="page-actions round-overview-actions">
+        {round.predecessor_round_id ? (
+          <Link
+            className="round-overview-actions__switch"
+            href={`/rounds/${round.predecessor_round_id}` as Route}
+          >
+            Vorherige Saison ansehen
+          </Link>
+        ) : null}
         {round.role === "owner" ? (
           <Link
             className="round-overview-actions__manage"

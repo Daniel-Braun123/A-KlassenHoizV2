@@ -11,4 +11,9 @@ export const updateRoundSchema = z.object({
   name: z.string().trim().min(1).max(80),
   leagueSeasonId: z.string().uuid(),
 });
+export const rolloverRoundSchema = z.object({
+  sourceRoundId: z.string().uuid(),
+  targetLeagueSeasonId: z.string().uuid(),
+  expectedVersion: z.coerce.number().int().positive(),
+});
 export const roundIdSchema = z.string().uuid();

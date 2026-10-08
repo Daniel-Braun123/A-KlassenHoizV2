@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import lighthouse from "lighthouse";
 import * as chromeLauncher from "chrome-launcher";
@@ -39,75 +39,70 @@ const make = (name) =>
   });
 async function createFixture() {
   const admin = make("admin");
-  await admin.auth.signInWithPassword({
+  const adminLogin = await admin.auth.signInWithPassword({
     email: "app-admin@example.test",
     password: "LocalFixture42!",
   });
+  if (adminLogin.error) throw adminLogin.error;
+  async function rpc(client, name, parameters) {
+    const { data, error } = await client.schema("api").rpc(name, parameters);
+    if (error) throw new Error(`Lighthouse fixture ${name}: ${error.message}`, { cause: error });
+    if (data === null) throw new Error(`Lighthouse fixture ${name} returned no result`);
+    return data;
+  }
   const suffix = crypto.randomUUID().slice(0, 8);
-  const league = await admin.schema("api").rpc("create_league", { p_name: `Lab Liga ${suffix}` });
-  const season = await admin.schema("api").rpc("create_season", {
-    p_label: `Lab-${suffix}`,
-    p_starts_on: "2026-07-01",
-    p_ends_on: "2027-06-30",
-  });
-  const competition = await admin
-    .schema("api")
-    .rpc("create_league_season", { p_league_id: league.data, p_season_id: season.data });
   const clubs = [];
   for (let index = 0; index < 16; index += 1) {
-    const club = await admin.schema("api").rpc("create_club", {
+    const club = await rpc(admin, "create_club_simple", {
       p_name: `Lab Verein ${suffix}-${index}`,
-      p_short_name: `L${suffix.slice(0, 4)}-${index}`,
     });
-    await admin
-      .schema("api")
-      .rpc("assign_club", { p_league_season_id: competition.data, p_club_id: club.data });
-    clubs.push(club.data);
+    clubs.push(club);
   }
-  const matchday = await admin.schema("api").rpc("create_matchday", {
-    p_league_season_id: competition.data,
-    p_number: 1,
-    p_display_name: "1. Spieltag",
+  const competition = await rpc(admin, "create_admin_league", {
+    p_name: `Lab Liga ${suffix}`,
+    p_year_label: "26/27",
+    p_club_ids: clubs,
+  });
+  const firstKickoff = new Date(Date.now() + 86_400_000);
+  const lastKickoff = new Date(firstKickoff.getTime() + 7 * 3_600_000);
+  const berlinDate = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const matchday = await rpc(admin, "create_matchday_auto", {
+    p_league_id: competition,
+    p_phase: "first_leg",
+    p_starts_on: berlinDate.format(firstKickoff),
+    p_ends_on: berlinDate.format(lastKickoff),
   });
   for (let index = 0; index < 8; index += 1) {
-    const kickoff = new Date(Date.now() + 86_400_000 + index * 3_600_000).toISOString();
-    const match = await admin.schema("api").rpc("create_match", {
-      p_matchday_id: matchday.data,
+    const kickoff = new Date(firstKickoff.getTime() + index * 3_600_000).toISOString();
+    await rpc(admin, "create_match_simple", {
+      p_matchday_id: matchday,
       p_home_club_id: clubs[index * 2],
       p_away_club_id: clubs[index * 2 + 1],
       p_kickoff_at: kickoff,
-    });
-    await admin.schema("api").rpc("update_match", {
-      p_id: match.data,
-      p_expected_version: 1,
-      p_matchday_id: matchday.data,
-      p_home_club_id: clubs[index * 2],
-      p_away_club_id: clubs[index * 2 + 1],
-      p_kickoff_at: kickoff,
-      p_status: "published",
     });
   }
-  await admin.schema("api").rpc("update_matchday", {
-    p_id: matchday.data,
+  await rpc(admin, "publish_admin_league", {
+    p_id: competition,
     p_expected_version: 1,
-    p_number: 1,
-    p_display_name: "1. Spieltag",
-    p_status: "published",
-  });
-  await admin.schema("api").rpc("transition_league_season", {
-    p_id: competition.data,
-    p_expected_version: 1,
-    p_status: "published",
   });
   const owner = make("owner");
-  await owner.auth.signInWithPassword({ email: "owner@example.test", password: "LocalFixture42!" });
-  const round = await owner.schema("api").rpc("create_round", {
+  const ownerLogin = await owner.auth.signInWithPassword({
+    email: "owner@example.test",
+    password: "LocalFixture42!",
+  });
+  if (ownerLogin.error) throw ownerLogin.error;
+  const round = await rpc(owner, "create_round", {
     p_name: `Lab Runde ${suffix}`,
-    p_league_season_id: competition.data,
+    p_league_season_id: competition,
     p_nickname: "Lab Owner",
     p_idempotency_key: crypto.randomUUID(),
   });
-  return { roundId: round.data };
+  return { roundId: round };
 }
 
 function run(command, args) {
@@ -192,7 +187,9 @@ try {
   const runTimeoutMs = Number(process.env.LH_TIMEOUT_MS ?? 90_000);
   const evidence = {
     generatedAt: new Date().toISOString(),
-    lighthouse: "13.4.0",
+    lighthouse: JSON.parse(
+      await readFile(join(root, "node_modules", "lighthouse", "package.json"), "utf8"),
+    ).version,
     chromium: chromium.executablePath(),
     lab: lighthouseLab,
     routes: [],
@@ -224,6 +221,9 @@ try {
             runTimeoutMs,
             `${route.name} run ${index + 1} attempt ${attempt}`,
           );
+          if (result.lhr.runtimeError || result.lhr.audits["http-status-code"]?.score === 0) {
+            throw new Error(`Lighthouse could not load ${route.name}`);
+          }
           const audits = result.lhr.audits;
           completedRun = {
             performance: result.lhr.categories.performance.score,
@@ -264,6 +264,7 @@ try {
         medians.cls <= lighthouseLab.budgets.cls &&
         medians.tbtMs <= lighthouseLab.budgets.tbtMs,
     });
+    console.log(JSON.stringify(evidence.routes.at(-1)));
   }
   await mkdir(join(root, "docs", "quality", "artifacts"), { recursive: true });
   const artifactName =

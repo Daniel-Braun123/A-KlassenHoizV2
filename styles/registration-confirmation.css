@@ -1,0 +1,114 @@
+.auth-form.registration-confirmation {
+  border-color: var(--color-brand);
+  background: var(--color-success-soft);
+  gap: var(--space-6);
+}
+
+.registration-confirmation__intro {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.registration-confirmation p,
+.registration-confirmation h2 {
+  margin: 0;
+}
+
+.registration-confirmation h2 {
+  font-size: var(--font-size-xl);
+}
+
+.registration-confirmation__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-brand);
+}
+
+.registration-confirmation__icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.registration-confirmation__email {
+  font-size: var(--font-size-lg);
+  font-weight: 760;
+  overflow-wrap: anywhere;
+}
+
+.registration-confirmation__providers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.registration-confirmation__provider {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 3rem;
+  padding: var(--space-3);
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: none;
+  text-align: center;
+}
+
+.registration-confirmation__provider svg {
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Mail providers keep their brand palette in both application themes. */
+.registration-confirmation__provider--gmail {
+  color: #b3261e;
+  background: #fff;
+  border-color: #e7b9b5;
+}
+
+.registration-confirmation__provider--gmail:hover {
+  background: #fff1f0;
+  border-color: #c5221f;
+}
+
+.registration-confirmation__provider--outlook {
+  color: #fff;
+  background: #005a9e;
+  border-color: #005a9e;
+}
+
+.registration-confirmation__provider--outlook:hover {
+  background: #004578;
+  border-color: #004578;
+}
+
+.registration-confirmation__help {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.registration-confirmation__help form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.registration-confirmation__cooldown {
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .registration-confirmation__providers {
+    grid-template-columns: 1fr;
+  }
+}
