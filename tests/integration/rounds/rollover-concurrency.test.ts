@@ -1,5 +1,4 @@
 import { execFile } from "node:child_process";
-import { resolve } from "node:path";
 import { promisify } from "node:util";
 import { expect, it } from "vitest";
 import { createPredictionFixture, createPublishedCompetition } from "../../helpers/fixtures";
@@ -7,12 +6,36 @@ import { createLocalActorClient } from "../../helpers/local-actors";
 import { finishMatchForLocalTest } from "../../helpers/local-database";
 
 const exec = promisify(execFile);
-const cli = resolve("node_modules/supabase/dist/supabase.js");
 const ownerId = "00000000-0000-4000-8000-000000000003";
 const memberId = "00000000-0000-4000-8000-000000000002";
 async function query(sql: string) {
-  // Deliberately use independent local DB connections for real row locks.
-  return exec(process.execPath, [cli, "db", "query", "--local", sql], { timeout: 25_000 });
+  // The CLI uses prepared statements and rejects BEGIN/SET/query/COMMIT batches.
+  // psql opens an independent connection for each competing transaction. Pin the
+  // Docker endpoint to the local engine, irrespective of the user's context.
+  const dockerHost =
+    process.platform === "win32"
+      ? "npipe:////./pipe/dockerDesktopLinuxEngine"
+      : "unix:///var/run/docker.sock";
+  return exec(
+    "docker",
+    [
+      "--host",
+      dockerHost,
+      "exec",
+      "supabase_db_A-KlassenHoizv2",
+      "psql",
+      "--username",
+      "postgres",
+      "--dbname",
+      "postgres",
+      "--no-psqlrc",
+      "--set",
+      "ON_ERROR_STOP=1",
+      "--command",
+      sql,
+    ],
+    { timeout: 25_000 },
+  );
 }
 function transaction(actor: string, name: string, sql: string) {
   return `begin; set local statement_timeout = '15s';
