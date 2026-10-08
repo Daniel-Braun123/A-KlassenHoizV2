@@ -8,6 +8,12 @@ import { finishMatchForLocalTest } from "../../helpers/local-database";
 const exec = promisify(execFile);
 const ownerId = "00000000-0000-4000-8000-000000000003";
 const memberId = "00000000-0000-4000-8000-000000000002";
+function queryFailure(error: unknown): string {
+  // execFile's message includes the SQL command (and statement_timeout).
+  // Check PostgreSQL's diagnostic rather than mistaking that option for a timeout.
+  if (error && typeof error === "object" && "stderr" in error) return String(error.stderr);
+  return String(error);
+}
 async function query(sql: string) {
   // The CLI uses prepared statements and rejects BEGIN/SET/query/COMMIT batches.
   // psql opens an independent connection for each competing transaction. Pin the
@@ -139,10 +145,10 @@ it.each(["join", "rotate"] as const)(
     ).toBe("fulfilled");
     expect(results[1].status).toBe("rejected");
     if (results[1].status === "rejected") {
-      expect(String(results[1].reason)).toMatch(
+      expect(queryFailure(results[1].reason)).toMatch(
         /Invitation unavailable|Invitations are unavailable after a season rollover/,
       );
-      expect(String(results[1].reason)).not.toMatch(/deadlock|timeout/i);
+      expect(queryFailure(results[1].reason)).not.toMatch(/deadlock|timeout/i);
     }
     const old = await f.owner
       .schema("api")

@@ -30,6 +30,10 @@ $env:SUPABASE_TEST_INBOX_URL = $values.INBUCKET_URL
 $browserBaseUrl = if ($env:PLAYWRIGHT_BASE_URL) { $env:PLAYWRIGHT_BASE_URL } else { 'http://127.0.0.1:3000' }
 $env:NEXT_PUBLIC_SITE_URL = $browserBaseUrl
 $env:NEXT_TELEMETRY_DISABLED = '1'
+if (-not $env:NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+    # Synthetic public key for the local push UI; no push messages are sent.
+    $env:NEXT_PUBLIC_VAPID_PUBLIC_KEY = 'BCLTyGqMvLIxGohc-UnmoGPChwYQO_nsmW4XE_V5KUVFFv8w3_p56tIOjOUuJXQtD1vXDK1UEfO0GaCZNJTUy0E'
+}
 
 if (-not $env:PLAYWRIGHT_WEB_SERVER_COMMAND) {
     & $nodeExecutable (Join-Path $repositoryRoot 'node_modules\next\dist\bin\next') build

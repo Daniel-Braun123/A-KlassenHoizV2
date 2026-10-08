@@ -38,7 +38,7 @@ test.describe("mobile subpage navigation", () => {
     ).toBeLessThanOrEqual(240);
 
     await page.goto("/profile/delete-account");
-    const accountLink = page.getByRole("link", { name: "Zurück zu Konto & Datenschutz" });
+    const accountLink = page.getByRole("link", { name: "Zurück zum Konto" });
     await expect(accountLink).toBeVisible();
     await expect(accountLink).toHaveAttribute("href", "/profile");
 

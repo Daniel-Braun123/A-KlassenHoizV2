@@ -21,18 +21,15 @@ test("authenticated mobile shell has one header and an account menu", async ({ p
 
   await trigger.click();
   await expect(page.getByRole("dialog", { name: "Profil und Darstellung" })).toBeVisible();
-  const accountLink = page.getByRole("link", { name: /Konto & Datenschutz/ });
+  const accountLink = page.getByRole("link", { name: "Konto", exact: true });
   await expect(accountLink).toBeVisible();
   await expect(page.getByRole("button", { name: "Abmelden" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Verwaltung/i })).toHaveCount(0);
 
   await accountLink.click();
   await expect(page).toHaveURL(/\/profile$/u);
-  await expect(page.getByRole("link", { name: "Datenschutzerklärung" })).toHaveAttribute(
-    "href",
-    "/legal/privacy",
-  );
-  await expect(page.getByRole("link", { name: "Kontolöschung" })).toHaveAttribute(
+  await expect(page.getByRole("heading", { name: "Kontoinformationen" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Zur Kontolöschung", exact: true })).toHaveAttribute(
     "href",
     "/profile/delete-account",
   );
