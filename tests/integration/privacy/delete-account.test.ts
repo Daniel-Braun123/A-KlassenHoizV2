@@ -49,6 +49,13 @@ describe("account deletion preparation", () => {
       p_user_agent: "Deletion integration test",
     });
     expect(pushRegistration.error).toBeNull();
+    // A global server-side revocation must leave the in-memory access token
+    // usable for the guarded database mutation and its idempotent retry.
+    const { data: sessionData } = await user.auth.getSession();
+    expect(sessionData.session).not.toBeNull();
+    expect(
+      (await admin.auth.admin.signOut(sessionData.session!.access_token, "global")).error,
+    ).toBeNull();
     const first = await user.schema("api").rpc("prepare_account_deletion");
     const second = await user.schema("api").rpc("prepare_account_deletion");
     expect(first.data).toBe(userId);

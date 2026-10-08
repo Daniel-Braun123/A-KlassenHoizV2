@@ -2,7 +2,7 @@ import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { ArchiveRoundDialog } from "@/components/rounds/archive-round-dialog";
 import { DeleteRoundDialog } from "@/components/rounds/delete-round-dialog";
-import { InvitationPanel } from "@/components/rounds/invitation-panel";
+import { RoundInvitationSettings } from "@/components/rounds/round-invitation-settings";
 import { MemberManagement } from "@/components/rounds/member-management";
 import { RoundSettingsForm } from "@/components/rounds/round-settings-form";
 import { TransferOwnershipDialog } from "@/components/rounds/transfer-ownership-dialog";
@@ -37,7 +37,11 @@ export default async function RoundSettingsPage({
           currentMembershipId={round.membership_id!}
           members={members}
         />
-        <InvitationPanel roundId={roundId} />
+        <RoundInvitationSettings
+          roundId={roundId}
+          hasSuccessor={Boolean(round.has_successor)}
+          successorRoundId={round.successor_round_id}
+        />
         <section className="admin-form">
           <h2>Besitz</h2>
           <p>Die Übertragung ersetzt dich atomar durch genau einen neuen Besitzer.</p>

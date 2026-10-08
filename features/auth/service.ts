@@ -6,12 +6,14 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   buildAuthCallbackUrl,
   buildOAuthCallbackUrl,
+  buildRegistrationCallbackUrl,
   normalizeAuthRedirect,
 } from "@/features/auth/redirects";
 import {
   oauthSignInSchema,
   passwordResetRequestSchema,
   registerSchema,
+  resendRegistrationSchema,
   signInSchema,
 } from "@/features/auth/schemas";
 import type {
@@ -33,7 +35,7 @@ export async function register(input: RegistrationInput): Promise<RegistrationRe
     password: parsed.password,
     options: {
       data: { display_name: parsed.displayName },
-      emailRedirectTo: buildAuthCallbackUrl(environment.NEXT_PUBLIC_SITE_URL, destination),
+      emailRedirectTo: buildRegistrationCallbackUrl(environment.NEXT_PUBLIC_SITE_URL, destination),
     },
   });
 
@@ -50,6 +52,28 @@ export async function register(input: RegistrationInput): Promise<RegistrationRe
 
   if (!data.session) return { kind: "submitted" };
   return { kind: "authenticated", destination };
+}
+
+export async function resendRegistration(input: unknown): Promise<void> {
+  const parsed = resendRegistrationSchema.parse(input);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: parsed.email,
+    options: {
+      emailRedirectTo: buildRegistrationCallbackUrl(
+        readServerEnvironment().NEXT_PUBLIC_SITE_URL,
+        normalizeAuthRedirect(parsed.next),
+      ),
+    },
+  });
+  // Keep existing and unknown accounts indistinguishable in the public response.
+  if (
+    isExistingRegistration(error) ||
+    ["user_not_found", "email_already_confirmed"].includes(error?.code ?? "")
+  )
+    return;
+  if (error) throw mapAuthError(error)!;
 }
 
 export async function signIn(input: SignInInput): Promise<string> {

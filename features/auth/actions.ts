@@ -6,18 +6,25 @@ import { ZodError } from "zod";
 
 import { actionFailure } from "@/lib/actions/result";
 import { ApplicationError } from "@/lib/actions/errors";
-import { completePasswordResetSchema } from "@/features/auth/schemas";
-import type { AuthActionState } from "@/features/auth/state";
+import {
+  completePasswordResetSchema,
+  registerSchema,
+  resendRegistrationSchema,
+} from "@/features/auth/schemas";
+import type { AuthActionState, RegistrationActionState } from "@/features/auth/state";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { normalizeAuthRedirect } from "./redirects";
 import {
   completePasswordReset,
   createGoogleAuthorizationUrl,
   register,
   requestPasswordReset,
+  resendRegistration,
   signIn,
   signOut,
 } from "@/features/auth/service";
 
-function failureState(error: unknown): AuthActionState {
+function failureState(error: unknown): Extract<AuthActionState, { status: "error" }> {
   const failure = actionFailure(
     error instanceof ZodError ? new ApplicationError("INVALID_INPUT", "Auth input invalid") : error,
   );
@@ -25,17 +32,19 @@ function failureState(error: unknown): AuthActionState {
 }
 
 export async function registerAction(
-  _previous: AuthActionState,
+  _previous: RegistrationActionState,
   formData: FormData,
-): Promise<AuthActionState> {
+): Promise<RegistrationActionState> {
   let result: Awaited<ReturnType<typeof register>>;
+  let input: ReturnType<typeof registerSchema.parse>;
   try {
-    result = await register({
+    input = registerSchema.parse({
       displayName: String(formData.get("displayName") ?? ""),
       email: String(formData.get("email") ?? ""),
       password: String(formData.get("password") ?? ""),
       next: String(formData.get("next") ?? ""),
     });
+    result = await register({ ...input, next: input.next ?? "" });
   } catch (error) {
     return failureState(error);
   }
@@ -43,12 +52,48 @@ export async function registerAction(
   if (result.kind === "submitted") {
     return {
       status: "success",
+      email: input.email,
+      displayName: input.displayName,
       message:
-        "Wenn für diese E-Mail-Adresse noch kein Konto besteht, erhältst du einen Bestätigungslink. Falls du bereits registriert bist, kannst du dich anmelden oder dein Passwort zurücksetzen.",
+        "Wenn für diese E-Mail-Adresse noch kein Konto besteht, erhältst du gleich einen Bestätigungslink.",
     };
   }
 
   redirect(result.destination as Route);
+}
+
+export async function resendRegistrationAction(
+  _previous: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
+  try {
+    await resendRegistration({
+      email: formData.get("email"),
+      next: String(formData.get("next") ?? ""),
+    });
+    return {
+      status: "success",
+      message:
+        "Falls deine Adresse noch bestätigt werden muss, erhältst du einen neuen Link. Prüfe dein Postfach.",
+    };
+  } catch (error) {
+    return failureState(error);
+  }
+}
+
+/** On returning to the original tab, only resume the account entered there. */
+export async function registrationDestinationAction(input: unknown): Promise<string | null> {
+  const parsed = resendRegistrationSchema.safeParse(input);
+  if (!parsed.success) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (
+    error ||
+    data.user?.email?.toLowerCase() !== parsed.data.email ||
+    !data.user?.email_confirmed_at
+  )
+    return null;
+  return normalizeAuthRedirect(parsed.data.next);
 }
 
 export async function signInAction(

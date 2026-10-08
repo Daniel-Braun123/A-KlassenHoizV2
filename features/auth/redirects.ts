@@ -5,6 +5,9 @@ export function normalizeAuthRedirect(value: string | null | undefined): string 
 
   try {
     const parsed = new URL(value, "https://a-klassenhoiz.invalid");
+    if (parsed.origin !== "https://a-klassenhoiz.invalid" || parsed.pathname.startsWith("//")) {
+      return "/start";
+    }
     return `${parsed.pathname}${parsed.search}${parsed.hash}`;
   } catch {
     return "/start";
@@ -14,6 +17,12 @@ export function normalizeAuthRedirect(value: string | null | undefined): string 
 export function buildAuthCallbackUrl(siteUrl: string, next: string): string {
   const callback = new URL("/auth/callback", siteUrl);
   callback.searchParams.set("next", normalizeAuthRedirect(next));
+  return callback.toString();
+}
+
+export function buildRegistrationCallbackUrl(siteUrl: string, next: string): string {
+  const callback = new URL(buildAuthCallbackUrl(siteUrl, next));
+  callback.searchParams.set("source", "register");
   return callback.toString();
 }
 

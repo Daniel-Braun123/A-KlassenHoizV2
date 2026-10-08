@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -89,6 +89,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_league_seasons"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["league_season_id"]
           },
           {
             foreignKeyName: "matches_away_club_id_fkey"
@@ -296,6 +303,13 @@ export type Database = {
             foreignKeyName: "round_memberships_round_id_fkey"
             columns: ["round_id"]
             isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
             referencedRelation: "round_overview"
             referencedColumns: ["round_id"]
           },
@@ -305,6 +319,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
           },
           {
             foreignKeyName: "round_memberships_round_id_fkey"
@@ -362,6 +383,13 @@ export type Database = {
             foreignKeyName: "profiles_last_active_round_fk"
             columns: ["last_active_round_id"]
             isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "profiles_last_active_round_fk"
+            columns: ["last_active_round_id"]
+            isOneToOne: false
             referencedRelation: "round_overview"
             referencedColumns: ["round_id"]
           },
@@ -371,6 +399,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "profiles_last_active_round_fk"
+            columns: ["last_active_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
           },
           {
             foreignKeyName: "profiles_last_active_round_fk"
@@ -439,6 +474,7 @@ export type Database = {
       }
       my_rounds: {
         Row: {
+          has_successor: boolean | null
           created_at: string | null
           id: string | null
           league_name: string | null
@@ -446,9 +482,11 @@ export type Database = {
           membership_id: string | null
           name: string | null
           nickname: string | null
+          predecessor_round_id: string | null
           role: Database["app"]["Enums"]["round_role"] | null
           season_label: string | null
           status: Database["app"]["Enums"]["round_status"] | null
+          successor_round_id: string | null
           version: number | null
         }
         Relationships: [
@@ -479,6 +517,62 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_league_seasons"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["league_season_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "matchday_prediction_sheet"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_overview"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_results"
+            referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "round_season_state"
+            referencedColumns: ["round_id"]
           },
         ]
       }
@@ -533,6 +627,13 @@ export type Database = {
             foreignKeyName: "round_memberships_round_id_fkey"
             columns: ["round_id"]
             isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
             referencedRelation: "round_overview"
             referencedColumns: ["round_id"]
           },
@@ -542,6 +643,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
           },
           {
             foreignKeyName: "round_memberships_round_id_fkey"
@@ -612,6 +720,13 @@ export type Database = {
             foreignKeyName: "round_memberships_round_id_fkey"
             columns: ["round_id"]
             isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
             referencedRelation: "round_overview"
             referencedColumns: ["round_id"]
           },
@@ -621,6 +736,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "round_memberships_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
           },
           {
             foreignKeyName: "round_memberships_round_id_fkey"
@@ -671,6 +793,13 @@ export type Database = {
             referencedRelation: "published_league_seasons"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "prediction_rounds_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["league_season_id"]
+          },
         ]
       }
       round_results: {
@@ -694,6 +823,18 @@ export type Database = {
           revision_no: number | null
           round_id: string | null
           updated_at: string | null
+        }
+        Relationships: []
+      }
+      round_rollover_options: {
+        Row: {
+          ends_on: string | null
+          league_name: string | null
+          league_season_id: string | null
+          league_short_name: string | null
+          season_label: string | null
+          source_round_id: string | null
+          starts_on: string | null
         }
         Relationships: []
       }
@@ -754,6 +895,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_league_seasons"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matchdays_league_season_id_fkey"
+            columns: ["league_season_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["league_season_id"]
           },
           {
             foreignKeyName: "matches_away_club_id_fkey"
@@ -913,6 +1061,13 @@ export type Database = {
             foreignKeyName: "predictions_round_id_fkey"
             columns: ["round_id"]
             isOneToOne: false
+            referencedRelation: "my_rounds"
+            referencedColumns: ["successor_round_id"]
+          },
+          {
+            foreignKeyName: "predictions_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
             referencedRelation: "round_overview"
             referencedColumns: ["round_id"]
           },
@@ -922,6 +1077,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "round_results"
             referencedColumns: ["round_id"]
+          },
+          {
+            foreignKeyName: "predictions_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "round_rollover_options"
+            referencedColumns: ["source_round_id"]
           },
           {
             foreignKeyName: "predictions_round_id_fkey"
@@ -1176,6 +1338,14 @@ export type Database = {
       revoke_support_access: {
         Args: { p_grant_id: string }
         Returns: undefined
+      }
+      rollover_round: {
+        Args: {
+          p_expected_version: number
+          p_source_round_id: string
+          p_target_league_season_id: string
+        }
+        Returns: string
       }
       rotate_round_invitation: {
         Args: { p_round_id: string; p_token_hash: string }
@@ -1783,6 +1953,7 @@ export type Database = {
           league_season_id: string
           name: string
           owner_membership_id: string
+          predecessor_round_id: string | null
           status: Database["app"]["Enums"]["round_status"]
           updated_at: string
           version: number
@@ -1794,6 +1965,7 @@ export type Database = {
           league_season_id: string
           name: string
           owner_membership_id: string
+          predecessor_round_id?: string | null
           status?: Database["app"]["Enums"]["round_status"]
           updated_at?: string
           version?: number
@@ -1805,6 +1977,7 @@ export type Database = {
           league_season_id?: string
           name?: string
           owner_membership_id?: string
+          predecessor_round_id?: string | null
           status?: Database["app"]["Enums"]["round_status"]
           updated_at?: string
           version?: number
@@ -1822,6 +1995,13 @@ export type Database = {
             columns: ["owner_membership_id"]
             isOneToOne: false
             referencedRelation: "round_memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prediction_rounds_predecessor_round_id_fkey"
+            columns: ["predecessor_round_id"]
+            isOneToOne: false
+            referencedRelation: "prediction_rounds"
             referencedColumns: ["id"]
           },
         ]

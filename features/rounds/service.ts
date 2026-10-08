@@ -1,12 +1,18 @@
 import "server-only";
 import { ApplicationError } from "@/lib/actions/errors";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createRoundSchema, roundIdSchema, updateRoundSchema } from "./schemas";
-import type { MyRound, RoundMember } from "./types";
+import {
+  createRoundSchema,
+  rolloverRoundSchema,
+  roundIdSchema,
+  updateRoundSchema,
+} from "./schemas";
+import type { MyRound, RoundMember, RoundRolloverOption } from "./types";
 
 function map(error: { code?: string; message?: string } | null) {
   if (!error) return;
   if (error.code === "42501") throw new ApplicationError("FORBIDDEN", error.message);
+  if (error.code === "P0003") throw new ApplicationError("RATE_LIMITED", error.message);
   if (error.code === "P0001" || error.code === "23505")
     throw new ApplicationError("CONFLICT", error.message);
   if (error.code === "22023" || error.code === "23514")
@@ -52,6 +58,19 @@ export async function listRoundMembers(id: string): Promise<RoundMember[]> {
   map(error);
   return data ?? [];
 }
+export async function listRoundRolloverOptions(id: string): Promise<RoundRolloverOption[]> {
+  const roundId = roundIdSchema.parse(id);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .schema("api")
+    .from("round_rollover_options")
+    .select("*")
+    .eq("source_round_id", roundId)
+    .order("starts_on")
+    .order("league_name");
+  map(error);
+  return data ?? [];
+}
 export async function createRound(input: unknown): Promise<string> {
   const value = createRoundSchema.parse(input);
   const supabase = await createSupabaseServerClient();
@@ -72,6 +91,17 @@ export async function updateRound(input: unknown): Promise<number> {
     p_expected_version: value.expectedVersion,
     p_name: value.name,
     p_league_season_id: value.leagueSeasonId,
+  });
+  map(error);
+  return data!;
+}
+export async function rolloverRound(input: unknown): Promise<string> {
+  const value = rolloverRoundSchema.parse(input);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.schema("api").rpc("rollover_round", {
+    p_source_round_id: value.sourceRoundId,
+    p_target_league_season_id: value.targetLeagueSeasonId,
+    p_expected_version: value.expectedVersion,
   });
   map(error);
   return data!;

@@ -61,9 +61,21 @@ export async function waitForLocalConfirmationLink(
           `${inboxUrl}/view/${encodeURIComponent(message.ID)}.html`,
         );
         const html = messageResponse.ok ? await messageResponse.text() : "";
-        const encodedHref = html.match(/href=["']([^"']+\/auth\/v1\/verify[^"']*)["']/iu)?.[1];
-        const href = encodedHref?.replaceAll("&amp;", "&");
-        if (href && new URL(href).searchParams.get("type") === type) return href;
+        const links = [...html.matchAll(/href=["']([^"']+)["']/giu)];
+        for (const link of links) {
+          const href = link[1]?.replaceAll("&amp;", "&");
+          if (!href?.startsWith("http")) continue;
+          const url = new URL(href);
+          if (
+            type === "signup" &&
+            url.pathname === "/auth/callback" &&
+            url.searchParams.get("source") === "register" &&
+            url.searchParams.has("token_hash")
+          )
+            return href;
+          if (url.pathname === "/auth/v1/verify" && url.searchParams.get("type") === type)
+            return href;
+        }
       }
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
