@@ -53,8 +53,13 @@ Lokale Browserprüfung am 15.09.2026: Smartphone (320/390 px), Desktop und dunkl
 Mit synthetischem lokalem Auth-Server funktionierten Bestätigung in einem frischen Browser,
 Sitzung nach Neuladen, Rückkehr in den ursprünglichen Tab, erneutes Senden, Adresskorrektur und
 Wiederherstellung nach einem verbrauchten Link. Axe meldete in der Bestätigungsansicht keine
-WCAG-A/AA-Verstöße. Der echte Supabase-/Mailpit-E2E-Lauf steht noch aus, da Docker lokal nicht
-verfügbar war; der Testserver ersetzt diese Integrationsprüfung nicht.
+WCAG-A/AA-Verstöße. Docker war auf dem lokalen Rechner nicht verfügbar.
+
+Am 08.10.2026 bestanden die echten Supabase-/Mailpit-E2E-Tests in einer isolierten
+GitHub-Actions-Umgebung: Bestätigung in einem frischen Browser und Adresskorrektur
+mit anschließendem Einladungsziel. Die Produktionsvorlage wurde an diesem Tag
+vollständig mit der Repository-Vorlage verglichen; sie ist identisch. Site URL
+und erlaubte Callback-Adressen passen zur Produktionsdomain `a-klassenhoiz.de`.
 
 Referenzen: [Supabase E-Mail-Vorlagen](https://supabase.com/docs/guides/auth/auth-email-templates),
 [Passwortbasierte Registrierung](https://supabase.com/docs/guides/auth/passwords).

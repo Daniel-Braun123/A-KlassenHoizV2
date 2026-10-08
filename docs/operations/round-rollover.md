@@ -40,4 +40,8 @@ Der lokale Supabase-Stack war am 16.09.2026 nicht erreichbar. Beim Release wurde
 die acht RLS-Prüfungen auf dem Produktionsschema ausgeführt. Jede Prüfung lief innerhalb
 einer zurückgerollten Transaktion; es blieben keine Testbenutzer oder Testligen zurück.
 Die neue API-Spalte wurde gegen frisch aus Produktion generierte Typen geprüft.
-Die lokalen Parallel- und vollständigen Saisonwechsel-Browsertests stehen weiterhin aus.
+Am 08.10.2026 bestand der isolierte lokale Supabase-Stack in GitHub Actions alle
+395 Datenbank-/RLS-Prüfungen und 26 Integrationstests. Dazu gehören die drei
+Paralleltests für Beitritt, Einladungslink-Erzeugung und Saisonwechsel. Der
+Saisonwechsel-Browsertest bestand ebenfalls mit echten lokalen Supabase-Daten;
+Produktionskonten und Produktionsdaten wurden dafür nicht verändert.
