@@ -15,7 +15,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+        include:
+          - project: chromium
+            browser: chromium
+          - project: firefox
+            browser: firefox
+          - project: webkit
+            browser: webkit
+          - project: mobile-chrome
+            browser: chromium
+          - project: mobile-safari
+            browser: webkit
     env:
       PLAYWRIGHT_HTML_OPEN: never
       PLAYWRIGHT_WEB_SERVER_COMMAND: npm run start
@@ -29,7 +39,7 @@ jobs:
           cache: npm
       - run: npm install --global npm@11.18.0
       - run: npm ci
-      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run db:start
       - name: Export local browser-test environment
         shell: pwsh
