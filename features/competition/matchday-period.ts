@@ -11,6 +11,16 @@ type MatchdayPeriod = Readonly<{
   endsOn: string;
 }>;
 
+export function compareMatchdays(
+  left: Readonly<{ phase: "first_leg" | "second_leg"; number: number }>,
+  right: Readonly<{ phase: "first_leg" | "second_leg"; number: number }>,
+): number {
+  return (
+    (left.phase === right.phase ? 0 : left.phase === "first_leg" ? -1 : 1) ||
+    left.number - right.number
+  );
+}
+
 function dateParts(value: string): Readonly<{ day: string; month: string; year: string }> {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/u.exec(value);
   if (!match) throw new RangeError(`Invalid date-only value: ${value}`);

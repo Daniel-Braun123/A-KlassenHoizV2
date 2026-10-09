@@ -9,6 +9,7 @@ import { ClubLogo } from "@/components/competition/club-logo";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MatchdaySelect } from "@/components/ui/matchday-select";
 import { Select } from "@/components/ui/select";
 import { setMatchResultsBatchAction } from "@/features/competition/result-actions";
 import {
@@ -17,6 +18,7 @@ import {
   berlinTimeLabel,
 } from "@/features/competition/schedule-display";
 import {
+  compareMatchdays,
   formatMatchdayOptionLabel,
   nearestMatchdayId,
 } from "@/features/competition/matchday-period";
@@ -316,19 +318,28 @@ export function ResultManager({ schedule }: Readonly<{ schedule: AdminScheduleRo
   const matchdays = useMemo(() => {
     const values = new Map<
       string,
-      { id: string; label: string; startsOn: string; endsOn: string }
+      {
+        id: string;
+        label: string;
+        number: number;
+        phase: AdminScheduleRow["phase"];
+        startsOn: string;
+        endsOn: string;
+      }
     >();
     for (const row of schedule) {
       if (row.league_id === selectedLeague && row.matchday_id && !values.has(row.matchday_id)) {
         values.set(row.matchday_id, {
           id: row.matchday_id,
           label: matchdayLabel(row),
+          number: row.matchday_number,
+          phase: row.phase,
           startsOn: row.starts_on,
           endsOn: row.ends_on,
         });
       }
     }
-    return [...values.values()];
+    return [...values.values()].toSorted(compareMatchdays);
   }, [schedule, selectedLeague]);
   const [selectedMatchday, setSelectedMatchday] = useState(() => {
     const firstLeagueId = leagues[0]?.id;
@@ -538,19 +549,12 @@ export function ResultManager({ schedule }: Readonly<{ schedule: AdminScheduleRo
             ))}
           </Select>
         ) : null}
-        <Select
-          label="Spieltag"
-          onChange={(event) =>
-            requestNavigation({ kind: "matchday", id: event.currentTarget.value })
-          }
-          value={selectedMatchday}
-        >
-          {matchdays.map((matchday) => (
-            <option key={matchday.id} value={matchday.id}>
-              {matchday.label}
-            </option>
-          ))}
-        </Select>
+        <MatchdaySelect
+          disabled={pending || !matchdays.length}
+          onSelect={(id) => requestNavigation({ kind: "matchday", id })}
+          options={matchdays}
+          selectedId={selectedMatchday}
+        />
       </div>
 
       {matches.length === 0 ? (

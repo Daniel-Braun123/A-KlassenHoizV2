@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, type ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 
-import { Icon } from "@/components/ui/icon";
+import { MatchdaySelect } from "@/components/ui/matchday-select";
 import { Select } from "@/components/ui/select";
+import { compareMatchdays } from "@/features/competition/matchday-period";
 
 export type MatchdayPhase = "first_leg" | "second_leg";
 
@@ -33,7 +34,7 @@ function optionLabel(option: MatchdayOption): string {
 export function MatchdaySelector({
   disabled = false,
   onSelect,
-  options,
+  options: unsortedOptions,
   selectedId,
 }: Readonly<{
   disabled?: boolean;
@@ -41,21 +42,21 @@ export function MatchdaySelector({
   options: MatchdayOption[];
   selectedId: string;
 }>) {
+  const options = unsortedOptions.toSorted(compareMatchdays);
   const selectedOption = options.find((option) => option.id === selectedId) ?? options[0];
-  const selectedIndex = selectedOption
-    ? options.findIndex((option) => option.id === selectedOption.id)
-    : -1;
-  const previousOption = selectedIndex > 0 ? options[selectedIndex - 1] : undefined;
-  const nextOption = selectedIndex >= 0 ? options[selectedIndex + 1] : undefined;
   const availablePhases = (["first_leg", "second_leg"] as const).filter((phase) =>
     options.some((option) => option.phase === phase),
   );
-  const matchdayId = useId();
 
   if (!selectedOption) return null;
   const currentOption = selectedOption;
 
-  const phaseOptions = options.filter((option) => option.phase === currentOption.phase);
+  const navigationOptions = options.map((option) => ({
+    ...option,
+    label: optionLabel(option),
+    accessibleLabel: optionAccessibleName(option),
+  }));
+  const phaseOptions = navigationOptions.filter((option) => option.phase === currentOption.phase);
   const showPhaseSelector = availablePhases.includes("second_leg");
 
   function selectPhase(event: ChangeEvent<HTMLSelectElement>): void {
@@ -87,54 +88,13 @@ export function MatchdaySelector({
         </div>
       ) : null}
 
-      <div className="matchday-switcher__matchday">
-        <label className="matchday-switcher__label" htmlFor={matchdayId}>
-          Spieltag
-        </label>
-        <div className="matchday-switcher__controls">
-          <button
-            aria-label={
-              previousOption
-                ? `Vorheriger Spieltag: ${optionAccessibleName(previousOption)}`
-                : "Kein vorheriger Spieltag"
-            }
-            className="matchday-switcher__step matchday-switcher__step--previous"
-            disabled={disabled || !previousOption}
-            onClick={() => previousOption && onSelect(previousOption.id)}
-            type="button"
-          >
-            <Icon className="icon" name="chevron-right" />
-          </button>
-
-          <select
-            className="matchday-switcher__select"
-            disabled={disabled}
-            id={matchdayId}
-            onChange={(event) => onSelect(event.currentTarget.value)}
-            value={currentOption.id}
-          >
-            {phaseOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {optionLabel(option)}
-              </option>
-            ))}
-          </select>
-
-          <button
-            aria-label={
-              nextOption
-                ? `Nächster Spieltag: ${optionAccessibleName(nextOption)}`
-                : "Kein nächster Spieltag"
-            }
-            className="matchday-switcher__step"
-            disabled={disabled || !nextOption}
-            onClick={() => nextOption && onSelect(nextOption.id)}
-            type="button"
-          >
-            <Icon className="icon" name="chevron-right" />
-          </button>
-        </div>
-      </div>
+      <MatchdaySelect
+        disabled={disabled}
+        navigationOptions={navigationOptions}
+        onSelect={onSelect}
+        options={phaseOptions}
+        selectedId={currentOption.id}
+      />
     </div>
   );
 }

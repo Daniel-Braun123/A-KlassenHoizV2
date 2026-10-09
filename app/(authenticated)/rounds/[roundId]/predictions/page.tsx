@@ -3,6 +3,7 @@ import { PredictionWorkspace } from "@/components/predictions/prediction-workspa
 import { getMyRound } from "@/features/rounds/service";
 import { listPredictionSheet, listVisiblePredictions } from "@/features/predictions/service";
 import {
+  compareMatchdays,
   formatMatchdayOptionLabel,
   nearestMatchdayId,
 } from "@/features/competition/matchday-period";
@@ -45,7 +46,7 @@ export default async function PredictionsPage({
         },
       ];
     })
-    .sort((a, b) => a.startsOn.localeCompare(b.startsOn) || a.number - b.number);
+    .toSorted(compareMatchdays);
   const selectedId = nearestMatchdayId(options, query.matchday);
   const matches = selectedId ? (grouped.get(selectedId) ?? []) : [];
 

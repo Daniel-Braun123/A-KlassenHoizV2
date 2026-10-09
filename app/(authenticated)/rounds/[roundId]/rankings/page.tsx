@@ -3,6 +3,7 @@ import { ResponsiveRanking } from "@/components/rankings/responsive-ranking";
 import { listMatchdayRanking, listOverallRanking } from "@/features/rankings/service";
 import { getMyRound } from "@/features/rounds/service";
 import { formatMatchdayOptionLabel } from "@/features/competition/matchday-period";
+import { listPredictionSheet } from "@/features/predictions/service";
 
 export default async function RankingsPage({
   params,
@@ -12,11 +13,13 @@ export default async function RankingsPage({
   searchParams: Promise<{ matchday?: string }>;
 }) {
   const [{ roundId }, query] = await Promise.all([params, searchParams]);
-  const [round, overall, days] = await Promise.all([
+  const [round, overall, days, sheet] = await Promise.all([
     getMyRound(roundId),
     listOverallRanking(roundId),
     listMatchdayRanking(roundId),
+    listPredictionSheet(roundId),
   ]);
+  const phasesByMatchday = new Map(sheet.map((row) => [row.matchday_id, row.phase]));
   const matchdays = [
     ...new Map(
       days.flatMap((row) =>
@@ -26,6 +29,10 @@ export default async function RankingsPage({
                 row.matchday_id,
                 {
                   id: row.matchday_id,
+                  number: row.matchday_number ?? 0,
+                  phase:
+                    phasesByMatchday.get(row.matchday_id) ??
+                    (row.display_name?.startsWith("Rückrunde") ? "second_leg" : "first_leg"),
                   label: formatMatchdayOptionLabel(
                     row.display_name || `${row.matchday_number}. Spieltag`,
                   ),

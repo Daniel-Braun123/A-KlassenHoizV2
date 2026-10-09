@@ -141,7 +141,7 @@ describe("PredictionWorkspace", () => {
     const view = render(
       <PredictionWorkspace
         matches={matches}
-        options={options}
+        options={[options[2]!, options[1]!, options[0]!]}
         roundId="20000000-0000-4000-8000-000000000001"
         selectedId="30000000-0000-4000-8000-000000000002"
         visible={[]}
@@ -161,6 +161,11 @@ describe("PredictionWorkspace", () => {
     const matchdaySelect = screen.getByRole("combobox", { name: "Spieltag" });
     expect(phaseSelect).toHaveValue("first_leg");
     expect(within(matchdaySelect).getAllByRole("option")).toHaveLength(2);
+    expect(
+      within(matchdaySelect)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["Spieltag 1", "Spieltag 2 · offen"]);
     expect(within(matchdaySelect).queryByText("Rückrunde · Spieltag 1")).not.toBeInTheDocument();
 
     fireEvent.change(phaseSelect, { target: { value: "second_leg" } });

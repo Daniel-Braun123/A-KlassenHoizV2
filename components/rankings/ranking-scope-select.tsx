@@ -4,11 +4,14 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { Select } from "@/components/ui/select";
+import { MatchdaySelect } from "@/components/ui/matchday-select";
+import { compareMatchdays } from "@/features/competition/matchday-period";
 
 export type RankingScopeOption = Readonly<{
   id: string;
   label: string;
+  number: number;
+  phase: "first_leg" | "second_leg";
 }>;
 
 export function RankingScopeSelect({
@@ -25,28 +28,20 @@ export function RankingScopeSelect({
 
   return (
     <div className="ranking-toolbar">
-      <Select
-        aria-busy={pending}
-        className="ranking-toolbar__select"
+      <MatchdaySelect
+        busy={pending}
         disabled={pending}
         label="Rangliste"
-        onChange={(event) => {
-          const value = event.currentTarget.value;
+        onSelect={(value) => {
           const href =
             value === "overall"
               ? `/rounds/${roundId}/rankings`
               : `/rounds/${roundId}/rankings?matchday=${encodeURIComponent(value)}`;
           startTransition(() => router.push(href as Route));
         }}
-        value={selected}
-      >
-        <option value="overall">Gesamt</option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.label}
-          </option>
-        ))}
-      </Select>
+        options={[{ id: "overall", label: "Gesamt" }, ...options.toSorted(compareMatchdays)]}
+        selectedId={selected}
+      />
     </div>
   );
 }

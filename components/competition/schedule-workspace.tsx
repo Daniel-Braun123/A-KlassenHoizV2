@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DismissibleSettingsScope } from "@/components/ui/dismissible-settings-scope";
 import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
+import { MatchdaySelect } from "@/components/ui/matchday-select";
 import { Select } from "@/components/ui/select";
 import {
   createMatchSimpleAction,
@@ -29,6 +30,7 @@ import {
   defaultKickoffInputValue,
 } from "@/features/competition/schedule-display";
 import {
+  compareMatchdays,
   formatMatchdayOptionLabel,
   formatMatchdayPeriod,
   nearestMatchdayId,
@@ -95,11 +97,7 @@ function toMatchdays(schedule: AdminScheduleRow[]): Matchday[] {
       version: row.matchday_version,
     });
   }
-  return [...grouped.values()].sort(
-    (left, right) =>
-      (left.phase === right.phase ? 0 : left.phase === "first_leg" ? -1 : 1) ||
-      left.number - right.number,
-  );
+  return [...grouped.values()].toSorted(compareMatchdays);
 }
 
 type MatchDateGroup = Readonly<{
@@ -196,51 +194,18 @@ function CreateMatchdayForm({
   );
 }
 
-function PhaseOverview({
-  basePath,
+function PhaseCreation({
   leagueId,
   matchdays,
   phase,
-  selectedMatchdayId,
 }: Readonly<{
-  basePath: string;
   leagueId: string;
   matchdays: Matchday[];
   phase: MatchdayPhase;
-  selectedMatchdayId: string | undefined;
 }>) {
-  const router = useRouter();
-  const days = matchdays.filter((day) => day.phase === phase);
-  const selectedValue = days.some((day) => day.id === selectedMatchdayId) ? selectedMatchdayId : "";
-
   return (
     <section className="admin-form schedule-phase-picker" aria-labelledby={`${phase}-heading`}>
       <h4 id={`${phase}-heading`}>{phaseLabels[phase]}</h4>
-      <Select
-        disabled={!days.length}
-        label="Spieltag auswählen"
-        onChange={(event) => {
-          const matchdayId = event.currentTarget.value;
-          if (!matchdayId) return;
-          router.push(
-            `${basePath}?matchday=${encodeURIComponent(matchdayId)}#selected-matchday-heading` as Route,
-          );
-        }}
-        value={selectedValue}
-      >
-        {days.length ? (
-          <option disabled hidden value="">
-            Spieltag auswählen
-          </option>
-        ) : (
-          <option value="">Noch kein Spieltag</option>
-        )}
-        {days.map((day) => (
-          <option key={day.id} value={day.id}>
-            {formatMatchdayOptionLabel(day.displayName)}
-          </option>
-        ))}
-      </Select>
       <CreateMatchdayForm leagueId={leagueId} matchdays={matchdays} phase={phase} />
     </section>
   );
@@ -585,6 +550,7 @@ export function ScheduleWorkspace({
   selectedLeague: AdminLeagueRow;
   selectedMatchdayId: string | undefined;
 }>) {
+  const router = useRouter();
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -607,20 +573,25 @@ export function ScheduleWorkspace({
       />
       <DismissibleSettingsScope className="schedule-admin-layout">
         <aside className="schedule-matchday-navigation" aria-label="Spieltage">
-          <PhaseOverview
-            basePath={basePath}
-            leagueId={selectedLeague.id}
-            matchdays={matchdays}
-            phase="first_leg"
-            selectedMatchdayId={selectedDay?.id}
+          <MatchdaySelect
+            disabled={!matchdays.length}
+            onSelect={(id) =>
+              router.push(
+                `${basePath}?matchday=${encodeURIComponent(id)}#selected-matchday-heading` as Route,
+              )
+            }
+            options={
+              matchdays.length
+                ? matchdays.map((day) => ({
+                    id: day.id,
+                    label: formatMatchdayOptionLabel(day.displayName),
+                  }))
+                : [{ id: "", label: "Noch kein Spieltag" }]
+            }
+            selectedId={selectedDay?.id ?? ""}
           />
-          <PhaseOverview
-            basePath={basePath}
-            leagueId={selectedLeague.id}
-            matchdays={matchdays}
-            phase="second_leg"
-            selectedMatchdayId={selectedDay?.id}
-          />
+          <PhaseCreation leagueId={selectedLeague.id} matchdays={matchdays} phase="first_leg" />
+          <PhaseCreation leagueId={selectedLeague.id} matchdays={matchdays} phase="second_leg" />
         </aside>
 
         {selectedDay ? (

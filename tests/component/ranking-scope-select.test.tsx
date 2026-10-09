@@ -1,7 +1,10 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { RankingScopeSelect } from "@/components/rankings/ranking-scope-select";
+import {
+  RankingScopeSelect,
+  type RankingScopeOption,
+} from "@/components/rankings/ranking-scope-select";
 
 const mocks = vi.hoisted(() => ({ push: vi.fn() }));
 
@@ -14,12 +17,63 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-const options = [
-  { id: "30000000-0000-4000-8000-000000000001", label: "Hinrunde · Spieltag 1" },
-  { id: "30000000-0000-4000-8000-000000000002", label: "Hinrunde · Spieltag 2" },
+const options: RankingScopeOption[] = [
+  {
+    id: "30000000-0000-4000-8000-000000000001",
+    label: "Hinrunde · Spieltag 1",
+    number: 1,
+    phase: "first_leg",
+  },
+  {
+    id: "30000000-0000-4000-8000-000000000002",
+    label: "Hinrunde · Spieltag 2",
+    number: 2,
+    phase: "first_leg",
+  },
 ];
 
 describe("RankingScopeSelect", () => {
+  it("ordnet beide Runden und navigiert mit Pfeilen über die Rundengrenze", async () => {
+    const secondLeg: RankingScopeOption = {
+      id: "return-1",
+      label: "Rückrunde · Spieltag 1",
+      number: 1,
+      phase: "second_leg",
+    };
+    const { rerender } = render(
+      <RankingScopeSelect
+        options={[secondLeg, options[1]!, options[0]!]}
+        roundId="round"
+        selected={options[1]!.id}
+      />,
+    );
+    expect(screen.getAllByRole("combobox")).toHaveLength(1);
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
+      "Gesamt",
+      "Hinrunde · Spieltag 1",
+      "Hinrunde · Spieltag 2",
+      "Rückrunde · Spieltag 1",
+    ]);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Nächster Spieltag: Rückrunde · Spieltag 1" }),
+    );
+    await waitFor(() =>
+      expect(mocks.push).toHaveBeenLastCalledWith("/rounds/round/rankings?matchday=return-1"),
+    );
+    rerender(
+      <RankingScopeSelect options={[secondLeg, ...options]} roundId="round" selected="return-1" />,
+    );
+    expect(screen.getByRole("button", { name: "Kein nächster Spieltag" })).toBeDisabled();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Vorheriger Spieltag: Hinrunde · Spieltag 2" }),
+    );
+    await waitFor(() =>
+      expect(mocks.push).toHaveBeenLastCalledWith(
+        `/rounds/round/rankings?matchday=${options[1]!.id}`,
+      ),
+    );
+  });
+
   it("bietet Gesamt- und Spieltagsranglisten in genau einem Dropdown an", () => {
     render(
       <RankingScopeSelect

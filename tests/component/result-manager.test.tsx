@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import Link from "next/link";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -83,6 +83,48 @@ const schedule = [
 ];
 
 describe("ResultManager", () => {
+  it("sortiert beide Runden und schützt ungespeicherte Ergebnisse beim Pfeilwechsel", async () => {
+    const firstLeg = match({
+      display_name: "Hinrunde · Spieltag 2",
+      matchday_number: 2,
+      starts_on: "2099-01-01",
+      ends_on: "2099-01-02",
+    });
+    const secondLeg = match({
+      display_name: "Rückrunde · Spieltag 1",
+      phase: "second_leg",
+      matchday_id: "return-1",
+      match_id: "return-match",
+      home_club_name: "FC Rückrunde",
+      starts_on: "2099-01-08",
+      ends_on: "2099-01-09",
+    });
+    render(<ResultManager schedule={[secondLeg, firstLeg]} />);
+    const select = screen.getByRole("combobox", { name: "Spieltag" });
+    expect(screen.queryByRole("combobox", { name: "Runde" })).not.toBeInTheDocument();
+    expect(
+      within(select)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["Hinrunde · Spieltag 2", "Rückrunde · Spieltag 1"]);
+    expect(select).toHaveValue(firstLeg.matchday_id);
+    fireEvent.change(screen.getByLabelText("Tore FC Heim"), { target: { value: "1" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Nächster Spieltag: Rückrunde · Spieltag 1" }),
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Ungespeicherte Änderungen" }),
+    ).toBeInTheDocument();
+    expect(select).toHaveValue(firstLeg.matchday_id);
+    fireEvent.click(screen.getByRole("button", { name: "Änderungen verwerfen" }));
+    await waitFor(() => expect(select).toHaveValue("return-1"));
+    expect(screen.getByRole("button", { name: "Kein nächster Spieltag" })).toBeDisabled();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Vorheriger Spieltag: Hinrunde · Spieltag 2" }),
+    );
+    expect(select).toHaveValue(firstLeg.matchday_id);
+  });
+
   it("zeigt Spiele datumsweise kompakt und nur einen gemeinsamen Speicherbutton", () => {
     const { container } = render(<ResultManager schedule={schedule} />);
 
