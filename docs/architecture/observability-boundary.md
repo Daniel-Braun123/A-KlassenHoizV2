@@ -11,6 +11,14 @@
 > bleiben verboten. Einladungs-Tokens, Objekt-IDs, Query-Parameter und Fragmente werden clientseitig
 > vor jeder Messwertübertragung entfernt.
 
+> **Aktualisierung vom 9. Oktober 2026:** Der Projekteigentümer beauftragt die
+> Wiederherstellung der ausgefallenen Vercel-Besucherstatistik. Zusätzlich ist damit
+> Vercel Web Analytics für anonyme, aggregierte Besucher- und Seitenaufrufzahlen
+> freigegeben. App-Konten werden nicht verknüpft, eigene Produkt-Ereignisse werden
+> verworfen. Seiten-URLs werden wie bei Speed Insights redigiert; die Referrer-Policy
+> begrenzt ausgehende Referrer auch bei Navigation innerhalb der Anwendung auf den
+> Ursprung. Session Replay und die Übertragung privater URL-Bestandteile bleiben verboten.
+
 ## V1 erhebt keine Produktbeobachtung
 
 A-KlassenHoiz V1 integriert weder Produktanalytics noch Real-User Monitoring (RUM), Session Replay,

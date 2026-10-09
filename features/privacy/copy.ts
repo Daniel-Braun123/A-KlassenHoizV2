@@ -41,7 +41,7 @@ export const privacyCopy = {
     },
   ],
   analytics:
-    "Zur technischen Leistungsüberwachung verwendet A-KlassenHoiz Vercel Speed Insights. Dabei werden anonyme Web-Vitals und technische Angaben wie Route, Browser-, Geräte- und Netzwerkklasse sowie Land verarbeitet. Einladungs-Tokens, interne Objekt-IDs, URL-Parameter und Fragmente werden vor der Übertragung entfernt; Produktanalytics und Sitzungsaufzeichnungen finden nicht statt.",
+    "A-KlassenHoiz verwendet Vercel Web Analytics zur anonymen, aggregierten Zählung von Besuchern und Seitenaufrufen sowie Vercel Speed Insights zur technischen Leistungsüberwachung. Dabei werden Seitenrouten, anonyme Web-Vitals und technische Angaben wie Browser-, Geräte- und Netzwerkklasse sowie Land verarbeitet. Die Besucherzählung verwendet keine Tracking-Cookies und wird nicht mit deinem App-Konto verknüpft. Einladungs-Tokens, interne Objekt-IDs, URL-Parameter und Fragmente werden aus Seitenadressen entfernt; ausgehende Referrer der Anwendung werden auf ihre Herkunfts-Domain begrenzt. Individuelle Nutzerprofile, benutzerdefinierte Produkt-Ereignisse und Sitzungsaufzeichnungen werden nicht erstellt.",
   transfers:
     "Einzelne Anbieter können Daten auch außerhalb der Europäischen Union beziehungsweise des Europäischen Wirtschaftsraums verarbeiten. Soweit erforderlich, stützen die Anbieter solche Übermittlungen auf geeignete Garantien wie Standardvertragsklauseln oder einen anwendbaren Angemessenheitsbeschluss. Maßgeblich sind ergänzend die Datenschutz- und Auftragsverarbeitungsbedingungen des jeweiligen Anbieters.",
   retention:
