@@ -21,6 +21,7 @@ import {
   deleteMatchSimpleAction,
   deleteMatchdaySimpleAction,
   moveMatchdayPhaseAction,
+  rescheduleMatchAction,
   updateMatchdayPeriodAction,
   updateMatchSimpleAction,
 } from "@/features/competition/schedule-actions";
@@ -406,6 +407,42 @@ function CreateMatchForm({
   );
 }
 
+function RescheduleMatchForm({
+  leagueId,
+  row,
+}: Readonly<{ leagueId: string; row: AdminScheduleRow }>) {
+  const [state, action, pending] = useActionState(
+    rescheduleMatchAction,
+    initialCompetitionActionState,
+  );
+
+  return (
+    <form action={action} className="admin-form-grid match-admin-item__edit">
+      <div>
+        <strong>Spiel verschieben</strong>
+        <p>
+          Der Spieltag und vorhandene Tipps bleiben erhalten. Der neue Termin darf außerhalb des
+          Spieltagszeitraums liegen.
+        </p>
+      </div>
+      <input name="leagueId" type="hidden" value={leagueId} />
+      <input name="id" type="hidden" value={row.match_id!} />
+      <input name="expectedVersion" type="hidden" value={row.match_version!} />
+      <Input
+        defaultValue={berlinInput(row.kickoff_at!)}
+        label="Neuer Anpfiff"
+        name="kickoffAt"
+        type="datetime-local"
+        required
+      />
+      <Button disabled={pending} type="submit" variant="secondary">
+        {pending ? "Wird verschoben …" : "Spiel verschieben"}
+      </Button>
+      <ActionMessage state={state} />
+    </form>
+  );
+}
+
 function ExistingMatchForm({
   clubs,
   leagueId,
@@ -457,11 +494,12 @@ function ExistingMatchForm({
         </span>
       </summary>
       <div className="match-admin-item__panel">
+        {!row.decision ? <RescheduleMatchForm leagueId={leagueId} row={row} /> : null}
         {locked ? (
           <p className="admin-form__warning">
             {row.decision
               ? "Für dieses Spiel liegt bereits ein Ergebnis vor. Korrekturen erfolgen im Ergebnisbereich."
-              : "Für dieses Spiel liegen Tipps vor. Spielpaarung, Anpfiff und Löschen sind gesperrt."}
+              : "Für dieses Spiel liegen Tipps vor. Spielpaarung und Löschen sind gesperrt; den Termin kannst du verschieben."}
           </p>
         ) : (
           <>

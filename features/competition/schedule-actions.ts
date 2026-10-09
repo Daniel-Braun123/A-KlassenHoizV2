@@ -12,6 +12,7 @@ import {
   deleteMatchSimple,
   deleteMatchdaySimple,
   moveMatchdayPhase,
+  rescheduleMatch,
   updateMatchdayPeriod,
   updateMatch,
   updateMatchSimple,
@@ -142,6 +143,23 @@ export async function updateMatchSimpleAction(
     });
     revalidateScheduleAdmin(data.get("leagueId"));
     return competitionSuccess("Das Spiel wurde aktualisiert.");
+  } catch (error) {
+    return competitionFailure(error);
+  }
+}
+
+export async function rescheduleMatchAction(
+  _: CompetitionActionState,
+  data: FormData,
+): Promise<CompetitionActionState> {
+  try {
+    await rescheduleMatch({
+      id: data.get("id"),
+      expectedVersion: data.get("expectedVersion"),
+      kickoffAt: kickoffIso(data.get("kickoffAt")),
+    });
+    revalidateScheduleAdmin(data.get("leagueId"));
+    return competitionSuccess("Das Spiel wurde verschoben. Vorhandene Tipps bleiben erhalten.");
   } catch (error) {
     return competitionFailure(error);
   }

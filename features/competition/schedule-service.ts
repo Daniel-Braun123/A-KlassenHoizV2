@@ -8,6 +8,7 @@ import {
   moveMatchdayPhaseSchema,
   updateMatchdayPeriodSchema,
   updateSimpleMatchSchema,
+  rescheduleMatchSchema,
 } from "./schedule-schemas";
 import { appAdminClientOrNull, requireAppAdmin, throwCompetitionError } from "./server";
 import type { ScheduleRow } from "./types";
@@ -234,6 +235,18 @@ export async function updateMatchSimple(input: unknown): Promise<number> {
     p_away_club_id: value.awayClubId,
     p_kickoff_at: value.kickoffAt,
     p_status: value.status,
+  });
+  throwCompetitionError(error);
+  return data!;
+}
+
+export async function rescheduleMatch(input: unknown): Promise<number> {
+  const value = rescheduleMatchSchema.parse(input);
+  const supabase = await requireAppAdmin();
+  const { data, error } = await supabase.schema("api").rpc("reschedule_match", {
+    p_id: value.id,
+    p_expected_version: value.expectedVersion,
+    p_kickoff_at: value.kickoffAt,
   });
   throwCompetitionError(error);
   return data!;

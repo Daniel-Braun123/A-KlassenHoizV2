@@ -1331,6 +1331,14 @@ export type Database = {
         Args: { p_membership_id: string; p_round_id: string }
         Returns: undefined
       }
+      reschedule_match: {
+        Args: {
+          p_expected_version: number
+          p_id: string
+          p_kickoff_at: string
+        }
+        Returns: number
+      }
       revoke_round_invitation: {
         Args: { p_round_id: string }
         Returns: undefined
@@ -2660,4 +2668,3 @@ export const Constants = {
     },
   },
 } as const
-

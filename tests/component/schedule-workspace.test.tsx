@@ -1,10 +1,10 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ScheduleWorkspace } from "@/components/competition/schedule-workspace";
 import type { AdminLeagueRow, AdminScheduleRow } from "@/features/competition/schedule-service";
 
-const mocks = vi.hoisted(() => ({ push: vi.fn() }));
+const mocks = vi.hoisted(() => ({ push: vi.fn(), reschedule: vi.fn() }));
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock("@/components/competition/bfv-schedule-import", () => ({ BfvScheduleImport: () => null }));
@@ -14,6 +14,7 @@ vi.mock("@/features/competition/schedule-actions", () => ({
   deleteMatchSimpleAction: vi.fn(),
   deleteMatchdaySimpleAction: vi.fn(),
   moveMatchdayPhaseAction: vi.fn(),
+  rescheduleMatchAction: mocks.reschedule,
   updateMatchdayPeriodAction: vi.fn(),
   updateMatchSimpleAction: vi.fn(),
 }));
@@ -39,7 +40,85 @@ function day(id: string, number: number, phase: AdminScheduleRow["phase"]): Admi
 
 const league = { id: "league", year_label: "26/27" } as AdminLeagueRow;
 
+function predictedMatch(overrides: Partial<AdminScheduleRow> = {}): AdminScheduleRow {
+  return {
+    ...day("first-1", 1, "first_leg"),
+    match_id: "match-1",
+    match_version: 3,
+    match_status: "published",
+    kickoff_at: "2026-07-01T13:00:00Z",
+    home_club_id: "home",
+    home_club_name: "FC Heim",
+    away_club_id: "away",
+    away_club_name: "SV Gast",
+    match_has_predictions: true,
+    matchday_has_predictions: true,
+    decision: null,
+    ...overrides,
+  } as AdminScheduleRow;
+}
+
 describe("ScheduleWorkspace matchday navigation", () => {
+  it("verschiebt ein bereits getipptes Spiel auf einen Termin außerhalb des Spieltags", async () => {
+    mocks.reschedule.mockResolvedValue({
+      status: "success",
+      message: "Das Spiel wurde verschoben.",
+    });
+    const { container } = render(
+      <ScheduleWorkspace
+        basePath="/admin/competitions/league"
+        clubs={[]}
+        schedule={[predictedMatch()]}
+        selectedLeague={league}
+        selectedMatchdayId="first-1"
+      />,
+    );
+    fireEvent.click(screen.getByText("Spiel verwalten: FC Heim gegen SV Gast"));
+    const newKickoff = screen.getByLabelText(/^Neuer Anpfiff/);
+    expect(newKickoff).not.toHaveAttribute("min");
+    expect(newKickoff).not.toHaveAttribute("max");
+    expect(
+      screen.queryByRole("button", { name: "Spiel endgültig löschen" }),
+    ).not.toBeInTheDocument();
+    expect(container.querySelector('.match-admin-item__edit input[name="homeClubId"]')).toBeNull();
+    fireEvent.change(newKickoff, { target: { value: "2026-08-15T16:00" } });
+    fireEvent.submit(newKickoff.closest("form")!);
+    await waitFor(() => expect(mocks.reschedule).toHaveBeenCalledOnce());
+    const data = mocks.reschedule.mock.calls[0]![1] as FormData;
+    expect(Object.fromEntries(data)).toEqual({
+      leagueId: "league",
+      id: "match-1",
+      expectedVersion: "3",
+      kickoffAt: "2026-08-15T16:00",
+    });
+    expect(await screen.findByText("Das Spiel wurde verschoben.")).toBeInTheDocument();
+  });
+
+  it.each(["official", "excluded"] as const)(
+    "sperrt das Verschieben mit gespeichertem Ergebnis (%s)",
+    (decision) => {
+      render(
+        <ScheduleWorkspace
+          basePath="/admin/competitions/league"
+          clubs={[]}
+          schedule={[
+            predictedMatch({
+              decision,
+              home_goals: decision === "official" ? 2 : null,
+              away_goals: decision === "official" ? 1 : null,
+            }),
+          ]}
+          selectedLeague={league}
+          selectedMatchdayId="first-1"
+        />,
+      );
+      fireEvent.click(screen.getByText("Spiel verwalten: FC Heim gegen SV Gast"));
+      expect(screen.queryByLabelText(/^Neuer Anpfiff/)).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Spiel verschieben" })).not.toBeInTheDocument();
+      expect(screen.getByText(/bereits ein Ergebnis vor/)).toBeInTheDocument();
+    },
+  );
+
   it("bietet ein gemeinsames Dropdown und Pfeile für beide Runden an", () => {
     render(
       <ScheduleWorkspace

@@ -47,6 +47,12 @@ export const deleteScheduleItemSchema = z.object({
   expectedVersion: version,
 });
 
+export const rescheduleMatchSchema = z.object({
+  id: uuid,
+  expectedVersion: version,
+  kickoffAt: z.iso.datetime({ offset: true }),
+});
+
 const simpleMatchFields = {
   homeClubId: uuid,
   awayClubId: uuid,
