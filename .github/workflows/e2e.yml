@@ -32,7 +32,7 @@ jobs:
       # Synthetic public key: exercise the push UI without production credentials.
       NEXT_PUBLIC_VAPID_PUBLIC_KEY: BCLTyGqMvLIxGohc-UnmoGPChwYQO_nsmW4XE_V5KUVFFv8w3_p56tIOjOUuJXQtD1vXDK1UEfO0GaCZNJTUy0E
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 24.18.0
