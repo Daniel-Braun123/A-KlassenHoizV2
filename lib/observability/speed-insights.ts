@@ -4,7 +4,7 @@ const telemetryOrigin = "https://telemetry.invalid";
 
 const privatePathSegments: ReadonlyArray<readonly [RegExp, string]> = [
   [/^\/invite\/[^/]+/, "/invite/[token]"],
-  [/^\/rounds\/[^/]+/, "/rounds/[roundId]"],
+  [/^\/rounds\/(?!new(?:\/|$))[^/]+/, "/rounds/[roundId]"],
   [/^\/admin\/competitions\/[^/]+/, "/admin/competitions/[leagueId]"],
 ];
 

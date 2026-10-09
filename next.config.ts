@@ -50,7 +50,9 @@ const contentSecurityPolicy = [
 
 export const securityHeaders = [
   { key: "Content-Security-Policy", value: contentSecurityPolicy },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Analytics must never receive private paths through document.referrer,
+  // even when navigating between two pages on this same origin.
+  { key: "Referrer-Policy", value: "strict-origin" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   {

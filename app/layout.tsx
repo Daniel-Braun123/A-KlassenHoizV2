@@ -6,6 +6,7 @@ import { ProfileMenu } from "@/components/patterns/profile-menu";
 import { InstallEventCapture } from "@/components/pwa/install-event-capture";
 import { ThemeSync } from "@/components/patterns/theme-sync";
 import { AppSpeedInsights } from "@/components/telemetry/app-speed-insights";
+import { AppAnalytics } from "@/components/telemetry/app-analytics";
 import { barlow } from "@/app/fonts";
 import { getMyProfile } from "@/features/profile/service";
 import { siteConfig } from "@/lib/config/site";
@@ -125,6 +126,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <FocusBoundary>{children}</FocusBoundary>
         </AppShell>
         {process.env.NODE_ENV === "production" ? <AppSpeedInsights /> : null}
+        {process.env.NODE_ENV === "production" ? <AppAnalytics /> : null}
         {process.env.NODE_ENV === "production" ? (
           <script defer src="/pwa-register.js" />
         ) : (
